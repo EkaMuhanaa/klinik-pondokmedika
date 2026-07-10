@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { MdLogout, MdArticle, MdImage } from 'react-icons/md';
 import { useAuth } from '../../Contexts/AuthContext';
 
 const AdminLayout = ({ children }) => {
@@ -13,8 +14,8 @@ const AdminLayout = ({ children }) => {
   };
 
   const navItems = [
-    { name: 'Artikel & Edukasi', path: '/admin/articles', icon: 'article' },
-    { name: 'Kelola Latar / Slider', path: '/admin/sliders', icon: 'imagesmode' },
+    { name: 'Artikel & Edukasi', path: '/admin/articles', icon: <MdArticle className='text-xl' /> },
+    { name: 'Kelola Latar / Slider', path: '/admin/sliders', icon: <MdImage className='text-xl' /> },
   ];
 
   return (
@@ -36,7 +37,7 @@ const AdminLayout = ({ children }) => {
                   : 'hover:bg-primary/10 text-on-surface-variant hover:text-primary'
               }`}
             >
-              <span className='material-symbols-outlined'>{item.icon}</span>
+              {item.icon}
               {item.name}
             </Link>
           ))}
@@ -51,7 +52,7 @@ const AdminLayout = ({ children }) => {
             onClick={handleLogout}
             className='flex items-center gap-3 w-full px-4 py-3 text-error hover:bg-error/10 rounded-xl transition-colors font-bold'
           >
-            <span className='material-symbols-outlined'>logout</span>
+            <MdLogout className='text-xl' />
             Keluar
           </button>
         </div>

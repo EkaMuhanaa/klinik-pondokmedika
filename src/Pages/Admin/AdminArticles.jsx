@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { MdAdd, MdEdit, MdDelete } from 'react-icons/md';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -40,7 +41,7 @@ const AdminArticles = () => {
       <div className='flex justify-between items-center mb-8'>
         <h1 className='text-3xl font-headline-lg font-bold text-on-surface'>Kelola Artikel</h1>
         <Link to='/admin/articles/create' className='bg-primary text-on-primary px-6 py-2 rounded-full font-bold flex items-center gap-2 hover:scale-105 transition-transform'>
-          <span className='material-symbols-outlined'>add</span>
+          <MdAdd />
           Tulis Artikel Baru
         </Link>
       </div>
@@ -81,10 +82,10 @@ const AdminArticles = () => {
                   </td>
                   <td className='p-4 text-right flex justify-end gap-2'>
                     <Link to={`/admin/articles/edit/${article.id}`} className='p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors'>
-                      <span className='material-symbols-outlined text-[20px]'>edit</span>
+                      <MdEdit className="text-[20px]" />
                     </Link>
                     <button onClick={() => handleDelete(article.id)} className='p-2 text-error hover:bg-error/10 rounded-lg transition-colors'>
-                      <span className='material-symbols-outlined text-[20px]'>delete</span>
+                      <MdDelete className="text-[20px]" />
                     </button>
                   </td>
                 </tr>

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { MdMenuBook, MdCalendarToday, MdArrowForward, MdArticle } from 'react-icons/md';
 import { Link, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import Layout from '../Components/Layout';
@@ -54,7 +55,7 @@ const Articles = () => {
       <section className='relative h-[85vh] min-h-[600px] flex items-center justify-center overflow-hidden transition-all duration-1000 opacity-100 translate-y-0'>
         <HeroSliderBackground images={heroImages} overlayClassName='bg-primary/20 backdrop-brightness-75' />
         <div className='relative z-10 text-center px-gutter max-w-4xl transition-all duration-700 opacity-100 translate-y-0 animate-fade-in-up'>
-          <span className='material-symbols-outlined text-white/50 text-6xl mb-4'>menu_book</span>
+          <MdMenuBook className="text-white/50 text-6xl mb-4" />
           <h1 className='font-headline-xl text-headline-xl text-white mb-4'>Artikel & Edukasi</h1>
           <p className='font-body-lg text-white/90 max-w-2xl mx-auto'>Wadah edukasi kesehatan, tips medis, informasi rilis media, dan pengumuman internal Klinik Pondok Medika.</p>
         </div>
@@ -100,7 +101,7 @@ const Articles = () => {
                   </div>
                   <div className='p-6 flex flex-col flex-1'>
                     <div className='flex items-center gap-2 text-on-surface-variant text-sm mb-3'>
-                      <span className='material-symbols-outlined text-sm'>calendar_today</span>
+                      <MdCalendarToday className="text-sm" />
                       <span>{new Date(article.published_at || article.created_at).toLocaleDateString('id-ID')}</span>
                     </div>
                     <h3 className='font-headline-md text-xl font-bold text-on-surface mb-3 line-clamp-2 group-hover:text-primary transition-colors'>
@@ -111,7 +112,7 @@ const Articles = () => {
                     </p>
                     <Link to={`/artikel/${article.slug}`} className='text-primary font-bold flex items-center gap-2 hover:gap-3 transition-all mt-auto'>
                       Baca Selengkapnya
-                      <span className='material-symbols-outlined'>arrow_forward</span>
+                      <MdArrowForward />
                     </Link>
                   </div>
                 </div>
@@ -120,7 +121,7 @@ const Articles = () => {
           ) : (
             <div className='text-center py-20 animate-fade-in-up' style={{ animationDelay: '200ms' }}>
               <div className='w-24 h-24 bg-surface-container rounded-full flex items-center justify-center mx-auto mb-6'>
-                <span className='material-symbols-outlined text-5xl text-on-surface-variant/50'>article</span>
+                <MdArticle className="text-5xl text-on-surface-variant/50" />
               </div>
               <h3 className='font-headline-lg text-headline-lg text-on-surface mb-3'>
                 {activeCategory === 'Semua' ? 'Belum Ada Artikel' : `Belum Ada ${activeCategory}`}

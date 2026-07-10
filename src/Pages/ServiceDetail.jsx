@@ -1,4 +1,5 @@
 import React from 'react';
+import { MdArrowBack } from 'react-icons/md';
 import { useParams, Link } from 'react-router-dom';
 import Layout from '../Components/Layout';
 
@@ -13,7 +14,7 @@ const ServiceDetail = () => {
       <section className="bg-primary py-16 px-gutter">
         <div className="max-w-container-max mx-auto animate-fade-in-up">
           <Link to="/layanan" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors">
-            <span className="material-symbols-outlined text-sm">arrow_back</span>
+            <MdArrowBack className="text-sm" />
             Kembali ke Daftar Layanan
           </Link>
           <h1 className="font-headline-xl text-headline-xl text-white mb-4">{title}</h1>

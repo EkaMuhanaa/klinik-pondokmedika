@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { MdGroups, MdHealthAndSafety, MdVerified, MdVisibility, MdPsychology, MdMedicalServices, MdBiotech, MdLocationOn, MdSchedule, MdPhoneInTalk } from 'react-icons/md';
 import axios from 'axios';
 import Layout from '../Components/Layout';
 import HeroSliderBackground from '../Components/HeroSliderBackground';
@@ -54,7 +55,7 @@ const About = () => {
       <section className="relative h-[85vh] min-h-[600px] flex items-center justify-center overflow-hidden">
         <HeroSliderBackground images={heroImages} overlayClassName="bg-primary/20 backdrop-brightness-75" />
         <div className="relative z-10 text-center px-gutter max-w-4xl transition-all duration-700 opacity-100 translate-y-0">
-          <span className="material-symbols-outlined text-white/70 text-6xl drop-shadow-md mb-4">groups</span>
+          <MdGroups className="text-white/70 text-6xl drop-shadow-md mb-4" />
           <h1 className="font-headline-xl text-headline-xl text-white mb-4 md:font-headline-xl md:text-headline-xl sm:font-headline-xl-mobile sm:text-headline-xl-mobile">Tentang Kami</h1>
           <p className="font-body-lg text-body-lg text-white/90">Berdedikasi untuk memberikan layanan kesehatan yang prima bagi keluarga Anda sejak hari pertama.</p>
         </div>
@@ -72,7 +73,7 @@ const About = () => {
               />
             </div>
             <div className="absolute -bottom-6 -right-6 bg-primary-container text-on-primary-container p-8 rounded-xl shadow-lg hidden md:block max-w-xs">
-              <span className="material-symbols-outlined text-4xl mb-4" style={{ fontVariationSettings: "'FILL' 1" }}>health_and_safety</span>
+              <MdHealthAndSafety className="text-4xl mb-4" style={{ fontVariationSettings: "'FILL' 1" }} />
               <p className="font-label-md">Pelayanan berorientasi pasien dengan standar profesionalitas tinggi.</p>
             </div>
           </div>
@@ -84,14 +85,14 @@ const About = () => {
             </div>
             <div className="mt-8 flex gap-4">
               <div className="bg-surface-container p-4 rounded-xl flex items-center gap-4">
-                <span className="material-symbols-outlined text-primary text-3xl">verified</span>
+                <MdVerified className="text-primary text-3xl" />
                 <div>
                   <h4 className="font-bold">Terakreditasi</h4>
                   <p className="text-xs">Standar Pelayanan Nasional</p>
                 </div>
               </div>
               <div className="bg-surface-container p-4 rounded-xl flex items-center gap-4">
-                <span className="material-symbols-outlined text-primary text-3xl">groups</span>
+                <MdGroups className="text-primary text-3xl" />
                 <div>
                   <h4 className="font-bold">Tim Ahli</h4>
                   <p className="text-xs">Dokter Berpengalaman</p>
@@ -113,7 +114,7 @@ const About = () => {
             {/* Vision Card (Large) */}
             <div className="md:col-span-12 lg:col-span-5 bg-primary text-on-primary p-10 rounded-xl shadow-lg flex flex-col justify-between relative overflow-hidden group">
               <div className="absolute top-0 right-0 opacity-10 group-hover:scale-110 transition-transform duration-500">
-                <span className="material-symbols-outlined text-[200px]" style={{ fontVariationSettings: "'FILL' 1" }}>visibility</span>
+                <MdVisibility className="text-[200px]" style={{ fontVariationSettings: "'FILL' 1" }} />
               </div>
               <div className="relative z-10">
                 <span className="inline-block bg-white/20 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-6">Visi Kami</span>
@@ -127,14 +128,14 @@ const About = () => {
             <div className="md:col-span-12 lg:col-span-7 grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow border-l-4 border-secondary">
                 <div className="w-12 h-12 bg-secondary-container text-on-secondary-container rounded-full flex items-center justify-center mb-6">
-                  <span className="material-symbols-outlined">psychology</span>
+                  <MdPsychology />
                 </div>
                 <h4 className="font-headline-md text-headline-md mb-2 text-secondary">SDM Berkualitas</h4>
                 <p className="text-on-surface-variant text-body-md">Meningkatkan kualitas Sumber Daya Manusia secara berkesinambungan melalui pelatihan dan pengembangan profesional.</p>
               </div>
               <div className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow border-l-4 border-primary">
                 <div className="w-12 h-12 bg-primary-container text-on-primary-container rounded-full flex items-center justify-center mb-6">
-                  <span className="material-symbols-outlined">medical_services</span>
+                  <MdMedicalServices />
                 </div>
                 <h4 className="font-headline-md text-headline-md mb-2 text-primary">Pelayanan Paripurna</h4>
                 <p className="text-on-surface-variant text-body-md">Memberikan pelayanan kesehatan yang menyeluruh, terintegrasi, dan tetap terjangkau bagi masyarakat.</p>
@@ -142,7 +143,7 @@ const About = () => {
               <div className="md:col-span-2 bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow border-l-4 border-tertiary">
                 <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                   <div className="w-12 h-12 bg-tertiary-container text-on-tertiary-container rounded-full flex items-center justify-center shrink-0">
-                    <span className="material-symbols-outlined">biotech</span>
+                    <MdBiotech />
                   </div>
                   <div>
                     <h4 className="font-headline-md text-headline-md mb-2 text-tertiary">Sarana Standar</h4>
@@ -162,14 +163,14 @@ const About = () => {
             <h2 className="font-headline-lg text-headline-lg text-primary mb-6">Lokasi Kami</h2>
             <div className="space-y-6">
               <div className="flex gap-4">
-                <span className="material-symbols-outlined text-primary">location_on</span>
+                <MdLocationOn className="text-primary" />
                 <div>
                   <h3 className="font-bold text-lg">Klinik Pondok Medika</h3>
                   <p className="text-on-surface-variant">Jl. Raya Pondok Indah No. 123, Jakarta Selatan, 12310</p>
                 </div>
               </div>
               <div className="flex gap-4">
-                <span className="material-symbols-outlined text-primary">schedule</span>
+                <MdSchedule className="text-primary" />
                 <div>
                   <h3 className="font-bold text-lg">Jam Operasional</h3>
                   <p className="text-on-surface-variant">Senin - Sabtu: 08.00 - 20.00</p>
@@ -177,7 +178,7 @@ const About = () => {
                 </div>
               </div>
               <div className="flex gap-4">
-                <span className="material-symbols-outlined text-primary">phone_in_talk</span>
+                <MdPhoneInTalk className="text-primary" />
                 <div>
                   <h3 className="font-bold text-lg">Kontak</h3>
                   <p className="text-on-surface-variant">0812-3416-3128 (WhatsApp)</p>

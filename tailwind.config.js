@@ -72,6 +72,8 @@ export default {
         "margin-mobile": "1rem"
       },
       fontFamily: {
+        "sans": ["Inter", "sans-serif"],
+        "heading": ["Montserrat", "sans-serif"],
         "body-lg": ["Inter", "sans-serif"],
         "headline-md": ["Montserrat", "sans-serif"],
         "headline-xl": ["Montserrat", "sans-serif"],

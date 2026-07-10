@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { MdAdminPanelSettings, MdError, MdOutlineRefresh } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Contexts/AuthContext';
 
@@ -32,7 +33,7 @@ const Login = () => {
         <div className='p-8 sm:p-10'>
           <div className='text-center mb-8'>
             <div className='inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 text-primary mb-4'>
-              <span className='material-symbols-outlined text-3xl'>admin_panel_settings</span>
+              <MdAdminPanelSettings className="text-3xl" />
             </div>
             <h1 className='text-2xl font-headline-md font-bold text-on-surface'>Login Admin</h1>
             <p className='text-on-surface-variant mt-2'>Masuk ke panel manajemen Klinik Pondok Medika</p>
@@ -40,7 +41,7 @@ const Login = () => {
 
           {error && (
             <div className='bg-error/10 text-error px-4 py-3 rounded-xl mb-6 flex items-center gap-2'>
-              <span className='material-symbols-outlined'>error</span>
+              <MdError />
               <p className='text-sm'>{error}</p>
             </div>
           )}
@@ -75,7 +76,7 @@ const Login = () => {
               className='w-full bg-primary text-on-primary py-3 rounded-xl font-bold hover:scale-[1.02] transition-transform flex justify-center items-center gap-2 disabled:opacity-70 disabled:hover:scale-100 mt-8'
             >
               {loading ? (
-                <span className='material-symbols-outlined animate-spin'>progress_activity</span>
+                <MdOutlineRefresh className="animate-spin" />
               ) : (
                 'Masuk'
               )}

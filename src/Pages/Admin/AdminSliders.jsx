@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { MdHourglassEmpty, MdUpload, MdImage, MdDelete } from 'react-icons/md';
 
 const pages = [
   { id: 'home', name: 'Beranda' },
@@ -125,7 +126,7 @@ const AdminSliders = () => {
                   : 'bg-primary text-on-primary cursor-pointer hover:scale-105'
               }`}
             >
-              <span className='material-symbols-outlined'>{uploading ? 'hourglass_empty' : 'upload'}</span>
+              {uploading ? <MdHourglassEmpty className='text-xl' /> : <MdUpload className='text-xl' />}
               {uploading ? 'Mengunggah...' : (sliders.length >= 4 ? 'Batas Maksimal (4)' : 'Tambah Gambar')}
             </label>
           </div>
@@ -135,7 +136,7 @@ const AdminSliders = () => {
           <div className='py-12 text-center text-on-surface-variant'>Memuat gambar slider...</div>
         ) : sliders.length === 0 ? (
           <div className='py-12 text-center border-2 border-dashed border-outline-variant/30 rounded-xl'>
-            <span className='material-symbols-outlined text-4xl text-on-surface-variant/50 mb-2'>imagesmode</span>
+            <MdImage className="text-4xl text-on-surface-variant/50 mb-2" />
             <p className='text-on-surface-variant font-bold mb-1'>Belum ada gambar slider</p>
             <p className='text-sm text-on-surface-variant/70'>Halaman ini akan menggunakan gambar latar default bawaan sistem.</p>
           </div>
@@ -154,7 +155,7 @@ const AdminSliders = () => {
                     className='bg-error text-white p-3 rounded-full hover:scale-110 transition-transform shadow-lg'
                     title='Hapus Gambar'
                   >
-                    <span className='material-symbols-outlined'>delete</span>
+                    <MdDelete />
                   </button>
                 </div>
               </div>

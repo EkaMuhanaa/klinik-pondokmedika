@@ -5,7 +5,7 @@ export const doctorsData = [
     specialtyBg: "bg-secondary/10",
     specialtyColor: "text-secondary",
     description: "Ahli dalam penanganan pasien dewasa dan manajemen penyakit kronis dengan pendekatan komprehensif.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuDWAeE6UbH7eEfo37iRiwwiPFhsw13GCE7YJjsKr9ix_XwD8mduLGnsVRLqTaxrJM7hW1oXg8h6_SRjV9GOHl7QnaF608xNWsUw7MKEqjriW-chQ72M-Lo8BaIhaYL7nVFcO4WdzKSH0HEP1t4ikUVDfS8-Kqje_LUx-rXBir9uGSq-z8MymWDhEIfggLjb4htvEcyxSeJ4mX46fR6OFtWSEFHLtVkWIN3qdj5D9Yaq7yVf1r5VSgZCvELH7zv91W5Hhw",
+    image: "/images/dr-arya.jpg",
     scheduleDetails: [
       { day: "Senin", time: "13.00 - 21.00" },
       { day: "Selasa", time: "13.00 - 21.00" },

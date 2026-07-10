@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { MdArrowBack, MdCalendarToday, MdShare, MdContentCopy } from 'react-icons/md';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import Layout from '../Components/Layout';
@@ -82,7 +83,7 @@ const ArticleDetail = () => {
       <section className="pt-32 pb-12 px-gutter bg-surface-container-lowest transition-all duration-700 opacity-100 translate-y-0 animate-fade-in-up">
         <div className="max-w-3xl mx-auto text-center">
           <Link to="/artikel" className="inline-flex items-center gap-2 text-primary font-bold hover:gap-3 transition-all mb-8">
-            <span className="material-symbols-outlined text-sm">arrow_back</span>
+            <MdArrowBack className="text-sm" />
             Kembali ke Daftar Artikel
           </Link>
           
@@ -91,7 +92,7 @@ const ArticleDetail = () => {
               {article.category}
             </Link>
             <span className="text-on-surface-variant text-sm flex items-center gap-1">
-              <span className="material-symbols-outlined text-[16px]">calendar_today</span>
+              <MdCalendarToday className="text-[16px]" />
               {new Date(article.published_at || article.created_at).toLocaleDateString('id-ID')}
             </span>
           </div>
@@ -133,7 +134,7 @@ const ArticleDetail = () => {
                 title="Bagikan"
                 className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${showShareMenu ? 'bg-primary text-white' : 'bg-surface-container text-on-surface hover:text-primary hover:bg-primary/10'}`}
               >
-                <span className="material-symbols-outlined text-[20px]">share</span>
+                <MdShare className="text-[20px]" />
               </button>
 
               {/* Share Dropdown */}
@@ -141,7 +142,7 @@ const ArticleDetail = () => {
                 <div className="absolute bottom-14 right-0 w-48 bg-white rounded-xl shadow-lg border border-outline-variant/20 overflow-hidden z-10 animate-in fade-in slide-in-from-bottom-2">
                   <div className="flex flex-col">
                     <button onClick={handleCopyLink} className="flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low text-left">
-                      <span className="material-symbols-outlined text-[18px]">content_copy</span>
+                      <MdContentCopy className="text-[18px]" />
                       Salin Link
                     </button>
                     <a href={`https://api.whatsapp.com/send?text=${shareTitle}%20${shareUrl}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low">

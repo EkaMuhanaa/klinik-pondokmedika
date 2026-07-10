@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { MdClose, MdCall, MdMail } from 'react-icons/md';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import WhatsAppCTA from './WhatsAppCTA';
@@ -72,7 +73,7 @@ const Layout = ({ children }) => {
                     onClick={() => setIsMobileMenuOpen(false)}
                     aria-label="Close menu"
                   >
-                    <span className="material-symbols-outlined text-3xl">close</span>
+                    <MdClose className="text-3xl" />
                   </button>
                 </div>
                 
@@ -86,7 +87,7 @@ const Layout = ({ children }) => {
                 <div className="mt-auto p-6 border-t border-outline-variant text-center">
                   <p className="text-sm text-text-muted mb-2">Pusat Informasi</p>
                   <a href="https://wa.me/6281234163128" target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 font-bold text-whatsapp-green bg-whatsapp-green/10 py-3 rounded-full hover:bg-whatsapp-green/20 transition-colors">
-                    <span className="material-symbols-outlined">call</span>
+                    <MdCall />
                     0812-3416-3128
                   </a>
                 </div>
@@ -144,7 +145,7 @@ const Layout = ({ children }) => {
             <ul className="space-y-4 text-on-surface/80">
               <li>
                 <a className="flex items-center gap-3 hover:text-primary transition-colors" href="mailto:info@pondokmedika.com">
-                  <span className="material-symbols-outlined text-sm">mail</span>
+                  <MdMail className="text-sm" />
                   <span>Email</span>
                 </a>
               </li>

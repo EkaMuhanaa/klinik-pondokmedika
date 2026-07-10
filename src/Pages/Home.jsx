@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { MdLocalHospital, MdSchedule, MdLocationOn, MdCall, MdFamilyRestroom, MdMedicalServices, MdAir, MdHomeWork } from 'react-icons/md';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import DoctorCard from '../Components/DoctorCard';
@@ -70,7 +71,7 @@ const Home = () => {
         <HeroSliderBackground images={heroImages} overlayClassName="hero-overlay" />
         <div className="relative z-10 w-full max-w-container-max mx-auto px-gutter grid lg:grid-cols-2 gap-12">
           <div className="space-y-6 text-white animate-fade-in-up">
-            <span className="material-symbols-outlined text-white/70 text-6xl drop-shadow-md">local_hospital</span>
+            <MdLocalHospital className="text-white/70 text-6xl drop-shadow-md" />
             <h1 className="font-headline-xl-mobile md:font-headline-xl text-headline-xl-mobile md:text-headline-xl leading-tight text-white drop-shadow-md">
               Pelayanan Medis Profesional &amp; Terpercaya untuk Keluarga Anda
             </h1>
@@ -84,7 +85,7 @@ const Home = () => {
           <div className="bg-white rounded-xl shadow-xl grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-outline-variant overflow-hidden w-full">
             <div className="py-10 px-8 flex items-start gap-4">
               <div className="bg-primary-container/20 p-3 rounded-full text-primary">
-                <span className="material-symbols-outlined">schedule</span>
+                <MdSchedule />
               </div>
               <div>
                 <p className="font-label-sm text-label-sm text-primary uppercase tracking-wider mb-1">Jam Operasional</p>
@@ -95,7 +96,7 @@ const Home = () => {
             <div className="py-10 px-8 flex items-start gap-4">
               <a href="https://maps.app.goo.gl/WGtwVHvWx3nsRLeR8" target="_blank" rel="noreferrer" className="flex items-start gap-4 w-full h-full">
                 <div className="bg-secondary-container/20 p-3 rounded-full text-secondary">
-                  <span className="material-symbols-outlined">location_on</span>
+                  <MdLocationOn />
                 </div>
                 <div>
                   <p className="font-label-sm text-label-sm text-secondary uppercase tracking-wider mb-1">Lokasi</p>
@@ -106,7 +107,7 @@ const Home = () => {
             </div>
             <div className="py-10 px-8 flex items-start gap-4">
               <div className="bg-tertiary-container/20 p-3 rounded-full text-tertiary">
-                <span className="material-symbols-outlined">call</span>
+                <MdCall />
               </div>
               <div>
                 <p className="font-label-sm text-label-sm text-tertiary uppercase tracking-wider mb-1">Hubungi Kami</p>
@@ -128,28 +129,28 @@ const Home = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           <div className="group bg-white p-8 rounded-xl shadow-sm border border-outline-variant/30 hover:shadow-xl transition-all hover:-translate-y-2 flex flex-col items-center text-center">
             <div className="bg-primary-container text-on-primary-container w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:rotate-6">
-              <span className="material-symbols-outlined text-[32px]">family_restroom</span>
+              <MdFamilyRestroom className="text-[32px]" />
             </div>
             <h3 className="font-headline-md text-headline-md text-on-surface mb-3">Pemeriksaan Anak &amp; Dewasa</h3>
             <p className="font-body-md text-body-md text-text-muted">Konsultasi medis menyeluruh untuk segala usia dengan pendekatan yang personal.</p>
           </div>
           <div className="group bg-white p-8 rounded-xl shadow-sm border border-outline-variant/30 hover:shadow-xl transition-all hover:-translate-y-2 flex flex-col items-center text-center">
             <div className="bg-secondary-container text-on-secondary-container w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:rotate-6">
-              <span className="material-symbols-outlined text-[32px]">medical_services</span>
+              <MdMedicalServices className="text-[32px]" />
             </div>
             <h3 className="font-headline-md text-headline-md text-on-surface mb-3">Bedah Minor</h3>
             <p className="font-body-md text-body-md text-text-muted">Tindakan bedah kecil yang dilakukan dengan aman, steril, dan pemulihan cepat.</p>
           </div>
           <div className="group bg-white p-8 rounded-xl shadow-sm border border-outline-variant/30 hover:shadow-xl transition-all hover:-translate-y-2 flex flex-col items-center text-center">
             <div className="bg-tertiary-container text-on-tertiary-container w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:rotate-6">
-              <span className="material-symbols-outlined text-[32px]">air</span>
+              <MdAir className="text-[32px]" />
             </div>
             <h3 className="font-headline-md text-headline-md text-on-surface mb-3">Nebulizer</h3>
             <p className="font-body-md text-body-md text-text-muted">Layanan uap untuk membantu pernapasan pada pasien dengan gangguan respirasi.</p>
           </div>
           <div className="group bg-white p-8 rounded-xl shadow-sm border border-outline-variant/30 hover:shadow-xl transition-all hover:-translate-y-2 flex flex-col items-center text-center">
             <div className="bg-surface-container-highest text-on-surface-variant w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:rotate-6">
-              <span className="material-symbols-outlined text-[32px]">home_health</span>
+              <MdHomeWork className="text-[32px]" />
             </div>
             <h3 className="font-headline-md text-headline-md text-on-surface mb-3">Home Visit</h3>
             <p className="font-body-md text-body-md text-text-muted">Kunjungan medis ke rumah Anda untuk kenyamanan ekstra dalam perawatan kesehatan.</p>

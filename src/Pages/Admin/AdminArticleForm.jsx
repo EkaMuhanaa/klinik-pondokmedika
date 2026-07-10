@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { MdArrowBack } from 'react-icons/md';
 import { useNavigate, useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 
@@ -77,7 +78,7 @@ const AdminArticleForm = () => {
     <div>
       <div className='flex items-center gap-4 mb-8'>
         <Link to='/admin/articles' className='p-2 bg-surface rounded-full hover:bg-surface-container transition-colors'>
-          <span className='material-symbols-outlined'>arrow_back</span>
+          <MdArrowBack />
         </Link>
         <h1 className='text-3xl font-headline-lg font-bold text-on-surface'>
           {isEdit ? 'Edit Artikel' : 'Tulis Artikel Baru'}
