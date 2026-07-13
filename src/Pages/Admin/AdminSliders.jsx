@@ -136,7 +136,7 @@ const AdminSliders = () => {
           <div className='py-12 text-center text-on-surface-variant'>Memuat gambar slider...</div>
         ) : sliders.length === 0 ? (
           <div className='py-12 text-center border-2 border-dashed border-outline-variant/30 rounded-xl'>
-            <MdImage className="text-4xl text-on-surface-variant/50 mb-2" />
+            <MdImage className="text-4xl text-on-surface-variant/50 mx-auto mb-2" />
             <p className='text-on-surface-variant font-bold mb-1'>Belum ada gambar slider</p>
             <p className='text-sm text-on-surface-variant/70'>Halaman ini akan menggunakan gambar latar default bawaan sistem.</p>
           </div>

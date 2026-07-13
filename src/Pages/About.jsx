@@ -55,7 +55,7 @@ const About = () => {
       <section className="relative h-[85vh] min-h-[600px] flex items-center justify-center overflow-hidden">
         <HeroSliderBackground images={heroImages} overlayClassName="bg-primary/20 backdrop-brightness-75" />
         <div className="relative z-10 text-center px-gutter max-w-4xl transition-all duration-700 opacity-100 translate-y-0">
-          <MdGroups className="text-white/70 text-6xl drop-shadow-md mb-4" />
+          <MdGroups className="text-white/70 text-6xl drop-shadow-md mb-4 mx-auto" />
           <h1 className="font-headline-xl text-headline-xl text-white mb-4 md:font-headline-xl md:text-headline-xl sm:font-headline-xl-mobile sm:text-headline-xl-mobile">Tentang Kami</h1>
           <p className="font-body-lg text-body-lg text-white/90">Berdedikasi untuk memberikan layanan kesehatan yang prima bagi keluarga Anda sejak hari pertama.</p>
         </div>

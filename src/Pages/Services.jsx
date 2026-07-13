@@ -72,7 +72,7 @@ const Services = () => {
       <section className="relative h-[85vh] min-h-[600px] flex items-center justify-center overflow-hidden">
         <HeroSliderBackground images={heroImages} overlayClassName="bg-primary/20 backdrop-brightness-75" />
         <div className="relative z-10 text-center px-gutter max-w-4xl transition-all duration-700 opacity-100 translate-y-0 animate-fade-in-up">
-          <MdMedicalServices className="text-white/70 text-6xl drop-shadow-md mb-4" />
+          <MdMedicalServices className="text-white/70 text-6xl drop-shadow-md mx-auto mb-4" />
           <h1 className="font-headline-xl text-headline-xl text-white mb-4 md:font-headline-xl md:text-headline-xl sm:font-headline-xl-mobile sm:text-headline-xl-mobile">Layanan &amp; Fasilitas</h1>
           <p className="font-body-lg text-body-lg text-white/90">Katalog komprehensif seluruh poli, tindakan medis, dan fasilitas penunjang untuk kesehatan Anda.</p>
         </div>

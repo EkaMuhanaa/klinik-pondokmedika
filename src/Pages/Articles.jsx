@@ -55,7 +55,7 @@ const Articles = () => {
       <section className='relative h-[85vh] min-h-[600px] flex items-center justify-center overflow-hidden transition-all duration-1000 opacity-100 translate-y-0'>
         <HeroSliderBackground images={heroImages} overlayClassName='bg-primary/20 backdrop-brightness-75' />
         <div className='relative z-10 text-center px-gutter max-w-4xl transition-all duration-700 opacity-100 translate-y-0 animate-fade-in-up'>
-          <MdMenuBook className="text-white/50 text-6xl mb-4" />
+          <MdMenuBook className="text-white/50 text-6xl mx-auto mb-4" />
           <h1 className='font-headline-xl text-headline-xl text-white mb-4'>Artikel & Edukasi</h1>
           <p className='font-body-lg text-white/90 max-w-2xl mx-auto'>Wadah edukasi kesehatan, tips medis, informasi rilis media, dan pengumuman internal Klinik Pondok Medika.</p>
         </div>
@@ -121,7 +121,7 @@ const Articles = () => {
           ) : (
             <div className='text-center py-20 animate-fade-in-up' style={{ animationDelay: '200ms' }}>
               <div className='w-24 h-24 bg-surface-container rounded-full flex items-center justify-center mx-auto mb-6'>
-                <MdArticle className="text-5xl text-on-surface-variant/50" />
+                <MdArticle className="text-5xl text-on-surface-variant/50 mx-auto" />
               </div>
               <h3 className='font-headline-lg text-headline-lg text-on-surface mb-3'>
                 {activeCategory === 'Semua' ? 'Belum Ada Artikel' : `Belum Ada ${activeCategory}`}
