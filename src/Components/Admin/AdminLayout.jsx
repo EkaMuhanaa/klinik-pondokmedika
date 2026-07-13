@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { MdLogout, MdArticle, MdImage } from 'react-icons/md';
+import { MdLogout, MdArticle, MdImage, MdMenu, MdClose } from 'react-icons/md';
+import { useState } from 'react';
 import { useAuth } from '../../Contexts/AuthContext';
 
 const AdminLayout = ({ children }) => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -21,8 +23,8 @@ const AdminLayout = ({ children }) => {
   return (
     <div className='min-h-screen bg-surface-container-lowest flex font-sans'>
       {/* Sidebar */}
-      <aside className='w-64 bg-surface text-on-surface border-r border-outline-variant/30 flex flex-col shadow-sm hidden md:flex'>
-        <div className='p-6 border-b border-outline-variant/30'>
+      <aside className={`w-64 bg-surface text-on-surface border-r border-outline-variant/30 flex flex-col shadow-sm fixed inset-y-0 left-0 z-50 transform transition-transform duration-300 md:relative md:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className='p-6 border-b border-outline-variant/30 flex justify-between items-center'>
           <h2 className='text-2xl font-headline-md font-bold text-primary'>Klinik Admin</h2>
         </div>
         
@@ -31,6 +33,7 @@ const AdminLayout = ({ children }) => {
             <Link
               key={item.path}
               to={item.path}
+              onClick={() => setIsMobileMenuOpen(false)}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-colors ${
                 location.pathname.startsWith(item.path)
                   ? 'bg-primary text-on-primary font-bold shadow-md'
@@ -57,6 +60,14 @@ const AdminLayout = ({ children }) => {
           </button>
         </div>
       </aside>
+
+      {/* Mobile Overlay */}
+      {isMobileMenuOpen && (
+        <div 
+          className='fixed inset-0 bg-black/50 z-40 md:hidden' 
+          onClick={() => setIsMobileMenuOpen(false)} 
+        />
+      )}
 
       {/* Main Content */}
       <main className='flex-1 flex flex-col min-w-0 overflow-hidden'>

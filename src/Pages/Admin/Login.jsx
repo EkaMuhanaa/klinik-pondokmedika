@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MdAdminPanelSettings, MdError, MdOutlineRefresh } from 'react-icons/md';
+import { MdAdminPanelSettings, MdError, MdOutlineRefresh, MdVisibility, MdVisibilityOff } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../Contexts/AuthContext';
 
@@ -8,6 +8,7 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -55,7 +56,7 @@ const Login = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className='w-full px-4 py-3 rounded-xl bg-surface-container border-transparent focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all outline-none'
-                placeholder='admin@pm.com'
+                placeholder='Masukkan email'
               />
             </div>
             <div>
