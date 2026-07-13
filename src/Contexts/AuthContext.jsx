@@ -11,6 +11,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL + '/api';
+  axios.defaults.headers.common['ngrok-skip-browser-warning'] = '69420';
   
   if (token) {
     axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
