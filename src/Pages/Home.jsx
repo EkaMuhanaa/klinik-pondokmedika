@@ -120,7 +120,7 @@ const Home = () => {
       </section>
 
       {/* Layanan Unggulan Section */}
-      <section className="mt-40 md:mt-48 mb-section-gap w-full max-w-container-max mx-auto px-gutter transition-all duration-1000 opacity-0 translate-y-8 animate-in animate-on-scroll">
+      <section className="mt-80 md:mt-48 mb-section-gap w-full max-w-container-max mx-auto px-gutter transition-all duration-1000 opacity-0 translate-y-8 animate-in animate-on-scroll">
         <div className="text-center mb-16 space-y-4">
           <span className="font-label-md text-label-md text-primary bg-primary/10 px-4 py-1 rounded-full uppercase tracking-widest">Solusi Kesehatan</span>
           <h2 className="font-headline-lg text-headline-lg text-on-surface">Layanan Unggulan Kami</h2>

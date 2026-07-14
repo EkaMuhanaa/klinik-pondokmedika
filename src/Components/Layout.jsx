@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MdClose, MdCall, MdMail } from 'react-icons/md';
+import { MdClose, MdCall, MdMail, MdMenu } from 'react-icons/md';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import WhatsAppCTA from './WhatsAppCTA';
@@ -39,9 +39,11 @@ const Layout = ({ children }) => {
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
           >
-            <span className="material-symbols-outlined text-3xl">
-              {isMobileMenuOpen ? 'close' : 'menu'}
-            </span>
+            {isMobileMenuOpen ? (
+              <MdClose className="text-3xl" />
+            ) : (
+              <MdMenu className="text-3xl" />
+            )}
           </button>
         </nav>
 
