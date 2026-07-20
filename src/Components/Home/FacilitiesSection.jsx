@@ -9,7 +9,7 @@ const FacilitiesSection = () => {
   useEffect(() => {
     const fetchFacilities = async () => {
       try {
-        const response = await axios.get('/api/facilities');
+        const response = await axios.get('/facilities');
         setFacilities(response.data);
       } catch (error) {
         console.error('Error fetching facilities:', error);

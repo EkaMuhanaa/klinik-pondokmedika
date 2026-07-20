@@ -10,7 +10,7 @@ const ArticleHighlightSection = () => {
   useEffect(() => {
     const fetchArticles = async () => {
       try {
-        const response = await axios.get('/api/articles');
+        const response = await axios.get('/articles');
         // Get the latest 3 published articles
         const publishedArticles = response.data.filter(a => a.is_published);
         setArticles(publishedArticles.slice(0, 3));

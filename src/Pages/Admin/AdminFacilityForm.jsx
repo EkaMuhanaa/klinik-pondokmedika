@@ -26,7 +26,7 @@ const AdminFacilityForm = () => {
 
   const fetchFacility = async () => {
     try {
-      const response = await axios.get(`/api/facilities/${id}`);
+      const response = await axios.get(`/facilities/${id}`);
       setFormData({
         title: response.data.title,
         description: response.data.description || ''
@@ -68,11 +68,12 @@ const AdminFacilityForm = () => {
 
     try {
       if (isEdit) {
-        await axios.post(`/api/admin/facilities/${id}`, data, {
+        data.append('_method', 'PUT'); // required by Laravel for multipart updates
+        await axios.post(`/admin/facilities/${id}`, data, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
       } else {
-        await axios.post('/api/admin/facilities', data, {
+        await axios.post('/admin/facilities', data, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
       }
