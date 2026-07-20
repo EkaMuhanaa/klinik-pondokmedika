@@ -183,16 +183,32 @@ const ArticleDetail = () => {
                     <Link 
                       key={relArticle.id} 
                       to={`/artikel/${relArticle.slug}`} 
-                      className="group flex flex-col gap-2"
+                      className="group flex flex-col gap-3"
                     >
-                      <p className="text-xs text-on-surface-variant flex items-center gap-1">
-                        <MdCalendarToday className="text-[12px]" />
-                        {new Date(relArticle.published_at || relArticle.created_at).toLocaleDateString('id-ID')}
-                      </p>
-                      <h4 className="font-bold text-base text-on-surface group-hover:text-primary transition-colors leading-snug line-clamp-2">
-                        {relArticle.title}
-                      </h4>
-                      <hr className="border-outline-variant/30 mt-4 group-last:hidden" />
+                      <div className="w-full h-36 rounded-xl overflow-hidden relative bg-surface-container-low">
+                        <img 
+                          src={`http://localhost:8000/storage/${relArticle.image_path}`} 
+                          alt={relArticle.title}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = 'https://placehold.co/400x300?text=Klinik+Pondok+Medika';
+                          }}
+                        />
+                      </div>
+                      <div>
+                        <p className="text-xs text-on-surface-variant flex items-center gap-1 mb-1.5">
+                          <MdCalendarToday className="text-[12px]" />
+                          {new Date(relArticle.published_at || relArticle.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        </p>
+                        <h4 className="font-bold text-base text-on-surface group-hover:text-primary transition-colors leading-snug line-clamp-2 mb-1.5">
+                          {relArticle.title}
+                        </h4>
+                        <p className="text-sm text-on-surface-variant line-clamp-2 leading-relaxed">
+                          {relArticle.excerpt || relArticle.content.substring(0, 100).replace(/<[^>]+>/g, '') + '...'}
+                        </p>
+                      </div>
+                      <hr className="border-outline-variant/30 mt-3 group-last:hidden" />
                     </Link>
                   ))
                 ) : (
