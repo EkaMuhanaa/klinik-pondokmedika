@@ -187,7 +187,7 @@ const ArticleDetail = () => {
                     >
                       <div className="w-full h-36 rounded-xl overflow-hidden relative bg-surface-container-low">
                         <img 
-                          src={`http://localhost:8000/storage/${relArticle.image_path}`} 
+                          src={relArticle.thumbnail_path ? `${import.meta.env.VITE_API_BASE_URL}${relArticle.thumbnail_path}` : 'https://placehold.co/400x300?text=Klinik+Pondok+Medika'} 
                           alt={relArticle.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           onError={(e) => {
