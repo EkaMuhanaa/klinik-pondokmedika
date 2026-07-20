@@ -109,7 +109,9 @@ const Layout = ({ children }) => {
         <div className="w-full max-w-container-max mx-auto px-gutter flex flex-col lg:flex-row lg:justify-between gap-10 mb-12 py-section-gap">
           <div className="lg:w-1/4 shrink-0">
             <div className="mb-4">
-              <img src="/images/logo-wide.png" alt="Logo Klinik Pondok Medika" className="h-12 object-contain" onError={(e) => e.target.style.display='none'} />
+              <Link to="/" className="inline-block hover:opacity-80 transition-opacity">
+                <img src="/images/logo-wide.png" alt="Logo Klinik Pondok Medika" className="h-12 object-contain" onError={(e) => e.target.style.display='none'} />
+              </Link>
             </div>
             <div className="font-headline-md text-headline-md font-bold text-on-surface mb-4">
                 Klinik Pondok Medika
