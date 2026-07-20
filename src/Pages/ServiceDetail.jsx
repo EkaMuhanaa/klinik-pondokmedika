@@ -56,7 +56,7 @@ const ServiceDetail = () => {
 
       <section className="py-section-gap px-gutter bg-surface min-h-screen">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm border border-outline-variant/30 mb-8 animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+          <div className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
             <h2 className="font-headline-md text-headline-md text-primary mb-6">Tentang Layanan {title}</h2>
             <div className="prose prose-lg prose-slate max-w-none text-on-surface-variant leading-relaxed text-justify">
               <p>{description}</p>
