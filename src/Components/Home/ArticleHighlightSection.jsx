@@ -24,12 +24,30 @@ const ArticleHighlightSection = () => {
     fetchArticles();
   }, []);
 
+  useEffect(() => {
+    if (!loading && articles.length > 0) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('opacity-100', 'translate-y-0');
+            entry.target.classList.remove('opacity-0', 'translate-y-8');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      const elements = document.querySelectorAll('.articles-animate-on-scroll');
+      elements.forEach(el => observer.observe(el));
+      
+      return () => observer.disconnect();
+    }
+  }, [loading, articles]);
+
   if (loading || articles.length === 0) return null;
 
   return (
     <section className="py-20 bg-surface-container-lowest">
       <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 animate-on-scroll opacity-0 translate-y-8 transition-all duration-700">
+        <div className="flex flex-col md:flex-row justify-between items-end mb-12 articles-animate-on-scroll opacity-0 translate-y-8 transition-all duration-700">
           <div className="max-w-2xl mb-6 md:mb-0">
             <h2 className="text-3xl md:text-5xl font-headline-md font-bold text-on-surface mb-4">Artikel & Edukasi Terbaru</h2>
             <div className="w-24 h-1.5 bg-primary rounded-full mb-6"></div>
@@ -50,7 +68,7 @@ const ArticleHighlightSection = () => {
           {articles.map((article, index) => (
             <article 
               key={article.id} 
-              className={`bg-surface rounded-3xl overflow-hidden outline outline-1 outline-outline-variant/30 hover:outline-primary/50 shadow-sm hover:shadow-xl transition-all duration-500 group animate-on-scroll opacity-0 translate-y-8 flex flex-col`}
+              className={`bg-surface rounded-3xl overflow-hidden outline outline-1 outline-outline-variant/30 hover:outline-primary/50 shadow-sm hover:shadow-xl transition-all duration-500 group articles-animate-on-scroll opacity-0 translate-y-8 flex flex-col`}
               style={{ transitionDelay: `${index * 100}ms` }}
             >
               <div className="aspect-[16/10] bg-surface-container overflow-hidden relative">

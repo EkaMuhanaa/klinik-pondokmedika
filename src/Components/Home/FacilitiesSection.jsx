@@ -21,10 +21,28 @@ const FacilitiesSection = () => {
     fetchFacilities();
   }, []);
 
+  useEffect(() => {
+    if (!loading) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('opacity-100', 'translate-y-0');
+            entry.target.classList.remove('opacity-0', 'translate-y-8');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      const elements = document.querySelectorAll('.facilities-animate-on-scroll');
+      elements.forEach(el => observer.observe(el));
+      
+      return () => observer.disconnect();
+    }
+  }, [loading, facilities]);
+
   return (
     <section className="py-20 bg-surface">
       <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-        <div className="text-center mb-16 animate-on-scroll opacity-0 translate-y-8 transition-all duration-700">
+        <div className="text-center mb-16 facilities-animate-on-scroll opacity-0 translate-y-8 transition-all duration-700">
           <h2 className="text-3xl md:text-5xl font-headline-md font-bold text-on-surface mb-6">Fasilitas Kami</h2>
           <div className="w-24 h-1.5 bg-primary mx-auto rounded-full mb-6"></div>
           <p className="text-on-surface-variant max-w-2xl mx-auto text-lg">
@@ -37,7 +55,7 @@ const FacilitiesSection = () => {
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
           </div>
         ) : facilities.length === 0 ? (
-          <div className="bg-surface-container rounded-3xl p-12 text-center border border-outline-variant/30 shadow-sm max-w-3xl mx-auto animate-on-scroll opacity-0 translate-y-8 transition-all duration-700 delay-100">
+          <div className="bg-surface-container rounded-3xl p-12 text-center border border-outline-variant/30 shadow-sm max-w-3xl mx-auto facilities-animate-on-scroll opacity-0 translate-y-8 transition-all duration-700 delay-100">
             <MdDomain className="text-6xl text-on-surface-variant/40 mx-auto mb-4" />
             <p className="text-on-surface-variant text-lg">
               Mohon maaf, informasi fasilitas saat ini belum dapat ditampilkan. Silakan periksa kembali beberapa saat lagi.
@@ -48,7 +66,7 @@ const FacilitiesSection = () => {
             {facilities.map((facility, index) => (
               <div 
                 key={facility.id} 
-                className={`bg-surface rounded-3xl overflow-hidden outline outline-1 outline-outline-variant/30 hover:outline-primary/50 shadow-sm hover:shadow-xl transition-all duration-500 group animate-on-scroll opacity-0 translate-y-8`}
+                className={`bg-surface rounded-3xl overflow-hidden outline outline-1 outline-outline-variant/30 hover:outline-primary/50 shadow-sm hover:shadow-xl transition-all duration-500 group facilities-animate-on-scroll opacity-0 translate-y-8`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div className="aspect-video bg-surface-container overflow-hidden relative">
