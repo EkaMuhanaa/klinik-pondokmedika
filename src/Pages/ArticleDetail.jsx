@@ -8,6 +8,7 @@ const ArticleDetail = () => {
   const { slug } = useParams();
   
   const [article, setArticle] = useState(null);
+  const [relatedArticles, setRelatedArticles] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const [showShareMenu, setShowShareMenu] = useState(false);
@@ -17,8 +18,16 @@ const ArticleDetail = () => {
   useEffect(() => {
     const fetchArticle = async () => {
       try {
-        const res = await axios.get(`http://localhost:8000/api/articles/${slug}`);
+        const res = await axios.get(`/articles/${slug}`);
         setArticle(res.data);
+        
+        // Fetch related articles
+        if (res.data && res.data.category) {
+          const relatedRes = await axios.get(`/articles?category=${encodeURIComponent(res.data.category)}`);
+          // Filter out the current article and take max 4
+          const filtered = relatedRes.data.filter(a => a.id !== res.data.id).slice(0, 4);
+          setRelatedArticles(filtered);
+        }
       } catch (e) {
         console.error(e);
       } finally {
@@ -103,23 +112,25 @@ const ArticleDetail = () => {
         </div>
       </section>
 
-      {/* Article Content */}
+      {/* Article Content & Sidebar */}
       <section className="py-12 px-gutter bg-white min-h-screen">
-        <div className="max-w-3xl mx-auto">
-          {/* Featured Image */}
-          {article.thumbnail_path && (
-            <div className="w-full aspect-video rounded-2xl mb-12 overflow-hidden animate-fade-in-up shadow-sm border border-outline-variant/30" style={{ animationDelay: '100ms' }}>
-              <img src={`${import.meta.env.VITE_API_BASE_URL}${article.thumbnail_path}`} alt={article.title} className="w-full h-full object-cover" />
-            </div>
-          )}
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-12">
+          {/* Main Content (Left) */}
+          <div className="lg:col-span-2">
+            {/* Featured Image */}
+            {article.thumbnail_path && (
+              <div className="w-full aspect-video rounded-2xl mb-12 overflow-hidden animate-fade-in-up shadow-sm border border-outline-variant/30" style={{ animationDelay: '100ms' }}>
+                <img src={`${import.meta.env.VITE_API_BASE_URL}${article.thumbnail_path}`} alt={article.title} className="w-full h-full object-cover" />
+              </div>
+            )}
 
-          <article className="prose prose-lg prose-slate max-w-none text-on-surface-variant font-body-lg leading-relaxed animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-            <div dangerouslySetInnerHTML={{ __html: article.content.replace(/\n/g, '<br/>') }} />
-          </article>
-          
-          <div className="mt-16 pt-8 border-t border-outline-variant/30 flex justify-between items-center animate-fade-in-up relative" style={{ animationDelay: '300ms' }}>
-            <p className="text-on-surface-variant font-label-md">Bagikan artikel ini:</p>
-            <div className="flex gap-4 relative" ref={shareMenuRef}>
+            <article className="prose prose-lg prose-slate max-w-none text-on-surface-variant font-body-lg leading-relaxed animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+              <div dangerouslySetInnerHTML={{ __html: article.content.replace(/\n/g, '<br/>') }} />
+            </article>
+            
+            <div className="mt-16 pt-8 border-t border-outline-variant/30 flex justify-between items-center animate-fade-in-up relative" style={{ animationDelay: '300ms' }}>
+              <p className="text-on-surface-variant font-label-md">Bagikan artikel ini:</p>
+              <div className="flex gap-4 relative" ref={shareMenuRef}>
               <button 
                 onClick={handleCopyLink}
                 title="Salin Tautan"
@@ -154,8 +165,44 @@ const ArticleDetail = () => {
                   </div>
                 </div>
               )}
+              </div>
             </div>
           </div>
+          
+          {/* Sidebar (Right) */}
+          <aside className="lg:col-span-1 border-t lg:border-t-0 pt-12 lg:pt-0 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+            <div className="sticky top-24">
+              <h3 className="font-bold text-xl text-on-surface mb-6 relative inline-block">
+                Artikel Terkait
+                <div className="absolute -bottom-2 left-0 w-1/2 h-1 bg-primary rounded-full"></div>
+              </h3>
+              
+              <div className="flex flex-col gap-6">
+                {relatedArticles.length > 0 ? (
+                  relatedArticles.map((relArticle) => (
+                    <Link 
+                      key={relArticle.id} 
+                      to={`/artikel/${relArticle.slug}`} 
+                      className="group flex flex-col gap-2"
+                    >
+                      <p className="text-xs text-on-surface-variant flex items-center gap-1">
+                        <MdCalendarToday className="text-[12px]" />
+                        {new Date(relArticle.published_at || relArticle.created_at).toLocaleDateString('id-ID')}
+                      </p>
+                      <h4 className="font-bold text-base text-on-surface group-hover:text-primary transition-colors leading-snug line-clamp-2">
+                        {relArticle.title}
+                      </h4>
+                      <hr className="border-outline-variant/30 mt-4 group-last:hidden" />
+                    </Link>
+                  ))
+                ) : (
+                  <p className="text-on-surface-variant text-sm italic">
+                    Tidak ada artikel terkait.
+                  </p>
+                )}
+              </div>
+            </div>
+          </aside>
         </div>
       </section>
     </Layout>

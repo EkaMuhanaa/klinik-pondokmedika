@@ -47,10 +47,10 @@ const ArticleHighlightSection = () => {
   return (
     <section className="py-20 bg-surface-container-lowest">
       <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-12 articles-animate-on-scroll opacity-0 translate-y-8 transition-all duration-700">
-          <div className="max-w-2xl mb-6 md:mb-0">
-            <h2 className="text-3xl md:text-5xl font-headline-md font-bold text-on-surface mb-4">Artikel & Edukasi Terbaru</h2>
-            <div className="w-24 h-1.5 bg-primary rounded-full mb-6"></div>
+        <div className="flex flex-col items-center text-center mb-12 articles-animate-on-scroll opacity-0 translate-y-8 transition-all duration-700">
+          <div className="max-w-2xl mb-6">
+            <h2 className="text-3xl md:text-5xl font-headline-md font-bold text-on-surface mb-6">Artikel & Edukasi Terbaru</h2>
+            <div className="w-24 h-1.5 bg-primary rounded-full mb-6 mx-auto"></div>
             <p className="text-on-surface-variant text-lg">
               Tetap terinformasi dengan tips kesehatan dan berita medis terbaru dari tenaga ahli kami.
             </p>
