@@ -5,6 +5,8 @@ import { Link } from 'react-router-dom';
 import DoctorCard from '../Components/DoctorCard';
 import Layout from '../Components/Layout';
 import HeroSliderBackground from '../Components/HeroSliderBackground';
+import FacilitiesSection from '../Components/Home/FacilitiesSection';
+import ArticleHighlightSection from '../Components/Home/ArticleHighlightSection';
 import { doctorsData, calculateStatus } from '../data/doctors';
 
 const defaultHeroImages = [
@@ -203,6 +205,9 @@ const Home = () => {
           <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Pt Mitra bestari teknologi</div>
         </div>
       </section>
+      
+      <FacilitiesSection />
+      <ArticleHighlightSection />
     </Layout>
   );
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { MdLogout, MdArticle, MdImage, MdMenu, MdClose } from 'react-icons/md';
+import { MdLogout, MdArticle, MdImage, MdMenu, MdClose, MdDomain } from 'react-icons/md';
 import { useState } from 'react';
 import { useAuth } from '../../Contexts/AuthContext';
 
@@ -18,6 +18,7 @@ const AdminLayout = ({ children }) => {
   const navItems = [
     { name: 'Artikel & Edukasi', path: '/admin/articles', icon: <MdArticle className='text-xl' /> },
     { name: 'Kelola Latar / Slider', path: '/admin/sliders', icon: <MdImage className='text-xl' /> },
+    { name: 'Kelola Fasilitas', path: '/admin/facilities', icon: <MdDomain className='text-xl' /> },
   ];
 
   return (

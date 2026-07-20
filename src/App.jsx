@@ -18,6 +18,8 @@ import Login from './Pages/Admin/Login';
 import AdminArticles from './Pages/Admin/AdminArticles';
 import AdminArticleForm from './Pages/Admin/AdminArticleForm';
 import AdminSliders from './Pages/Admin/AdminSliders';
+import AdminFacilities from './Pages/Admin/AdminFacilities';
+import AdminFacilityForm from './Pages/Admin/AdminFacilityForm';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -39,6 +41,9 @@ function LocationProvider() {
         <Route path='/admin/articles/create' element={<ProtectedRoute><AdminArticleForm /></ProtectedRoute>} />
         <Route path='/admin/articles/edit/:id' element={<ProtectedRoute><AdminArticleForm /></ProtectedRoute>} />
         <Route path='/admin/sliders' element={<ProtectedRoute><AdminSliders /></ProtectedRoute>} />
+        <Route path='/admin/facilities' element={<ProtectedRoute><AdminFacilities /></ProtectedRoute>} />
+        <Route path='/admin/facilities/new' element={<ProtectedRoute><AdminFacilityForm /></ProtectedRoute>} />
+        <Route path='/admin/facilities/edit/:id' element={<ProtectedRoute><AdminFacilityForm /></ProtectedRoute>} />
         <Route path='*' element={<Navigate to='/admin/articles' replace />} />
       </Routes>
     );
