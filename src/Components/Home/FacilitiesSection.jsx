@@ -66,7 +66,7 @@ const FacilitiesSection = () => {
             {facilities.map((facility, index) => (
               <div 
                 key={facility.id} 
-                className={`bg-surface rounded-3xl overflow-hidden outline outline-1 outline-outline-variant/30 hover:outline-primary/50 transition-all duration-500 group facilities-animate-on-scroll opacity-0 translate-y-8`}
+                className={`bg-surface rounded-3xl overflow-hidden outline outline-1 outline-outline-variant/30 hover:outline-primary/50 shadow-sm hover:shadow-xl transition-all duration-500 group facilities-animate-on-scroll opacity-0 translate-y-8`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div className="aspect-video bg-surface-container overflow-hidden relative">
