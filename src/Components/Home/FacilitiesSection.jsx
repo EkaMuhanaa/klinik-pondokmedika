@@ -81,7 +81,6 @@ const FacilitiesSection = () => {
                       <MdDomain className="text-6xl" />
                     </div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                 </div>
                 <div className="p-6 relative bg-surface">
                   <h3 className="font-bold text-xl text-on-surface mb-3 group-hover:text-primary transition-colors">{facility.title}</h3>
