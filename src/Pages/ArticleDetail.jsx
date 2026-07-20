@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MdArrowBack, MdCalendarToday, MdShare, MdContentCopy } from 'react-icons/md';
+import { MdArrowBack, MdCalendarToday, MdShare, MdContentCopy, MdLink, MdCheck } from 'react-icons/md';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import Layout from '../Components/Layout';
@@ -125,9 +125,7 @@ const ArticleDetail = () => {
                 title="Salin Tautan"
                 className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${copied ? 'bg-green-100 text-green-600' : 'bg-surface-container text-on-surface hover:text-primary hover:bg-primary/10'}`}
               >
-                <span className="material-symbols-outlined text-[20px]">
-                  {copied ? 'check' : 'link'}
-                </span>
+                {copied ? <MdCheck className="text-[20px]" /> : <MdLink className="text-[20px]" />}
               </button>
               <button 
                 onClick={handleShare}
