@@ -56,7 +56,7 @@ const ArticleHighlightSection = () => {
             </p>
           </div>
           <Link 
-            to="/layanan/artikel"
+            to="/artikel"
             className="group flex items-center gap-2 bg-primary/10 text-primary hover:bg-primary hover:text-on-primary px-6 py-3 rounded-full font-bold transition-all duration-300 shadow-sm whitespace-nowrap"
           >
             Lihat Semua Artikel 
@@ -99,7 +99,7 @@ const ArticleHighlightSection = () => {
                   </span>
                 </div>
                 <h3 className="font-bold text-xl text-on-surface mb-3 group-hover:text-primary transition-colors line-clamp-2">
-                  <Link to={`/layanan/artikel/${article.slug}`} className="before:absolute before:inset-0">
+                  <Link to={`/artikel/${article.slug}`} className="before:absolute before:inset-0">
                     {article.title}
                   </Link>
                 </h3>
