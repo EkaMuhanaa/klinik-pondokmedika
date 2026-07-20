@@ -55,8 +55,6 @@ const AdminArticleForm = () => {
 
     try {
       if (isEdit) {
-        // Laravel requires _method=PUT for multipart form data updates
-        data.append('_method', 'PUT');
         await axios.post(`/admin/articles/${id}`, data, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });

@@ -68,7 +68,6 @@ const AdminFacilityForm = () => {
 
     try {
       if (isEdit) {
-        data.append('_method', 'PUT'); // required by Laravel for multipart updates
         await axios.post(`/admin/facilities/${id}`, data, {
           headers: { 'Content-Type': 'multipart/form-data' }
         });
