@@ -1,16 +1,30 @@
-# React + Vite
+# Klinik Pondok Medika
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Sistem Web & Backend API untuk Klinik Pondok Medika.
 
-Currently, two official plugins are available:
+## Struktur Direktori
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- `frontend/` : Aplikasi web frontend menggunakan React + Vite & Tailwind CSS.
+- `backend/`  : Backend REST API menggunakan Laravel & Sanctum authentication.
+- `DESIGN.md` : Dokumentasi desain dan arsitektur UI/UX.
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Panduan Instalasi & Menjalankan
 
-## Expanding the Oxlint configuration
+### 1. Frontend (React + Vite)
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+### 2. Backend (Laravel)
+```bash
+cd backend
+composer install
+cp .env.example .env
+php artisan key:generate
+php artisan migrate
+php artisan serve
+```

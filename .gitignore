@@ -1,24 +1,48 @@
-# Logs
-logs
+# Dependencies
+node_modules/
+vendor/
+*/node_modules/
+*/vendor/
+backend/backend/
+
+# Environment files
+.env
+.env.*
+!.env.example
+*.local
+
+# Build outputs
+dist/
+dist-ssr/
+frontend/dist/
+backend/public/build/
+backend/public/hot/
+backend/public/storage/
+
+# Logs & temporary files
+logs/
 *.log
 npm-debug.log*
 yarn-debug.log*
-yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+.phpunit.result.cache
+.phpunit.cache
 
-node_modules
-dist
-dist-ssr
-*.local
+# Backend storage
+backend/storage/*.key
+backend/storage/pail/
 
-# Editor directories and files
+# System & IDE files
+.DS_Store
+Thumbs.db
+.idea/
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+Homestead.json
+Homestead.yaml
