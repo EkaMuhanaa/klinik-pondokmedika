@@ -29,6 +29,8 @@ import AdminServices from './Pages/Admin/AdminServices';
 import AdminServiceForm from './Pages/Admin/AdminServiceForm';
 import AdminDoctors from './Pages/Admin/AdminDoctors';
 import AdminDoctorForm from './Pages/Admin/AdminDoctorForm';
+import AdminPartners from './Pages/Admin/AdminPartners';
+import AdminPartnerForm from './Pages/Admin/AdminPartnerForm';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -63,6 +65,9 @@ function LocationProvider() {
         <Route path='/admin/doctors' element={<ProtectedRoute><AdminDoctors /></ProtectedRoute>} />
         <Route path='/admin/doctors/new' element={<ProtectedRoute><AdminDoctorForm /></ProtectedRoute>} />
         <Route path='/admin/doctors/edit/:id' element={<ProtectedRoute><AdminDoctorForm /></ProtectedRoute>} />
+        <Route path='/admin/partners' element={<ProtectedRoute><AdminPartners /></ProtectedRoute>} />
+        <Route path='/admin/partners/new' element={<ProtectedRoute><AdminPartnerForm /></ProtectedRoute>} />
+        <Route path='/admin/partners/edit/:id' element={<ProtectedRoute><AdminPartnerForm /></ProtectedRoute>} />
         <Route path='*' element={<Navigate to='/admin/articles' replace />} />
       </Routes>
     );

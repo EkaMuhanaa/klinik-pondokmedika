@@ -7,6 +7,7 @@ import HeroSliderBackground from '../Components/HeroSliderBackground';
 import ServiceIcon from '../Components/ServiceIcon';
 import { useServices, useSiteSettings } from '../Contexts/SiteSettingsContext';
 import { localArea, pageServices } from '../seo/meta';
+import Reveal from '../Components/Reveal';
 
 const Services = () => {
   const settings = useSiteSettings();
@@ -27,8 +28,8 @@ const Services = () => {
   const others = list.filter((x) => x !== featured);
 
   return (
-    <Layout>
-      <section className="relative min-h-[360px] md:min-h-[440px] flex items-end">
+    <Layout overlayHeader>
+      <section className="relative min-h-[420px] md:min-h-[480px] flex items-end pt-24">
         <HeroSliderBackground images={heroImages} overlayClassName="hero-overlay" />
         <div className="relative z-10 w-full max-w-container-max mx-auto px-gutter py-12">
           <h1 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-white mb-3">Layanan Klinik di {localArea(settings)}</h1>
@@ -36,7 +37,7 @@ const Services = () => {
         </div>
       </section>
 
-      <section className="py-section-gap px-gutter bg-surface-container-low">
+      <Reveal as="section" className="py-section-gap px-gutter bg-surface-container-low">
         <div className="max-w-container-max mx-auto space-y-6">
           {status === 'error' && (
             <div className="bg-white rounded-xl p-6 flex flex-wrap items-center gap-4" role="alert">
@@ -79,7 +80,7 @@ const Services = () => {
             </ul>
           )}
         </div>
-      </section>
+      </Reveal>
     </Layout>
   );
 };

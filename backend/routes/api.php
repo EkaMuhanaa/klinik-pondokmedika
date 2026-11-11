@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\FacilityController;
 use App\Http\Controllers\Api\PromoController;
 use App\Http\Controllers\Api\ServiceController;
 use App\Http\Controllers\Api\DoctorController;
+use App\Http\Controllers\Api\PartnerController;
 use App\Http\Controllers\Api\SiteSettingController;
 
 // Auth Route
@@ -27,6 +28,7 @@ Route::get("/site-settings", [SiteSettingController::class, "index"]);
 Route::get("/promos/active", [PromoController::class, "active"]);
 Route::get("/services", [ServiceController::class, "index"]);
 Route::get("/doctors", [DoctorController::class, "index"]);
+Route::get("/partners", [PartnerController::class, "index"]);
 
 // Protected API (Admin)
 Route::middleware("auth:sanctum")->group(function () {
@@ -75,5 +77,12 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::post("/admin/doctors", [DoctorController::class, "store"]);
     Route::post("/admin/doctors/{id}", [DoctorController::class, "update"]); // POST agar bisa multipart/form-data
     Route::delete("/admin/doctors/{id}", [DoctorController::class, "destroy"]);
+
+    // Admin Rekan Medis & Institusi
+    Route::get("/admin/partners", [PartnerController::class, "adminIndex"]);
+    Route::get("/admin/partners/{id}", [PartnerController::class, "show"]);
+    Route::post("/admin/partners", [PartnerController::class, "store"]);
+    Route::post("/admin/partners/{id}", [PartnerController::class, "update"]); // POST agar bisa multipart/form-data
+    Route::delete("/admin/partners/{id}", [PartnerController::class, "destroy"]);
 });
 

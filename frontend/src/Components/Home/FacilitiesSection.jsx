@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import axios from 'axios';
 import { MdDomain } from 'react-icons/md';
+import Reveal from '../Reveal';
 
 const FacilitiesSection = () => {
   const [facilities, setFacilities] = useState([]);
@@ -16,7 +17,7 @@ const FacilitiesSection = () => {
   useEffect(() => { load(); }, [load]);
 
   return (
-    <section className="py-section-gap bg-surface">
+    <Reveal as="section" className="py-section-gap bg-surface">
       <div className="w-full max-w-container-max mx-auto px-gutter">
         <div className="max-w-2xl mb-10">
           <h2 className="font-headline-lg text-headline-lg text-on-surface">Fasilitas Kami</h2>
@@ -74,7 +75,7 @@ const FacilitiesSection = () => {
           </ul>
         )}
       </div>
-    </section>
+    </Reveal>
   );
 };
 

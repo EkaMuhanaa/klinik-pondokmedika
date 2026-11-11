@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { MdArrowForward, MdCalendarToday } from 'react-icons/md';
 import axios from 'axios';
 import { useSiteSettings } from '../../Contexts/SiteSettingsContext';
+import Reveal from '../Reveal';
 
 const formatDate = (d) => new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -21,7 +22,7 @@ const ArticleHighlightSection = () => {
   useEffect(() => { load(); }, [load]);
 
   return (
-    <section className="py-section-gap bg-surface-container-low">
+    <Reveal as="section" className="py-section-gap bg-surface-container-low">
       <div className="w-full max-w-container-max mx-auto px-gutter">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
           <div className="max-w-2xl">
@@ -83,7 +84,7 @@ const ArticleHighlightSection = () => {
           </div>
         )}
       </div>
-    </section>
+    </Reveal>
   );
 };
 

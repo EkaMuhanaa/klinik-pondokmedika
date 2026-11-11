@@ -5,6 +5,7 @@ import axios from 'axios';
 import Layout from '../Components/Layout';
 import HeroSliderBackground from '../Components/HeroSliderBackground';
 import { useSiteSettings } from '../Contexts/SiteSettingsContext';
+import Reveal from '../Components/Reveal';
 
 const categories = ['Semua', 'Edukasi Kesehatan', 'Pengumuman'];
 
@@ -47,8 +48,8 @@ const Articles = () => {
   useEffect(() => { loadArticles(); }, [loadArticles]);
 
   return (
-    <Layout>
-      <section className="relative min-h-[320px] md:min-h-[400px] flex items-end">
+    <Layout overlayHeader>
+      <section className="relative min-h-[380px] md:min-h-[440px] flex items-end pt-24">
         <HeroSliderBackground images={heroImages} overlayClassName="hero-overlay" />
         <div className="relative z-10 w-full max-w-container-max mx-auto px-gutter py-12">
           <h1 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-white mb-3">Artikel &amp; Edukasi</h1>
@@ -56,7 +57,7 @@ const Articles = () => {
         </div>
       </section>
 
-      <section className="py-section-gap px-gutter bg-surface min-h-[60vh]">
+      <Reveal as="section" className="py-section-gap px-gutter bg-surface min-h-[60vh]">
         <div className="max-w-container-max mx-auto">
           <div className="flex flex-wrap gap-3 mb-10" role="group" aria-label="Filter kategori artikel">
             {categories.map((cat) => (
@@ -129,7 +130,7 @@ const Articles = () => {
             </div>
           )}
         </div>
-      </section>
+      </Reveal>
     </Layout>
   );
 };

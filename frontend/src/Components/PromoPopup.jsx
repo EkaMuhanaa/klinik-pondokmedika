@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { MdClose } from 'react-icons/md';
+import { lockScroll } from '../lib/smoothScroll';
 
 const SHOW_DELAY_MS = 4000; // jangan langsung menutupi konten (ramah SEO & pengguna)
 
@@ -38,10 +39,14 @@ const PromoPopup = () => {
 
   useEffect(() => {
     if (!open) return undefined;
+    lockScroll(true);
     closeRef.current?.focus();
     const onKey = (e) => e.key === 'Escape' && close();
     document.addEventListener('keydown', onKey);
-    return () => document.removeEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      lockScroll(false);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 

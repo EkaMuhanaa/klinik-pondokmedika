@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 import { MdSave, MdOutlineRefresh, MdInfoOutline } from 'react-icons/md';
 import { useSiteSettings } from '../../Contexts/SiteSettingsContext';
 import { siteDefaults } from '../../seo/siteDefaults';
@@ -165,9 +166,7 @@ const AdminSettings = () => {
           <div className='md:col-span-2 space-y-5'>
             <Field label='Judul Bagian Dokter (Beranda)' error={errors.doctors_heading}>{input('doctors_heading')}</Field>
             <Field label='Keterangan Bagian Dokter' error={errors.doctors_intro}>{input('doctors_intro')}</Field>
-            <Field label='Rekan Medis & Institusi' hint='Satu nama per baris. Kosongkan semua untuk menyembunyikan bagian ini.' error={errors.partners}>
-              <textarea rows='6' value={form.partners} onChange={set('partners')} className={`${inputClass} resize-y`} />
-            </Field>
+            <p className='text-sm text-on-surface-variant'>Daftar dan logo Rekan Medis kini diatur di menu <Link to='/admin/partners' className='font-bold text-primary underline'>Kelola Rekan Medis</Link>.</p>
             <Field label='Sorotan di Tentang Kami' hint='Satu per baris dengan format: Judul | Keterangan. Contoh: Terakreditasi Paripurna | KARS 2025' error={errors.about_highlights}>
               <textarea rows='3' value={form.about_highlights} onChange={set('about_highlights')} className={`${inputClass} resize-y`} />
             </Field>

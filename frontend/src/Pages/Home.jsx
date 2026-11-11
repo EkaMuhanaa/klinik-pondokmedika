@@ -12,8 +12,7 @@ import ServiceIcon from '../Components/ServiceIcon';
 import { calculateStatus } from '../data/doctorStatus';
 import { mediaUrl, useServices, useSiteSettings } from '../Contexts/SiteSettingsContext';
 import { localArea, openingDaysText, hoursText, whatsappLink } from '../seo/meta';
-
-const lines = (text) => (text || '').split('\n').map((x) => x.trim()).filter(Boolean);
+import Reveal from '../Components/Reveal';
 
 const Home = () => {
   const settings = useSiteSettings();
@@ -49,7 +48,6 @@ const Home = () => {
   const homeServices = services.filter((x) => x.show_on_home);
   const featured = homeServices.find((x) => x.is_featured) || homeServices[0];
   const otherServices = homeServices.filter((x) => x !== featured);
-  const partners = lines(settings.partners);
 
   useEffect(() => {
     axios.get(import.meta.env.VITE_API_BASE_URL + '/api/sliders/home')
@@ -62,9 +60,9 @@ const Home = () => {
   const waBooking = whatsappLink(settings, `Halo ${settings.clinic_name}, saya ingin mendaftar untuk berobat.`);
 
   return (
-    <Layout>
+    <Layout overlayHeader>
       {/* Hero: satu fokus, yaitu mendaftar via WhatsApp */}
-      <section className="relative md:min-h-[600px] md:flex md:items-center pt-12 md:pt-16 pb-10 md:pb-40">
+      <section className="relative md:min-h-[640px] md:flex md:items-center pt-28 md:pt-32 pb-10 md:pb-40">
         <HeroSliderBackground images={heroImages} overlayClassName="hero-overlay" />
         <div className="relative z-10 w-full max-w-container-max mx-auto px-gutter">
           <div className="max-w-2xl space-y-6 text-white">
@@ -124,7 +122,7 @@ const Home = () => {
       </section>
 
       {/* Layanan: satu layanan utama ditonjolkan, sisanya daftar ringkas */}
-      <section className="mt-14 md:mt-40 mb-section-gap w-full max-w-container-max mx-auto px-gutter">
+      <Reveal as="section" className="mt-14 md:mt-40 mb-section-gap w-full max-w-container-max mx-auto px-gutter">
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
           <div className="max-w-xl">
             <h2 className="font-headline-lg text-headline-lg text-on-surface">Layanan Unggulan Kami</h2>
@@ -159,10 +157,10 @@ const Home = () => {
             ))}
           </ul>
         </div>
-      </section>
+      </Reveal>
 
       {/* Dokter */}
-      <section id="dokter" className="bg-surface-container-low py-section-gap scroll-mt-20">
+      <Reveal as="section" id="dokter" className="bg-surface-container-low py-section-gap scroll-mt-20">
         <div className="w-full max-w-container-max mx-auto px-gutter">
           <div className="max-w-2xl mb-12">
             <h2 className="font-headline-lg text-headline-lg text-on-surface">{settings.doctors_heading}</h2>
@@ -186,11 +184,11 @@ const Home = () => {
             </div>
           )}
         </div>
-      </section>
+      </Reveal>
 
       <FacilitiesSection />
 
-      <PartnersSection partners={partners} />
+      <PartnersSection />
 
       <ArticleHighlightSection />
     </Layout>

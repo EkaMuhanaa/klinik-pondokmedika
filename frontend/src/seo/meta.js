@@ -170,3 +170,23 @@ export function breadcrumbFor(path, services = defaultServices) {
 }
 
 export const staticPaths = (services = defaultServices) => ['/', '/tentang-kami', '/layanan', '/artikel', ...pageServices(services).map((x) => `/layanan/${x.slug}`)];
+
+/**
+ * Nama akun yang ditampilkan dari URL media sosial.
+ * instagram.com/pondokmedika → @pondokmedika; facebook.com/p/Klinik-Pondok-Medika-123/ → Klinik Pondok Medika
+ */
+export function socialHandle(url) {
+  try {
+    const u = new URL(url);
+    const parts = u.pathname.split('/').filter(Boolean);
+    if (u.hostname.includes('facebook.com')) {
+      const raw = parts[0] === 'p' ? parts[1] : parts[0];
+      if (!raw || raw === 'profile.php') return 'Facebook';
+      return decodeURIComponent(raw).replace(/-\d+$/, '').replace(/[-.]+/g, ' ');
+    }
+    const name = (parts[0] || '').replace(/^@/, '');
+    return name ? `@${name}` : u.hostname;
+  } catch {
+    return url;
+  }
+}
