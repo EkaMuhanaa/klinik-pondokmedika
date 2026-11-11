@@ -60,7 +60,7 @@ Data klinik yang dipakai di seluruh website dan oleh Google.
 
 ## Setelah mengubah Pengaturan Klinik atau Layanan
 
-Tampilan website langsung berubah. Supaya **Google** juga membaca data terbaru (judul halaman, alamat di hasil pencarian), minta pengelola teknis menjalankan deploy sekali. Caranya: GitHub → **Actions** → **Deploy ke Hostinger** → **Run workflow** (lihat `DEPLOY.md` bagian 4).
+Tampilan website langsung berubah. Supaya **Google** juga membaca data terbaru (judul halaman, alamat di hasil pencarian), minta pengelola teknis menjalankan build dan deploy sekali (lihat `DEPLOY.md` bagian 4).
 
 ## Tips agar klinik mudah ditemukan di Google
 

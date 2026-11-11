@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Update backend Laravel di server Hostinger. Dijalankan otomatis oleh GitHub Actions
-# (.github/workflows/deploy.yml), atau manual lewat SSH:
+# Update backend Laravel di server Hostinger. Dipanggil oleh scripts/deploy.sh,
+# atau dijalankan sendiri lewat SSH:
 #   bash ~/klinik-pondokmedika/scripts/server-update-backend.sh
 set -euo pipefail
 

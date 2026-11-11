@@ -1,0 +1,52 @@
+name: Build frontend
+
+# Hanya MEMBANGUN frontend, tidak deploy ke server.
+# Hasil build disimpan di GitHub Release "frontend-latest" lalu diunduh oleh
+# scripts/deploy.sh saat Anda deploy manual lewat SSH.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-frontend
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Build
+        working-directory: frontend
+        env:
+          VITE_API_BASE_URL: ${{ vars.VITE_API_BASE_URL || 'https://klinikpondokmedika.id/api' }}
+        run: |
+          npm ci --no-audit --no-fund
+          npm run build
+          # Penanda commit, dicek oleh scripts/deploy.sh agar frontend & backend selalu sama versinya
+          printf '{"commit":"%s","built_at":"%s"}\n' "$GITHUB_SHA" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > dist/build-info.json
+          tar -czf ../frontend-release.tar.gz -C dist .
+
+      - name: Simpan ke GitHub Release "frontend-latest"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if ! gh release view frontend-latest >/dev/null 2>&1; then
+            gh release create frontend-latest --title "Frontend terbaru" \
+              --notes "Dibuat otomatis oleh workflow Build frontend. Dipasang ke server dengan scripts/deploy.sh." \
+              --prerelease
+          fi
+          gh release upload frontend-latest frontend-release.tar.gz --clobber
+          echo "Frontend untuk commit $GITHUB_SHA siap. Deploy dengan: bash ~/klinik-pondokmedika/scripts/deploy.sh"

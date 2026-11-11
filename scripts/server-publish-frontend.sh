@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Pasang hasil build frontend (arsip .tar.gz) ke public_html tanpa menyentuh symlink `api`.
-# Dipakai GitHub Actions. Manual: bash server-publish-frontend.sh ~/frontend-release.tar.gz
+# Dipanggil oleh scripts/deploy.sh. Manual: bash server-publish-frontend.sh ~/frontend-release.tar.gz
 set -euo pipefail
 
 ARCHIVE="${1:-$HOME/frontend-release.tar.gz}"
