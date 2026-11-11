@@ -46,8 +46,8 @@ set_env() { # set_env KEY VALUE  -> tulis/ubah baris KEY=VALUE di .env
   cat "$tmp" > .env; rm -f "$tmp"
 }
 
-PHP=${PHP:-php}
-COMPOSER=${COMPOSER:-composer}
+PHP=${SETUP_PHP:-php}
+COMPOSER_BIN=${SETUP_COMPOSER:-composer}
 
 echo "== Setup backend Klinik Pondok Medika =="
 "$PHP" -r 'exit(version_compare(PHP_VERSION, "8.2.0", ">=") ? 0 : 1);' \
@@ -63,7 +63,10 @@ ask_secret ADMIN_PASS "Password admin (min. 8 karakter)"
 while [ ${#ADMIN_PASS} -lt 8 ]; do echo "  Minimal 8 karakter."; ask_secret ADMIN_PASS "Password admin (min. 8 karakter)"; done
 
 echo; echo "== 1/5 Install dependensi PHP =="
-"$COMPOSER" install --no-dev --optimize-autoloader --no-interaction
+# --no-scripts: Hostinger mematikan proc_open, sehingga Composer tidak bisa menjalankan
+# script artisan sendiri. package:discover dijalankan langsung di bawah.
+"$COMPOSER_BIN" install --no-dev --optimize-autoloader --no-interaction --no-scripts --prefer-dist
+"$PHP" artisan package:discover --ansi
 
 echo; echo "== 2/5 Menulis .env =="
 if [ -f .env ]; then cp .env ".env.backup-$(date +%Y%m%d%H%M%S)"; echo "  .env lama dicadangkan."
@@ -90,13 +93,15 @@ grep -q '^APP_KEY=base64:' .env || "$PHP" artisan key:generate --force
 echo; echo "== 3/5 Membuat tabel database =="
 "$PHP" artisan config:clear >/dev/null
 "$PHP" artisan migrate --force
-"$PHP" artisan storage:link 2>/dev/null || echo "  storage:link sudah ada."
+if [ ! -e public/storage ]; then
+  "$PHP" artisan storage:link >/dev/null 2>&1 || true
+  # fallback jika fungsi symlink() PHP dimatikan
+  [ -e public/storage ] || ln -s ../storage/app/public public/storage
+fi
+[ -e public/storage ] && echo "  public/storage -> storage/app/public OK"
 
 echo; echo "== 4/5 Membuat akun admin =="
-ADMIN_EMAIL="$ADMIN_EMAIL" ADMIN_PASS="$ADMIN_PASS" "$PHP" artisan tinker --execute='
-$u = \App\Models\User::where("email", getenv("ADMIN_EMAIL"))->first();
-if ($u) { echo "  Admin ".getenv("ADMIN_EMAIL")." sudah ada, tidak diubah.\n"; }
-else { \App\Models\User::create(["name" => "Admin", "email" => getenv("ADMIN_EMAIL"), "password" => getenv("ADMIN_PASS")]); echo "  Admin ".getenv("ADMIN_EMAIL")." dibuat.\n"; }'
+ADMIN_PASSWORD="$ADMIN_PASS" "$PHP" artisan admin:create "$ADMIN_EMAIL"
 
 echo; echo "== 5/5 Optimasi =="
 "$PHP" artisan config:cache

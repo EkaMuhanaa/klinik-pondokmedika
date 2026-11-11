@@ -50,7 +50,8 @@ Masuk lewat SSH, lalu simpan kode **di luar** folder publik:
 cd ~
 git clone https://github.com/EkaMuhanaa/klinik-pondokmedika.git
 cd klinik-pondokmedika/backend
-composer install --no-dev --optimize-autoloader
+composer install --no-dev --optimize-autoloader --no-scripts
+php artisan package:discover
 cp .env.example .env
 php artisan key:generate
 ```
@@ -112,13 +113,13 @@ Pastikan `https://api.klinikpondokmedika.id/.env` **tidak** bisa dibuka (harus 4
 
 ### Buat akun admin
 
-Jangan jalankan `db:seed` di production (seeder bawaan membuat akun uji). Buat admin lewat tinker:
+Jangan jalankan `db:seed` di production (seeder bawaan membuat akun uji). Buat admin dengan:
 
 ```bash
-php artisan tinker
->>> \App\Models\User::create(['name' => 'Admin', 'email' => 'admin@klinikpondokmedika.id', 'password' => 'GANTI-password-kuat']);
->>> exit
+php artisan admin:create admin@klinikpondokmedika.id
 ```
+
+Password akan ditanyakan secara tersembunyi.
 
 ## 3. Deploy Frontend (React)
 
@@ -151,7 +152,8 @@ Backend (lewat SSH):
 cd ~/klinik-pondokmedika
 git pull
 cd backend
-composer install --no-dev --optimize-autoloader
+composer install --no-dev --optimize-autoloader --no-scripts
+php artisan package:discover
 php artisan migrate --force
 php artisan config:cache
 php artisan route:cache
@@ -175,3 +177,4 @@ atau unduh berkala.
 | Upload gambar gagal (413 / error validasi) | Naikkan `upload_max_filesize` dan `post_max_size` di PHP Configuration. |
 | Perubahan `.env` tidak berpengaruh | Jalankan `php artisan config:cache` lagi. |
 | Error 500 | Lihat `backend/storage/logs/laravel.log`. |
+| `The Process class relies on proc_open` saat `composer install` | Hostinger mematikan `proc_open`. Pakai `composer install --no-scripts` lalu `php artisan package:discover`. |
