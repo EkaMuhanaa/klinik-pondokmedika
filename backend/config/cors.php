@@ -19,7 +19,9 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    // Daftar domain frontend yang diizinkan, dipisah koma.
+    // Contoh: CORS_ALLOWED_ORIGINS=https://pondokmedika.com,https://www.pondokmedika.com
+    'allowed_origins' => array_filter(array_map('trim', explode(',', env('CORS_ALLOWED_ORIGINS', 'http://localhost:5173')))),
 
     'allowed_origins_patterns' => [],
 
@@ -29,6 +31,7 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => true,
+    // Frontend memakai Bearer token (bukan cookie), jadi credentials tidak dibutuhkan.
+    'supports_credentials' => false,
 
 ];

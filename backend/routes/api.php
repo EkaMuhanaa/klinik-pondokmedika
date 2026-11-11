@@ -9,7 +9,8 @@ use App\Http\Controllers\Api\SliderImageController;
 use App\Http\Controllers\Api\FacilityController;
 
 // Auth Route
-Route::post("/admin/login", [AuthController::class, "login"]);
+// Max 5 percobaan login per menit per IP untuk mencegah brute force
+Route::post("/admin/login", [AuthController::class, "login"])->middleware("throttle:5,1");
 
 // Public API
 Route::get("/articles", [ArticleController::class, "index"]);
