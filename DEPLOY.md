@@ -2,12 +2,11 @@
 
 Susunan yang dipakai:
 
-| Bagian | Domain (contoh) | Isi folder di server |
+| Bagian | Domain | Isi folder di server |
 |---|---|---|
-| Frontend (React) | `domain-anda.com` | hasil build `frontend/dist/` |
-| Backend (Laravel API) | `api.domain-anda.com` | `backend/public/` |
+| Frontend (React) | `klinikpondokmedika.id` | hasil build `frontend/dist/` |
+| Backend (Laravel API) | `api.klinikpondokmedika.id` | `backend/public/` |
 
-Ganti `domain-anda.com` dengan domain klinik yang sebenarnya.
 
 ---
 
@@ -16,9 +15,9 @@ Ganti `domain-anda.com` dengan domain klinik yang sebenarnya.
 1. **Versi PHP**: hPanel → Advanced → PHP Configuration → pilih **PHP 8.3** (minimal 8.2).
 2. **Batas upload**: di PHP Configuration → PHP options, set `upload_max_filesize` dan `post_max_size` minimal **8M** (gambar slider boleh sampai 5 MB).
 3. **Database**: hPanel → Databases → MySQL Databases → buat database + user. Catat nama database, username, dan password.
-4. **Subdomain**: hPanel → Domains → Subdomains → buat `api`.
+4. **Subdomain**: hPanel → Domains → Subdomains → buat `api` untuk `klinikpondokmedika.id`, **tanpa** mencentang "Custom folder untuk subdomain".
 5. **SSH**: hPanel → Advanced → SSH Access → aktifkan, catat host, port, dan username.
-6. **SSL**: hPanel → Security → SSL → pastikan SSL aktif untuk `domain-anda.com` **dan** `api.domain-anda.com`.
+6. **SSL**: hPanel → Security → SSL → pastikan SSL aktif untuk `klinikpondokmedika.id` **dan** `api.klinikpondokmedika.id`.
 
 ## 2. Deploy Backend (Laravel)
 
@@ -39,10 +38,10 @@ Edit `backend/.env` (`nano .env`) dan ubah nilai berikut:
 APP_NAME="Klinik Pondok Medika"
 APP_ENV=production
 APP_DEBUG=false
-APP_URL=https://api.domain-anda.com
+APP_URL=https://api.klinikpondokmedika.id
 APP_LOCALE=id
 
-CORS_ALLOWED_ORIGINS=https://domain-anda.com,https://www.domain-anda.com
+CORS_ALLOWED_ORIGINS=https://klinikpondokmedika.id,https://www.klinikpondokmedika.id
 SANCTUM_EXPIRATION=720
 
 LOG_LEVEL=error
@@ -69,12 +68,12 @@ php artisan route:cache
 ### Arahkan subdomain `api` ke folder `public`
 
 Folder web subdomain `api` harus menampilkan isi `backend/public/`, **bukan** seluruh folder `backend/`.
-Cek path folder subdomain di hPanel (biasanya `~/domains/domain-anda.com/public_html/api`
-atau `~/domains/api.domain-anda.com/public_html`), lalu ganti dengan symlink:
+Cek path folder subdomain di hPanel (biasanya `~/domains/klinikpondokmedika.id/public_html/api`
+atau `~/domains/api.klinikpondokmedika.id/public_html`), lalu ganti dengan symlink:
 
 ```bash
-# sesuaikan API_DIR dengan path folder subdomain api di akun Anda
-API_DIR=~/domains/domain-anda.com/public_html/api
+# cek dulu path folder subdomain api di hPanel; folder ini akan DIHAPUS dan diganti symlink
+API_DIR=~/domains/klinikpondokmedika.id/public_html/api
 rm -rf "$API_DIR"
 ln -s ~/klinik-pondokmedika/backend/public "$API_DIR"
 ```
@@ -84,9 +83,9 @@ ln -s ~/klinik-pondokmedika/backend/public "$API_DIR"
 > dan folder lain tetap tidak bisa diakses dari browser. Setelah itu jalankan
 > perintah artisan di atas dari folder tersebut.
 
-**Cek:** buka `https://api.domain-anda.com/up` (harus tampil halaman sehat) dan
-`https://api.domain-anda.com/api/facilities` (harus tampil `[]` atau data JSON).
-Pastikan `https://api.domain-anda.com/.env` **tidak** bisa dibuka (harus 403/404).
+**Cek:** buka `https://api.klinikpondokmedika.id/up` (harus tampil halaman sehat) dan
+`https://api.klinikpondokmedika.id/api/facilities` (harus tampil `[]` atau data JSON).
+Pastikan `https://api.klinikpondokmedika.id/.env` **tidak** bisa dibuka (harus 403/404).
 
 ### Buat akun admin
 
@@ -94,7 +93,7 @@ Jangan jalankan `db:seed` di production (seeder bawaan membuat akun uji). Buat a
 
 ```bash
 php artisan tinker
->>> \App\Models\User::create(['name' => 'Admin', 'email' => 'admin@domain-anda.com', 'password' => 'GANTI-password-kuat']);
+>>> \App\Models\User::create(['name' => 'Admin', 'email' => 'admin@klinikpondokmedika.id', 'password' => 'GANTI-password-kuat']);
 >>> exit
 ```
 
@@ -106,7 +105,7 @@ Build di komputer Anda:
 ```bash
 cd frontend
 cp .env.example .env
-# ubah isi .env menjadi: VITE_API_BASE_URL=https://api.domain-anda.com
+# ubah isi .env menjadi: VITE_API_BASE_URL=https://api.klinikpondokmedika.id
 npm ci
 npm run build
 ```
@@ -118,8 +117,8 @@ lewat hPanel → File Manager atau FTP. Pastikan file `.htaccess` ikut terunggah
 
 > `VITE_API_BASE_URL` ditanam ke hasil build. Jika URL backend berubah, build ulang lalu unggah lagi.
 
-**Cek:** buka `https://domain-anda.com`, buka halaman artikel lalu refresh (tidak boleh 404),
-dan login di `https://domain-anda.com/admin/login`.
+**Cek:** buka `https://klinikpondokmedika.id`, buka halaman artikel lalu refresh (tidak boleh 404),
+dan login di `https://klinikpondokmedika.id/admin/login`.
 
 ## 4. Update Berikutnya
 
