@@ -1,0 +1,35 @@
+# Konfigurasi Apache (Hostinger) untuk frontend React (SPA).
+# File ini ikut tersalin ke dist/ saat `npm run build`.
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Paksa HTTPS
+    RewriteCond %{HTTPS} off
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+    # File/folder yang benar-benar ada dikirim apa adanya
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Semua route lain (mis. /artikel/judul, /admin) diarahkan ke index.html
+    RewriteRule ^ index.html [L]
+</IfModule>
+
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+
+    # Aset hasil build Vite memakai hash di nama file (mis. index-C9vvbIyC.js), aman di-cache lama
+    <FilesMatch "-[A-Za-z0-9_-]{8}\.(js|css)$">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </FilesMatch>
+    # index.html jangan di-cache agar versi baru langsung terpakai
+    <Files "index.html">
+        Header set Cache-Control "no-cache"
+    </Files>
+</IfModule>

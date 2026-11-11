@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { MdArrowBack, MdCalendarToday, MdShare, MdContentCopy, MdLink, MdCheck } from 'react-icons/md';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import DOMPurify from 'dompurify';
 import Layout from '../Components/Layout';
 
 const ArticleDetail = () => {
@@ -125,7 +126,7 @@ const ArticleDetail = () => {
             )}
 
             <article className="prose prose-lg prose-slate max-w-none text-on-surface-variant font-body-lg leading-relaxed animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-              <div dangerouslySetInnerHTML={{ __html: article.content.replace(/\n/g, '<br/>') }} />
+              <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content.replace(/\n/g, '<br/>')) }} />
             </article>
             
             <div className="mt-16 pt-8 border-t border-outline-variant/30 flex justify-between items-center animate-fade-in-up relative" style={{ animationDelay: '300ms' }}>

@@ -1,0 +1,16 @@
+# Pengaman jika document root subdomain mengarah ke folder backend/ (bukan backend/public/).
+# Semua request diteruskan ke public/ sehingga .env, vendor/, storage/ dll. tidak bisa diakses.
+# Jika document root sudah mengarah ke backend/public/, file ini tidak dipakai.
+
+Options -Indexes
+
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+    RewriteRule ^(.*)$ public/$1 [L]
+</IfModule>
