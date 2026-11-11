@@ -1,43 +1,30 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { MdArrowForward } from 'react-icons/md';
 import Layout from '../Components/Layout';
 import HeroSliderBackground from '../Components/HeroSliderBackground';
-import { services } from '../data/services';
-import { useSiteSettings } from '../Contexts/SiteSettingsContext';
-import { localArea } from '../seo/meta';
-import { MdMedicalServices, MdArrowForward, MdLocalHospital, MdOutlineHealthAndSafety, MdChildCare, MdScience, MdLocalPharmacy, MdEmergency } from 'react-icons/md';
-
-// Gambar hero diatur admin di CMS → Kelola Latar / Slider. Jika kosong, tampil latar warna brand.
-const defaultHeroImages = [];
-
-const serviceIcons = {
-  'poli-umum': <MdLocalHospital className="text-4xl" />,
-  'poli-gigi-mulut': <MdOutlineHealthAndSafety className="text-4xl" />,
-  'poli-kia': <MdChildCare className="text-4xl" />,
-  'laboratorium': <MdScience className="text-4xl" />,
-  'apotek-24-jam': <MdLocalPharmacy className="text-4xl" />,
-  'unit-gawat-darurat': <MdEmergency className="text-4xl" />,
-};
+import ServiceIcon from '../Components/ServiceIcon';
+import { useServices, useSiteSettings } from '../Contexts/SiteSettingsContext';
+import { localArea, pageServices } from '../seo/meta';
 
 const Services = () => {
   const settings = useSiteSettings();
-  const [heroImages, setHeroImages] = useState(defaultHeroImages);
+  const { services, status, reload } = useServices();
+  const [heroImages, setHeroImages] = useState([]);
+
   useEffect(() => {
-    const fetchSliders = async () => {
-      try {
-        const res = await axios.get(import.meta.env.VITE_API_BASE_URL + '/api/sliders/services');
-        if (res.data && res.data.length > 0) {
-          setHeroImages(res.data.map(s => import.meta.env.VITE_API_BASE_URL + s.image_path));
-        }
-      } catch (e) {
-        console.error('Failed to fetch services sliders', e);
-      }
-    };
-    fetchSliders();
+    axios.get(import.meta.env.VITE_API_BASE_URL + '/api/sliders/services')
+      .then((res) => {
+        if (res.data?.length) setHeroImages(res.data.map((s) => import.meta.env.VITE_API_BASE_URL + s.image_path));
+      })
+      .catch(() => {});
   }, []);
 
-  const [featured, ...others] = services;
+  // Layanan yang ditonjolkan di CMS tampil paling atas; sisanya sesuai urutan CMS
+  const list = pageServices(services);
+  const featured = list.find((x) => x.is_featured) || list[0];
+  const others = list.filter((x) => x !== featured);
 
   return (
     <Layout>
@@ -51,32 +38,46 @@ const Services = () => {
 
       <section className="py-section-gap px-gutter bg-surface-container-low">
         <div className="max-w-container-max mx-auto space-y-6">
-          {/* Poli Umum sebagai pintu masuk utama pasien, ditonjolkan */}
-          <Link to={`/layanan/${featured.slug}`} className="group grid md:grid-cols-[auto_1fr_auto] items-center gap-6 bg-primary text-white rounded-xl p-8 hover:bg-primary/90 transition-colors">
-            <span className="text-white" aria-hidden="true">{serviceIcons[featured.slug]}</span>
-            <div>
-              <h2 className="font-headline-lg text-headline-lg text-white mb-2">{featured.title}</h2>
-              <p className="font-body-lg text-body-lg text-white/90 max-w-2xl">{featured.description}</p>
+          {status === 'error' && (
+            <div className="bg-white rounded-xl p-6 flex flex-wrap items-center gap-4" role="alert">
+              <p className="text-on-surface flex-1 min-w-[200px]">Daftar layanan terbaru gagal dimuat, yang tampil mungkin belum diperbarui.</p>
+              <button type="button" onClick={reload} className="min-h-[44px] px-5 rounded-lg bg-primary text-on-primary font-bold hover:bg-primary/90">Muat ulang layanan</button>
             </div>
-            <span className="inline-flex items-center gap-2 font-bold underline underline-offset-4 group-hover:no-underline">
-              Lihat alur {featured.title} <MdArrowForward aria-hidden="true" />
-            </span>
-          </Link>
+          )}
 
-          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {others.map((service) => (
-              <li key={service.slug}>
-                <Link to={`/layanan/${service.slug}`} className="group h-full flex flex-col bg-white rounded-xl p-6 border border-outline-variant/40 hover:border-primary transition-colors">
-                  <span className="text-primary mb-4" aria-hidden="true">{serviceIcons[service.slug] || <MdMedicalServices className="text-4xl" />}</span>
-                  <h2 className="font-headline-md text-headline-md text-on-surface mb-2 group-hover:text-primary">{service.title}</h2>
-                  <p className="text-on-surface-variant text-body-md flex-grow">{service.description}</p>
-                  <span className="mt-5 inline-flex items-center gap-2 font-bold text-primary">
-                    Lihat alur layanan <MdArrowForward aria-hidden="true" />
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+          {list.length === 0 && status !== 'loading' && (
+            <p className="text-on-surface-variant">Belum ada layanan yang ditampilkan.</p>
+          )}
+
+          {featured && (
+            <Link to={`/layanan/${featured.slug}`} className="group grid md:grid-cols-[auto_1fr_auto] items-center gap-6 bg-primary text-white rounded-xl p-8 hover:bg-primary/90 transition-colors">
+              <span className="text-white"><ServiceIcon name={featured.icon} className="text-5xl" /></span>
+              <div>
+                <h2 className="font-headline-lg text-headline-lg text-white mb-2">{featured.title}</h2>
+                {featured.summary && <p className="font-body-lg text-body-lg text-white/90 max-w-2xl">{featured.summary}</p>}
+              </div>
+              <span className="inline-flex items-center gap-2 font-bold underline underline-offset-4 group-hover:no-underline">
+                Lihat alur {featured.title} <MdArrowForward aria-hidden="true" />
+              </span>
+            </Link>
+          )}
+
+          {others.length > 0 && (
+            <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {others.map((service) => (
+                <li key={service.slug}>
+                  <Link to={`/layanan/${service.slug}`} className="group h-full flex flex-col bg-white rounded-xl p-6 border border-outline-variant/40 hover:border-primary transition-colors">
+                    <span className="text-primary mb-4"><ServiceIcon name={service.icon} /></span>
+                    <h2 className="font-headline-md text-headline-md text-on-surface mb-2 group-hover:text-primary">{service.title}</h2>
+                    {service.summary && <p className="text-on-surface-variant text-body-md flex-grow">{service.summary}</p>}
+                    <span className="mt-5 inline-flex items-center gap-2 font-bold text-primary">
+                      Lihat alur layanan <MdArrowForward aria-hidden="true" />
+                    </span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </section>
     </Layout>

@@ -1,0 +1,46 @@
+[
+  {
+    "name": "dr. ARYA PRATAMA",
+    "specialty": "Dokter Umum",
+    "description": "Ahli dalam penanganan pasien dewasa dan manajemen penyakit kronis dengan pendekatan komprehensif.",
+    "photo_path": "/images/dr-arya.jpg",
+    "schedule": [
+      {
+        "day": "Senin",
+        "time": "13.00 - 21.00"
+      },
+      {
+        "day": "Selasa",
+        "time": "13.00 - 21.00"
+      },
+      {
+        "day": "Sabtu",
+        "time": "13.00 - 21.00"
+      }
+    ],
+    "is_active": true,
+    "sort_order": 10
+  },
+  {
+    "name": "dr. HARFIYANI",
+    "specialty": "Dokter Anak",
+    "description": "Ramah dan berpengalaman dalam menangani pertumbuhan serta kesehatan balita dan anak-anak.",
+    "photo_path": null,
+    "schedule": [
+      {
+        "day": "Rabu",
+        "time": "13.00 - 21.00"
+      },
+      {
+        "day": "Kamis",
+        "time": "13.00 - 21.00"
+      },
+      {
+        "day": "Jumat",
+        "time": "13.00 - 21.00"
+      }
+    ],
+    "is_active": true,
+    "sort_order": 20
+  }
+]

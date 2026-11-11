@@ -1,6 +1,9 @@
 // Fungsi SEO murni (tanpa React/JSX) agar bisa dipakai di browser maupun script prerender Node.
 import { SITE_URL } from './siteDefaults.js';
-import { services, serviceContents } from '../data/services.js';
+import { defaultServices } from '../data/defaultServices.js';
+
+/** Layanan yang punya halaman sendiri (tampil di menu Layanan & sitemap). */
+export const pageServices = (services = defaultServices) => services.filter((x) => x.is_active);
 
 const DAY_NAMES = { Mo: 'Senin', Tu: 'Selasa', We: 'Rabu', Th: 'Kamis', Fr: 'Jumat', Sa: 'Sabtu', Su: 'Minggu' };
 const DAY_SCHEMA = { Mo: 'Monday', Tu: 'Tuesday', We: 'Wednesday', Th: 'Thursday', Fr: 'Friday', Sa: 'Saturday', Su: 'Sunday' };
@@ -51,7 +54,7 @@ export const truncate = (text, n = 160) => {
  * Judul & deskripsi per halaman. Kata kunci lokal (kecamatan + kota) disisipkan
  * secara alami agar relevan untuk pencarian seperti "klinik cengkareng".
  */
-export function pageMeta(path, s) {
+export function pageMeta(path, s, services = defaultServices) {
   const name = s.clinic_name;
   const area = localArea(s);
   const hours = [openingDaysText(s), hoursText(s)].filter(Boolean).join(' ');
@@ -73,7 +76,7 @@ export function pageMeta(path, s) {
   if (path === '/layanan') {
     return {
       title: `Layanan Klinik di ${area} – ${name}`,
-      description: truncate(`Layanan ${name} di ${area}: ${services.map((x) => x.title).join(', ')}. Konsultasi & pendaftaran via WhatsApp.`),
+      description: truncate(`Layanan ${name} di ${area}: ${pageServices(services).map((x) => x.title).join(', ')}. Konsultasi & pendaftaran via WhatsApp.`),
     };
   }
   if (path === '/artikel') {
@@ -84,11 +87,11 @@ export function pageMeta(path, s) {
   }
   const m = path.match(/^\/layanan\/([^/]+)$/);
   if (m) {
-    const svc = services.find((x) => x.slug === m[1]);
+    const svc = pageServices(services).find((x) => x.slug === m[1]);
     if (svc) {
       return {
         title: `${svc.title} di ${area} – ${name}`,
-        description: truncate(`${svc.title} ${name}, ${area}. ${svc.description}`),
+        description: truncate(`${svc.title} ${name}, ${area}. ${svc.summary || svc.explanation || ''}`),
       };
     }
   }
@@ -96,7 +99,7 @@ export function pageMeta(path, s) {
 }
 
 /** Schema.org MedicalClinic: kunci utama SEO lokal (alamat, jam, geo, area layanan). */
-export function clinicJsonLd(s) {
+export function clinicJsonLd(s, services = defaultServices) {
   const d = days(s);
   const sameAs = [s.instagram_url, s.facebook_url, s.tiktok_url, s.youtube_url, s.maps_url].filter(Boolean);
   const data = {
@@ -122,7 +125,7 @@ export function clinicJsonLd(s) {
     areaServed: (s.service_area || '').split(',').map((a) => a.trim()).filter(Boolean)
       .map((a) => ({ '@type': 'AdministrativeArea', name: a })),
     medicalSpecialty: ['PrimaryCare', 'Dentistry', 'Pediatric', 'Obstetric'],
-    availableService: services.map((x) => ({
+    availableService: pageServices(services).map((x) => ({
       '@type': 'MedicalProcedure',
       name: x.title,
       url: `${SITE_URL}/layanan/${x.slug}`,
@@ -153,16 +156,17 @@ export function breadcrumbJsonLd(items) {
 }
 
 /** Breadcrumb otomatis untuk halaman statis. */
-export function breadcrumbFor(path) {
+export function breadcrumbFor(path, services = defaultServices) {
   const home = { name: 'Beranda', path: '/' };
   if (path === '/tentang-kami') return [home, { name: 'Tentang Kami', path }];
   if (path === '/layanan') return [home, { name: 'Layanan', path }];
   if (path === '/artikel') return [home, { name: 'Artikel', path }];
   const m = path.match(/^\/layanan\/([^/]+)$/);
-  if (m && serviceContents[m[1]]) {
-    return [home, { name: 'Layanan', path: '/layanan' }, { name: serviceContents[m[1]].title, path }];
+  const svc = m && pageServices(services).find((x) => x.slug === m[1]);
+  if (svc) {
+    return [home, { name: 'Layanan', path: '/layanan' }, { name: svc.title, path }];
   }
   return null;
 }
 
-export const STATIC_PATHS = ['/', '/tentang-kami', '/layanan', '/artikel', ...services.map((x) => `/layanan/${x.slug}`)];
+export const staticPaths = (services = defaultServices) => ['/', '/tentang-kami', '/layanan', '/artikel', ...pageServices(services).map((x) => `/layanan/${x.slug}`)];

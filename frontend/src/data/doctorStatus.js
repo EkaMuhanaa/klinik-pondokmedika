@@ -1,35 +1,6 @@
-export const doctorsData = [
-  {
-    name: "dr. ARYA PRATAMA",
-    specialty: "Dokter Umum",
-    specialtyBg: "bg-secondary/10",
-    specialtyColor: "text-secondary",
-    description: "Ahli dalam penanganan pasien dewasa dan manajemen penyakit kronis dengan pendekatan komprehensif.",
-    image: "/images/dr-arya.jpg",
-    scheduleDetails: [
-      { day: "Senin", time: "13.00 - 21.00" },
-      { day: "Selasa", time: "13.00 - 21.00" },
-      { day: "Sabtu", time: "13.00 - 21.00" }
-    ]
-  },
-  {
-    name: "dr. HARFIYANI",
-    specialty: "Dokter Anak",
-    specialtyBg: "bg-primary/10",
-    specialtyColor: "text-primary",
-    description: "Ramah dan berpengalaman dalam menangani pertumbuhan serta kesehatan balita dan anak-anak.",
-    image: "/images/placeholder-dokter.svg", // TODO: ganti dengan foto asli dokter
-    photoPending: true,
-    scheduleDetails: [
-      { day: "Rabu", time: "13.00 - 21.00" },
-      { day: "Kamis", time: "13.00 - 21.00" },
-      { day: "Jumat", time: "13.00 - 21.00" }
-    ]
-  }
-];
-
-export const calculateStatus = (scheduleDetails) => {
-  const now = new Date();
+// Status praktik dokter dihitung dari jadwal (zona waktu WIB). Jadwal diatur di CMS → Kelola Dokter.
+export const calculateStatus = (scheduleDetails, at = Date.now()) => {
+  const now = new Date(at);
   const options = { timeZone: 'Asia/Jakarta', weekday: 'long', hour: '2-digit', minute: '2-digit', hour12: false };
   const formatter = new Intl.DateTimeFormat('id-ID', options);
   const parts = formatter.formatToParts(now);

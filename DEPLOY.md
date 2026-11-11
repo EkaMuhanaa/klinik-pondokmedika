@@ -121,73 +121,87 @@ php artisan admin:create admin@klinikpondokmedika.id
 
 Password akan ditanyakan secara tersembunyi.
 
-## 3. Deploy Frontend (React)
+## 3. Deploy Otomatis dengan GitHub Actions (tanpa File Manager)
 
-Hostinger Web Hosting tidak perlu menjalankan Node.js; cukup unggah hasil build.
-Build di komputer Anda:
+Setelah disiapkan **sekali**, setiap perubahan yang masuk ke branch `main` (misalnya PR yang di-merge)
+otomatis di-deploy ke Hostinger oleh workflow `.github/workflows/deploy.yml`:
 
-```bash
-cd frontend
-cp .env.example .env
-# ubah isi .env menjadi: VITE_API_BASE_URL=https://klinikpondokmedika.id/api
-npm ci
-npm run build
-```
+1. backend: ambil kode terbaru, `composer install`, migrasi database, cache (`scripts/server-update-backend.sh`);
+2. frontend: build di server GitHub, dikirim lewat SSH, dipasang ke `public_html` tanpa menyentuh symlink `api`
+   (`scripts/server-publish-frontend.sh`);
+3. cek otomatis: Beranda, `/api/up`, API layanan, dan `sitemap.xml` harus merespons 200.
 
-`npm run build` juga menjalankan `scripts/prerender-meta.mjs`, yang menulis judul, deskripsi,
-dan data terstruktur Google (JSON-LD) untuk setiap halaman statis ke `dist/prerender/`.
-Data klinik diambil dari CMS lewat API saat build. Jadi **build ulang frontend setelah mengubah
-Pengaturan Klinik** di CMS supaya HTML awal ikut terbarui. Tampilan website sendiri langsung berubah
-tanpa build ulang.
+Tidak perlu Node.js di komputer Anda dan tidak perlu File Manager.
 
-Lalu buat zip dari **isi** folder `dist/` (termasuk file tersembunyi `.htaccess`):
+### 3.1 Buat kunci SSH khusus deploy (sekali, lewat SSH ke Hostinger)
 
 ```bash
-cd dist && zip -r ../frontend.zip . && cd ..
+ssh-keygen -t ed25519 -C "github-deploy" -f ~/.ssh/github_deploy -N ""
+cat ~/.ssh/github_deploy.pub >> ~/.ssh/authorized_keys && chmod 600 ~/.ssh/authorized_keys
+cat ~/.ssh/github_deploy
 ```
 
-Unggah `frontend.zip` ke `public_html` lewat hPanel → File Manager, **tanpa diekstrak di File Manager**,
-lalu ekstrak lewat SSH:
+Perintah terakhir menampilkan **kunci privat** (diawali `-----BEGIN OPENSSH PRIVATE KEY-----`).
+Salin seluruh isinya untuk langkah 3.2, lalu jangan dibagikan ke siapa pun.
+
+> Jika Hostinger menolak kunci dari `authorized_keys`, tambahkan isi `~/.ssh/github_deploy.pub`
+> lewat hPanel → Advanced → SSH Access → **SSH Keys** → Add SSH key.
+
+### 3.2 Isi Secrets di GitHub (sekali)
+
+Buka repo di GitHub → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**:
+
+| Nama secret | Isi |
+|---|---|
+| `SSH_HOST` | IP server dari hPanel → SSH Access (mis. `IP_SERVER`) |
+| `SSH_PORT` | `65002` |
+| `SSH_USER` | username SSH (mis. `USER_SSH`) |
+| `SSH_PRIVATE_KEY` | seluruh isi kunci privat dari langkah 3.1 |
+
+Opsional di tab **Variables** (bukan Secrets): `SITE_URL` (default `https://klinikpondokmedika.id`) dan
+`VITE_API_BASE_URL` (default `https://klinikpondokmedika.id/api`).
+
+### 3.3 Jalankan deploy pertama
+
+GitHub → tab **Actions** → **Deploy ke Hostinger** → **Run workflow** → pilih `main` → **Run workflow**.
+Tunggu sampai centang hijau (±3–5 menit). Jika merah, klik job-nya untuk melihat langkah yang gagal;
+pesan error sudah menyebutkan secret mana yang belum diisi.
+
+> Repo di server dipaksa sama persis dengan `main` (`git reset --hard`). Jangan mengedit file kode
+> langsung di server; `.env`, `vendor/`, dan gambar upload tidak terpengaruh.
+
+### 3.4 Alamat API
+
+Selama DNS `api.klinikpondokmedika.id` belum aktif, frontend memakai `https://klinikpondokmedika.id/api`
+(lewat symlink `api` di `public_html`). Setelah subdomain aktif, URL ini tetap boleh dipakai.
+
+### 3.5 Cara manual tanpa File Manager (cadangan)
+
+Jika GitHub Actions tidak bisa dipakai, dari komputer yang punya Node.js dan SSH:
 
 ```bash
-cd ~/domains/klinikpondokmedika.id/public_html && unzip -o frontend.zip && rm frontend.zip && ls -la
+cd frontend && npm ci && VITE_API_BASE_URL=https://klinikpondokmedika.id/api npm run build && tar -czf ../frontend-release.tar.gz -C dist . && cd ..
 ```
 
-> ⚠️ **Symlink `api` bisa hilang.** Mengekstrak zip atau menghapus file lewat File Manager
-> pernah menghapus symlink `api` di `public_html`. Akibatnya CMS, artikel, slider, dan promo
-> berhenti (semua `/api/...` jadi 404). Setelah **setiap** update frontend, pastikan baris
-> `api -> /home/u818194417/klinik-pondokmedika/backend/public` masih ada di hasil `ls -la`.
-> Jika hilang, buat ulang:
->
-> ```bash
-> ln -s ~/klinik-pondokmedika/backend/public ~/domains/klinikpondokmedika.id/public_html/api
-> ```
+```bash
+scp -P 65002 frontend-release.tar.gz USER_SSH@IP_SERVER:frontend-release.tar.gz
+```
 
-> **Alamat API.** Selama DNS `api.klinikpondokmedika.id` belum aktif, pakai
-> `VITE_API_BASE_URL=https://klinikpondokmedika.id/api`. Backend diakses lewat symlink `api`
-> di `public_html` domain utama, tanpa CORS karena satu domain. Setelah subdomain aktif, URL ini
-> tetap boleh dipakai. Nilai ini ditanam ke hasil build, jadi kalau diubah, build ulang.
+```bash
+ssh -p 65002 USER_SSH@IP_SERVER 'bash ~/klinik-pondokmedika/scripts/server-update-backend.sh && bash ~/klinik-pondokmedika/scripts/server-publish-frontend.sh ~/frontend-release.tar.gz'
+```
 
-**Cek:** buka `https://klinikpondokmedika.id`, buka halaman artikel lalu refresh (tidak boleh 404),
-buka `https://klinikpondokmedika.id/sitemap.xml`, dan login di `https://klinikpondokmedika.id/admin/login`.
+**Cek:** buka `https://klinikpondokmedika.id`, halaman artikel lalu refresh (tidak boleh 404),
+`https://klinikpondokmedika.id/sitemap.xml`, dan login di `https://klinikpondokmedika.id/admin/login`.
 
 ## 4. Update Berikutnya
 
-Backend (lewat SSH):
+Cukup merge perubahan ke `main`; deploy berjalan otomatis (lihat tab **Actions**).
 
-```bash
-cd ~/klinik-pondokmedika
-git pull
-cd backend
-composer install --no-dev --optimize-autoloader --no-scripts
-php artisan package:discover
-php artisan migrate --force
-php artisan config:cache
-php artisan route:cache
-```
-
-Frontend: `npm run build` di komputer Anda, lalu unggah dan ekstrak `frontend.zip` seperti
-bagian 3, **lalu cek symlink `api`**.
+Perubahan isi website (artikel, layanan, dokter, promo, alamat) dilakukan admin di CMS dan **langsung tampil**
+tanpa deploy. Satu pengecualian: judul/deskripsi untuk Google yang ditulis saat build. Setelah mengubah
+Pengaturan Klinik atau daftar layanan, jalankan **Actions → Deploy ke Hostinger → Run workflow** sekali
+agar Google ikut melihat data terbaru.
 
 ## 5. Backup
 
@@ -204,6 +218,7 @@ atau unduh berkala.
 | Request API ke `undefined/api/...` | `VITE_API_BASE_URL` kosong saat build. Isi `.env` frontend lalu build ulang. |
 | Upload gambar gagal (413 / error validasi) | Naikkan `upload_max_filesize` dan `post_max_size` di PHP Configuration. |
 | Perubahan `.env` tidak berpengaruh | Jalankan `php artisan config:cache` lagi. |
-| CMS/artikel/promo tidak muncul, `/api/up` 404 | Symlink `api` di `public_html` hilang (biasanya setelah ekstrak lewat File Manager). Buat ulang dengan `ln -s` (lihat bagian 3). |
+| CMS/artikel/promo tidak muncul, `/api/up` 404 | Symlink `api` di `public_html` hilang (biasanya setelah mengubah file lewat File Manager). Jalankan ulang deploy (Actions → Run workflow); script akan membuatnya kembali. |
+| Deploy GitHub Actions gagal di langkah "Siapkan kunci SSH" | Secret `SSH_PRIVATE_KEY` salah salin (harus termasuk baris BEGIN/END) atau kunci publik belum ada di `authorized_keys` (bagian 3.1). |
 | Error 500 | Lihat `backend/storage/logs/laravel.log`. |
 | `The Process class relies on proc_open` saat `composer install` | Hostinger mematikan `proc_open`. Pakai `composer install --no-scripts` lalu `php artisan package:discover`. |

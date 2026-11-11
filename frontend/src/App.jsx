@@ -25,6 +25,10 @@ import AdminFacilityForm from './Pages/Admin/AdminFacilityForm';
 import AdminPromos from './Pages/Admin/AdminPromos';
 import AdminPromoForm from './Pages/Admin/AdminPromoForm';
 import AdminSettings from './Pages/Admin/AdminSettings';
+import AdminServices from './Pages/Admin/AdminServices';
+import AdminServiceForm from './Pages/Admin/AdminServiceForm';
+import AdminDoctors from './Pages/Admin/AdminDoctors';
+import AdminDoctorForm from './Pages/Admin/AdminDoctorForm';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -53,6 +57,12 @@ function LocationProvider() {
         <Route path='/admin/promos/new' element={<ProtectedRoute><AdminPromoForm /></ProtectedRoute>} />
         <Route path='/admin/promos/edit/:id' element={<ProtectedRoute><AdminPromoForm /></ProtectedRoute>} />
         <Route path='/admin/settings' element={<ProtectedRoute><AdminSettings /></ProtectedRoute>} />
+        <Route path='/admin/services' element={<ProtectedRoute><AdminServices /></ProtectedRoute>} />
+        <Route path='/admin/services/new' element={<ProtectedRoute><AdminServiceForm /></ProtectedRoute>} />
+        <Route path='/admin/services/edit/:id' element={<ProtectedRoute><AdminServiceForm /></ProtectedRoute>} />
+        <Route path='/admin/doctors' element={<ProtectedRoute><AdminDoctors /></ProtectedRoute>} />
+        <Route path='/admin/doctors/new' element={<ProtectedRoute><AdminDoctorForm /></ProtectedRoute>} />
+        <Route path='/admin/doctors/edit/:id' element={<ProtectedRoute><AdminDoctorForm /></ProtectedRoute>} />
         <Route path='*' element={<Navigate to='/admin/articles' replace />} />
       </Routes>
     );

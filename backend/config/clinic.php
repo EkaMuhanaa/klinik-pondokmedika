@@ -55,22 +55,24 @@ return [
         'tiktok_url' => '',
         'youtube_url' => '',
 
+        // Konten Beranda & Tentang Kami
+        'doctors_heading' => 'Bertemu dengan Dokter Spesialis Kami',
+        'doctors_intro' => 'Status praktik diperbarui otomatis sesuai jam WIB. Cek jadwal sebelum datang.',
+        // Satu nama per baris
+        'partners' => "Puskesmas Cengkareng\nKlinik laboratorium bioprima\nRajak hospital\nPermata Indah medical center cengkareng\nLaboratorium klinik bio medika\nCiputra Hospital Citra Garden City\nPT Impian Profesi Internasional\nPt Arah environmental indonesia\nPt Mitra bestari teknologi",
+        // Satu sorotan per baris, format: Judul | Keterangan
+        'about_highlights' => "Terakreditasi | Standar Pelayanan Nasional\nTim Ahli | Dokter Berpengalaman",
+
         // SEO beranda (kosongkan untuk memakai judul/deskripsi otomatis)
         'seo_home_title' => '',
         'seo_home_description' => '',
     ],
 
-    // Halaman statis untuk sitemap.xml. Samakan dengan frontend/src/data/services.js
+    // Halaman statis untuk sitemap.xml (halaman layanan diambil dari database)
     'static_paths' => [
         '/' => 1.0,
         '/tentang-kami' => 0.8,
         '/layanan' => 0.9,
-        '/layanan/poli-umum' => 0.8,
-        '/layanan/poli-gigi-mulut' => 0.8,
-        '/layanan/poli-kia' => 0.8,
-        '/layanan/laboratorium' => 0.8,
-        '/layanan/apotek-24-jam' => 0.7,
-        '/layanan/unit-gawat-darurat' => 0.7,
         '/artikel' => 0.8,
     ],
 ];

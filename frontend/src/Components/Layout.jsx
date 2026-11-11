@@ -5,15 +5,15 @@ import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import WhatsAppCTA from './WhatsAppCTA';
 import PromoPopup from './PromoPopup';
 import Seo from './Seo';
-import { useSiteSettings } from '../Contexts/SiteSettingsContext';
-import { services } from '../data/services';
-import { fullAddress, localArea, openingDaysText, hoursText, whatsappLink } from '../seo/meta';
+import { useServices, useSiteSettings } from '../Contexts/SiteSettingsContext';
+import { fullAddress, localArea, openingDaysText, hoursText, whatsappLink, pageServices } from '../seo/meta';
 
 /** seo: props untuk <Seo> (title, description, image, type, noindex, jsonLd). */
 const Layout = ({ children, seo }) => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const settings = useSiteSettings();
+  const { services } = useServices();
   const socials = [
     { url: settings.instagram_url, label: 'Instagram' },
     { url: settings.facebook_url, label: 'Facebook' },
@@ -152,7 +152,7 @@ const Layout = ({ children, seo }) => {
           <div>
             <h2 className="font-heading font-semibold text-lg mb-3">Layanan</h2>
             <ul>
-              {services.map((svc) => (
+              {pageServices(services).map((svc) => (
                 <li key={svc.slug}><Link to={`/layanan/${svc.slug}`} className="tap-target text-white/90 hover:text-white hover:underline underline-offset-4">{svc.title}</Link></li>
               ))}
             </ul>

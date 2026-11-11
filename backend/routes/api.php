@@ -8,6 +8,8 @@ use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SliderImageController;
 use App\Http\Controllers\Api\FacilityController;
 use App\Http\Controllers\Api\PromoController;
+use App\Http\Controllers\Api\ServiceController;
+use App\Http\Controllers\Api\DoctorController;
 use App\Http\Controllers\Api\SiteSettingController;
 
 // Auth Route
@@ -23,6 +25,8 @@ Route::get("/facilities", [FacilityController::class, "index"]);
 Route::get("/facilities/{id}", [FacilityController::class, "show"]);
 Route::get("/site-settings", [SiteSettingController::class, "index"]);
 Route::get("/promos/active", [PromoController::class, "active"]);
+Route::get("/services", [ServiceController::class, "index"]);
+Route::get("/doctors", [DoctorController::class, "index"]);
 
 // Protected API (Admin)
 Route::middleware("auth:sanctum")->group(function () {
@@ -57,5 +61,19 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::post("/admin/promos", [PromoController::class, "store"]);
     Route::post("/admin/promos/{id}", [PromoController::class, "update"]); // POST agar bisa multipart/form-data
     Route::delete("/admin/promos/{id}", [PromoController::class, "destroy"]);
+
+    // Admin Layanan
+    Route::get("/admin/services", [ServiceController::class, "adminIndex"]);
+    Route::get("/admin/services/{id}", [ServiceController::class, "show"]);
+    Route::post("/admin/services", [ServiceController::class, "store"]);
+    Route::put("/admin/services/{id}", [ServiceController::class, "update"]);
+    Route::delete("/admin/services/{id}", [ServiceController::class, "destroy"]);
+
+    // Admin Dokter
+    Route::get("/admin/doctors", [DoctorController::class, "adminIndex"]);
+    Route::get("/admin/doctors/{id}", [DoctorController::class, "show"]);
+    Route::post("/admin/doctors", [DoctorController::class, "store"]);
+    Route::post("/admin/doctors/{id}", [DoctorController::class, "update"]); // POST agar bisa multipart/form-data
+    Route::delete("/admin/doctors/{id}", [DoctorController::class, "destroy"]);
 });
 

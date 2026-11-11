@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { MdLogout, MdArticle, MdImage, MdDomain, MdCampaign, MdSettings, MdOpenInNew } from 'react-icons/md';
-import { useState } from 'react';
+import { MdLogout, MdArticle, MdImage, MdDomain, MdCampaign, MdSettings, MdOpenInNew, MdMedicalServices, MdPeople, MdMenu } from 'react-icons/md';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../Contexts/AuthContext';
 
 const AdminLayout = ({ children }) => {
@@ -9,6 +9,14 @@ const AdminLayout = ({ children }) => {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  // Tutup menu HP dengan tombol Escape
+  useEffect(() => {
+    if (!isMobileMenuOpen) return undefined;
+    const onKey = (e) => e.key === 'Escape' && setIsMobileMenuOpen(false);
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [isMobileMenuOpen]);
 
   const handleLogout = async () => {
     await logout();
@@ -18,6 +26,8 @@ const AdminLayout = ({ children }) => {
   const navItems = [
     { name: 'Artikel & Edukasi', path: '/admin/articles', icon: <MdArticle className='text-xl' /> },
     { name: 'Kelola Latar / Slider', path: '/admin/sliders', icon: <MdImage className='text-xl' /> },
+    { name: 'Kelola Layanan', path: '/admin/services', icon: <MdMedicalServices className='text-xl' /> },
+    { name: 'Kelola Dokter', path: '/admin/doctors', icon: <MdPeople className='text-xl' /> },
     { name: 'Kelola Fasilitas', path: '/admin/facilities', icon: <MdDomain className='text-xl' /> },
     { name: 'Pop-Up Promo', path: '/admin/promos', icon: <MdCampaign className='text-xl' /> },
     { name: 'Pengaturan Klinik', path: '/admin/settings', icon: <MdSettings className='text-xl' /> },
@@ -78,11 +88,20 @@ const AdminLayout = ({ children }) => {
 
       {/* Main Content */}
       <main className='flex-1 flex flex-col min-w-0 overflow-hidden'>
-        <header className='bg-surface border-b border-outline-variant/30 py-4 px-8 flex justify-between items-center shadow-sm md:hidden'>
+        <header className='bg-surface border-b border-outline-variant/30 py-2 px-4 flex justify-between items-center shadow-sm md:hidden'>
+          <button
+            type='button'
+            onClick={() => setIsMobileMenuOpen(true)}
+            aria-label='Buka menu admin'
+            aria-expanded={isMobileMenuOpen}
+            className='w-11 h-11 -ml-2 flex items-center justify-center rounded-lg text-on-surface hover:bg-surface-container'
+          >
+            <MdMenu className='text-2xl' aria-hidden='true' />
+          </button>
           <h2 className='text-xl font-bold text-primary'>Klinik Admin</h2>
-          <button onClick={handleLogout} className='text-error font-bold'>Keluar</button>
+          <button type='button' onClick={handleLogout} className='text-error font-bold min-h-[44px] px-3'>Keluar</button>
         </header>
-        <div className='flex-1 overflow-auto p-8'>
+        <div className='flex-1 overflow-auto p-4 md:p-8'>
           <div className='max-w-container-max mx-auto'>
             {children}
           </div>
