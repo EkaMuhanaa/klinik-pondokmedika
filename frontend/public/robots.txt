@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /admin
+
+Sitemap: https://klinikpondokmedika.id/sitemap.xml

@@ -3,15 +3,15 @@ import { MdGroups, MdHealthAndSafety, MdVerified, MdVisibility, MdPsychology, Md
 import axios from 'axios';
 import Layout from '../Components/Layout';
 import HeroSliderBackground from '../Components/HeroSliderBackground';
+import { useSiteSettings } from '../Contexts/SiteSettingsContext';
+import { fullAddress, openingDaysText, hoursText, whatsappLink } from '../seo/meta';
 
-const defaultHeroImages = [
-  "https://images.unsplash.com/photo-1638202993928-7267aad84c31?q=80&w=2000&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=2000&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1584515933487-779824d29309?q=80&w=2000&auto=format&fit=crop"
-];
+// Gambar hero diatur admin di CMS → Kelola Latar / Slider. Jika kosong, tampil latar warna brand.
+const defaultHeroImages = [];
 
 const About = () => {
   const observerRef = useRef(null);
+  const settings = useSiteSettings();
 
   useEffect(() => {
     observerRef.current = new IntersectionObserver((entries) => {
@@ -66,11 +66,11 @@ const About = () => {
         <div className="animate-on-scroll grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div className="relative">
             <div className="aspect-square rounded-xl overflow-hidden shadow-xl">
-              <img 
-                alt="Sejarah Klinik" 
-                className="w-full h-full object-cover" 
-                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAeWbNaMxuL6CSnqNKpslOKFneuZB-FAXBDPeVR12DsjhHTxkpIGLpFBxhdIevn8jP3YZJEnYrLXIHVUWC5RdGHDtNw5U2wXoYt1kD3Bg9nWEbaltA2cjtd9fJHZQcY_SICxLYY6r0NM7QdWLVPYR4gJ25GNf3kU1lQOXdj-8ZZjIz6kPnJ7hp__ziDDRHnqb_T6uq_pExCaojRx7pUhmQBG1YcpXKe1P1FRsu0yy8nhOb296w4Zqa4" 
-              />
+              {heroImages.length > 0 ? (
+                <img alt={`Gedung ${settings.clinic_name}`} className="w-full h-full object-cover" src={heroImages[0]} loading="lazy" />
+              ) : (
+                <img alt={`Logo ${settings.clinic_name}`} className="w-full h-full object-contain bg-white p-10" src="/images/logo-header.png" loading="lazy" />
+              )}
             </div>
             <div className="absolute -bottom-6 -right-6 bg-primary-container text-on-primary-container p-8 rounded-xl shadow-lg hidden md:block max-w-xs">
               <MdHealthAndSafety className="text-4xl mb-4" style={{ fontVariationSettings: "'FILL' 1" }} />
@@ -165,35 +165,35 @@ const About = () => {
               <div className="flex gap-4">
                 <MdLocationOn className="text-primary" />
                 <div>
-                  <h3 className="font-bold text-lg">Klinik Pondok Medika</h3>
-                  <p className="text-on-surface-variant">Jl. Raya Pondok Indah No. 123, Jakarta Selatan, 12310</p>
+                  <h3 className="font-bold text-lg">{settings.clinic_name}</h3>
+                  <a href={settings.maps_url} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary">{fullAddress(settings)}</a>
                 </div>
               </div>
               <div className="flex gap-4">
                 <MdSchedule className="text-primary" />
                 <div>
                   <h3 className="font-bold text-lg">Jam Operasional</h3>
-                  <p className="text-on-surface-variant">Senin - Sabtu: 08.00 - 20.00</p>
-                  <p className="text-on-surface-variant">Minggu: Tutup (Kecuali Gawat Darurat)</p>
+                  <p className="text-on-surface-variant">{openingDaysText(settings)}: {hoursText(settings)}</p>
+                  {settings.hours_note && <p className="text-on-surface-variant">{settings.hours_note}</p>}
                 </div>
               </div>
               <div className="flex gap-4">
                 <MdPhoneInTalk className="text-primary" />
                 <div>
                   <h3 className="font-bold text-lg">Kontak</h3>
-                  <p className="text-on-surface-variant">0812-3416-3128 (WhatsApp)</p>
+                  <p className="text-on-surface-variant">{settings.phone} (WhatsApp)</p>
                 </div>
               </div>
             </div>
-            <a href="https://wa.me/6281234163128" target="_blank" rel="noreferrer" className="mt-10 w-full md:w-auto bg-whatsapp-green text-white px-8 py-3 rounded-full flex items-center justify-center gap-2 font-bold hover:scale-105 transition-transform inline-flex">
+            <a href={whatsappLink(settings)} target="_blank" rel="noreferrer" className="mt-10 w-full md:w-auto bg-whatsapp-green text-white px-8 py-3 rounded-full flex items-center justify-center gap-2 font-bold hover:scale-105 transition-transform inline-flex">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-6 h-6 fill-current"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.1 0-65.6-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-5.5-2.8-23.2-8.5-44.2-27.1-16.4-14.6-27.4-32.7-30.6-38.2-3.2-5.6-.3-8.6 2.4-11.3 2.5-2.4 5.5-6.5 8.3-9.7 2.8-3.3 3.7-5.6 5.5-9.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 13.2 5.8 23.5 9.2 31.6 11.8 13.3 4.2 25.4 3.6 35 2.2 10.7-1.5 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"></path></svg> Chat Sekarang
             </a>
           </div>
           <div className="md:w-2/3">
             <div className="w-full h-[450px] rounded-2xl overflow-hidden shadow-lg bg-surface-dim relative group">
               <iframe
-                title="Peta Lokasi Klinik Pondok Medika"
-                src="https://maps.google.com/maps?q=-6.1438498,106.722549&t=m&z=15&ie=UTF8&iwloc=&output=embed"
+                title={`Peta Lokasi ${settings.clinic_name}`}
+                src={`https://maps.google.com/maps?q=${settings.latitude},${settings.longitude}&t=m&z=16&ie=UTF8&iwloc=&output=embed`}
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}

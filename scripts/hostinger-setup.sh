@@ -77,6 +77,7 @@ set_env APP_DEBUG false
 set_env APP_URL "https://$API_DOMAIN"
 set_env APP_LOCALE id
 set_env APP_FALLBACK_LOCALE id
+set_env FRONTEND_URL "https://$FRONT_DOMAIN"
 set_env CORS_ALLOWED_ORIGINS "https://$FRONT_DOMAIN,https://www.$FRONT_DOMAIN"
 set_env SANCTUM_EXPIRATION 720
 set_env LOG_LEVEL error

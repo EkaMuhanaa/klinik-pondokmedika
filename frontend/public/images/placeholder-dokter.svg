@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-label="Foto dokter">
+  <rect width="400" height="400" fill="#eaefee"/>
+  <circle cx="200" cy="155" r="72" fill="#bcc9c8"/>
+  <path d="M60 400c0-80 63-140 140-140s140 60 140 140z" fill="#bcc9c8"/>
+  <g transform="translate(200 330)" fill="#006a69"><rect x="-8" y="-24" width="16" height="48" rx="3"/><rect x="-24" y="-8" width="48" height="16" rx="3"/></g>
+</svg>

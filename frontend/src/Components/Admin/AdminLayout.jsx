@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { MdLogout, MdArticle, MdImage, MdMenu, MdClose, MdDomain } from 'react-icons/md';
+import { MdLogout, MdArticle, MdImage, MdDomain, MdCampaign, MdSettings, MdOpenInNew } from 'react-icons/md';
 import { useState } from 'react';
 import { useAuth } from '../../Contexts/AuthContext';
 
@@ -19,6 +19,8 @@ const AdminLayout = ({ children }) => {
     { name: 'Artikel & Edukasi', path: '/admin/articles', icon: <MdArticle className='text-xl' /> },
     { name: 'Kelola Latar / Slider', path: '/admin/sliders', icon: <MdImage className='text-xl' /> },
     { name: 'Kelola Fasilitas', path: '/admin/facilities', icon: <MdDomain className='text-xl' /> },
+    { name: 'Pop-Up Promo', path: '/admin/promos', icon: <MdCampaign className='text-xl' /> },
+    { name: 'Pengaturan Klinik', path: '/admin/settings', icon: <MdSettings className='text-xl' /> },
   ];
 
   return (
@@ -45,6 +47,10 @@ const AdminLayout = ({ children }) => {
               {item.name}
             </Link>
           ))}
+          <a href='/' target='_blank' rel='noreferrer' className='flex items-center gap-3 px-4 py-3 rounded-xl text-on-surface-variant hover:bg-primary/10 hover:text-primary transition-colors'>
+            <MdOpenInNew className='text-xl' />
+            Lihat Website
+          </a>
         </nav>
 
         <div className='p-4 border-t border-outline-variant/30'>
