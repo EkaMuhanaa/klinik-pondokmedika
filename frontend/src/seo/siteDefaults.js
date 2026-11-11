@@ -26,6 +26,10 @@ export const siteDefaults = {
   facebook_url: '',
   tiktok_url: '',
   youtube_url: '',
+  doctors_heading: 'Bertemu dengan Dokter Spesialis Kami',
+  doctors_intro: 'Status praktik diperbarui otomatis sesuai jam WIB. Cek jadwal sebelum datang.',
+  partners: 'Puskesmas Cengkareng\nKlinik laboratorium bioprima\nRajak hospital\nPermata Indah medical center cengkareng\nLaboratorium klinik bio medika\nCiputra Hospital Citra Garden City\nPT Impian Profesi Internasional\nPt Arah environmental indonesia\nPt Mitra bestari teknologi',
+  about_highlights: 'Terakreditasi | Standar Pelayanan Nasional\nTim Ahli | Dokter Berpengalaman',
   seo_home_title: '',
   seo_home_description: '',
 };

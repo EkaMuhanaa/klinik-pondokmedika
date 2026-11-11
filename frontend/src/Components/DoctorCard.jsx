@@ -28,9 +28,9 @@ const DoctorCard = ({ doctor }) => {
       <div className="p-8 flex flex-col justify-between w-full md:w-1/2">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <span className={`${doctor.specialtyBg} ${doctor.specialtyColor} font-label-sm px-3 py-1 rounded-md`}>
-              {doctor.specialty}
-            </span>
+            {doctor.specialty ? (
+              <span className="bg-primary/10 text-primary font-label-sm px-3 py-1 rounded-md">{doctor.specialty}</span>
+            ) : <span />}
             <div className="flex items-center gap-2">
               <span aria-hidden="true" className={`w-3 h-3 rounded-full ${doctor.status === 'Aktif Praktik' ? 'bg-[#22C55E]' : doctor.status === 'Sedang Istirahat' ? 'bg-[#F59E0B]' : 'bg-gray-400'}`}></span>
               <span className={`font-label-sm text-label-sm ${doctor.status === 'Aktif Praktik' ? 'text-secondary' : doctor.status === 'Sedang Istirahat' ? 'text-[#92400e]' : 'text-text-muted'}`}>
@@ -42,7 +42,7 @@ const DoctorCard = ({ doctor }) => {
           <p className="font-body-md text-body-md text-text-muted">{doctor.description}</p>
           
           {/* Expanded Schedule Details */}
-          {showSchedule && doctor.scheduleDetails && (
+          {showSchedule && doctor.scheduleDetails?.length > 0 && (
             <div className="mt-4 p-4 bg-surface-container-low rounded-xl border border-outline-variant/30">
               <p className="font-label-md text-on-surface mb-3 border-b border-outline-variant/30 pb-2">Jadwal Praktik</p>
               <ul className="space-y-2">
@@ -64,8 +64,9 @@ const DoctorCard = ({ doctor }) => {
           )}
         </div>
         
+        {doctor.scheduleDetails?.length > 0 ? (
         <div className="mt-8">
-          <button 
+          <button
             type="button"
             onClick={() => setShowSchedule(!showSchedule)}
             aria-expanded={showSchedule}
@@ -74,6 +75,9 @@ const DoctorCard = ({ doctor }) => {
             {showSchedule ? 'Tutup jadwal' : `Jadwal praktik ${doctor.name}`}
           </button>
         </div>
+        ) : (
+          <p className="mt-8 text-sm text-on-surface-variant">Jadwal praktik belum tersedia.</p>
+        )}
       </div>
     </div>
   );

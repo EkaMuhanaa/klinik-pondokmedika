@@ -138,7 +138,7 @@ const AdminSettings = () => {
                     key={code}
                     onClick={() => toggleDay(code)}
                     aria-pressed={selectedDays.includes(code)}
-                    className={`px-4 py-2 rounded-full text-sm font-bold border transition-colors ${selectedDays.includes(code) ? 'bg-primary text-on-primary border-primary' : 'bg-surface-container text-on-surface-variant border-transparent'}`}
+                    className={`px-4 min-h-[44px] rounded-lg text-sm font-bold border transition-colors ${selectedDays.includes(code) ? 'bg-primary text-on-primary border-primary' : 'bg-surface-container text-on-surface-variant border-transparent'}`}
                   >
                     {name}
                   </button>
@@ -157,6 +157,19 @@ const AdminSettings = () => {
           <div className='md:col-span-2'>
             <Field label='Wilayah' error={errors.service_area}>
               <textarea rows='3' value={form.service_area} onChange={set('service_area')} className={`${inputClass} resize-none`} />
+            </Field>
+          </div>
+        </Section>
+
+        <Section title='Konten Beranda & Tentang Kami' desc='Teks yang tampil di Beranda dan halaman Tentang Kami. Tulis hanya klaim yang benar dan bisa dibuktikan.'>
+          <div className='md:col-span-2 space-y-5'>
+            <Field label='Judul Bagian Dokter (Beranda)' error={errors.doctors_heading}>{input('doctors_heading')}</Field>
+            <Field label='Keterangan Bagian Dokter' error={errors.doctors_intro}>{input('doctors_intro')}</Field>
+            <Field label='Rekan Medis & Institusi' hint='Satu nama per baris. Kosongkan semua untuk menyembunyikan bagian ini.' error={errors.partners}>
+              <textarea rows='6' value={form.partners} onChange={set('partners')} className={`${inputClass} resize-y`} />
+            </Field>
+            <Field label='Sorotan di Tentang Kami' hint='Satu per baris dengan format: Judul | Keterangan. Contoh: Terakreditasi Paripurna | KARS 2025' error={errors.about_highlights}>
+              <textarea rows='3' value={form.about_highlights} onChange={set('about_highlights')} className={`${inputClass} resize-y`} />
             </Field>
           </div>
         </Section>

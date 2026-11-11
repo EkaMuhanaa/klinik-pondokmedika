@@ -7,7 +7,8 @@ Sistem Web & Backend API untuk Klinik Pondok Medika.
 - `frontend/` : Aplikasi web frontend menggunakan React + Vite & Tailwind CSS.
 - `backend/`  : Backend REST API menggunakan Laravel & Sanctum authentication.
 - `DESIGN.md` : Dokumentasi desain dan arsitektur UI/UX.
-- `DEPLOY.md` : Panduan deploy ke Hostinger.
+- `DEPLOY.md` : Panduan deploy ke Hostinger (lewat SSH, frontend dibangun di GitHub).
+- `PANDUAN-CMS.md` : Panduan admin klinik untuk mengelola isi website.
 
 ---
 

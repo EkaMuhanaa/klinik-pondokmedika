@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\Service;
 
 class SitemapController extends Controller
 {
@@ -14,6 +15,11 @@ class SitemapController extends Controller
         foreach (config('clinic.static_paths') as $path => $priority) {
             $urls[] = ['loc' => $base.($path === '/' ? '/' : $path), 'priority' => $priority, 'lastmod' => null];
         }
+
+        Service::where('is_active', true)->orderBy('sort_order')->get(['slug', 'updated_at'])
+            ->each(function ($svc) use (&$urls, $base) {
+                $urls[] = ['loc' => $base.'/layanan/'.$svc->slug, 'priority' => 0.8, 'lastmod' => $svc->updated_at?->toAtomString()];
+            });
 
         Article::where('is_published', true)->latest('updated_at')
             ->get(['slug', 'updated_at'])

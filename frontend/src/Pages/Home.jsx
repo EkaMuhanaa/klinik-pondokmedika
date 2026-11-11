@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { MdSchedule, MdLocationOn, MdCall, MdFamilyRestroom, MdMedicalServices, MdAir, MdHomeWork, MdArrowForward } from 'react-icons/md';
+import React, { useCallback, useEffect, useState } from 'react';
+import { MdSchedule, MdLocationOn, MdCall, MdArrowForward } from 'react-icons/md';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import DoctorCard from '../Components/DoctorCard';
@@ -7,43 +7,48 @@ import Layout from '../Components/Layout';
 import HeroSliderBackground from '../Components/HeroSliderBackground';
 import FacilitiesSection from '../Components/Home/FacilitiesSection';
 import ArticleHighlightSection from '../Components/Home/ArticleHighlightSection';
-import { doctorsData, calculateStatus } from '../data/doctors';
-import { useSiteSettings } from '../Contexts/SiteSettingsContext';
+import ServiceIcon from '../Components/ServiceIcon';
+import { calculateStatus } from '../data/doctorStatus';
+import { mediaUrl, useServices, useSiteSettings } from '../Contexts/SiteSettingsContext';
 import { localArea, openingDaysText, hoursText, whatsappLink } from '../seo/meta';
 
-// Nama institusi mitra. Belum diverifikasi (temuan audit #5), ditampilkan apa adanya.
-const partners = [
-  'Puskesmas Cengkareng',
-  'Klinik laboratorium bioprima',
-  'Rajak hospital',
-  'Permata Indah medical center cengkareng',
-  'Laboratorium klinik bio medika',
-  'Ciputra Hospital Citra Garden City',
-  'PT Impian Profesi Internasional',
-  'Pt Arah environmental indonesia',
-  'Pt Mitra bestari teknologi',
-];
-
-// Layanan pendukung di Beranda (temuan audit #6: perlu konfirmasi ketersediaan).
-const otherServices = [
-  { icon: MdMedicalServices, title: 'Bedah Minor', text: 'Tindakan bedah kecil yang dilakukan dengan aman, steril, dan pemulihan cepat.' },
-  { icon: MdAir, title: 'Nebulizer', text: 'Layanan uap untuk membantu pernapasan pada pasien dengan gangguan respirasi.' },
-  { icon: MdHomeWork, title: 'Home Visit', text: 'Kunjungan medis ke rumah Anda untuk kenyamanan ekstra dalam perawatan kesehatan.' },
-];
+const lines = (text) => (text || '').split('\n').map((x) => x.trim()).filter(Boolean);
 
 const Home = () => {
   const settings = useSiteSettings();
-  const [doctors, setDoctors] = useState([]);
+  const { services } = useServices();
+  const [doctorRows, setDoctorRows] = useState([]);
+  const [doctorStatus, setDoctorStatus] = useState('loading'); // loading | error | ready
+  const [now, setNow] = useState(Date.now());
   const [heroImages, setHeroImages] = useState([]);
 
-  useEffect(() => {
-    const updateStatuses = () => {
-      setDoctors(doctorsData.map((doc) => ({ ...doc, status: calculateStatus(doc.scheduleDetails) })));
-    };
-    updateStatuses();
-    const intervalId = setInterval(updateStatuses, 60000);
-    return () => clearInterval(intervalId);
+  const loadDoctors = useCallback(() => {
+    setDoctorStatus('loading');
+    axios.get('/doctors')
+      .then((res) => { setDoctorRows(res.data); setDoctorStatus('ready'); })
+      .catch(() => setDoctorStatus('error'));
   }, []);
+
+  useEffect(() => {
+    loadDoctors();
+    // Status praktik dihitung ulang tiap menit
+    const intervalId = setInterval(() => setNow(Date.now()), 60000);
+    return () => clearInterval(intervalId);
+  }, [loadDoctors]);
+
+  const doctors = doctorRows.map((doc) => ({
+    ...doc,
+    image: doc.photo_path ? mediaUrl(doc.photo_path) : '/images/placeholder-dokter.svg',
+    photoPending: !doc.photo_path,
+    scheduleDetails: doc.schedule || [],
+    status: calculateStatus(doc.schedule || [], now),
+  }));
+
+  // Layanan Beranda diatur di CMS (centang "Tampil di Beranda" dan "Tonjolkan")
+  const homeServices = services.filter((x) => x.show_on_home);
+  const featured = homeServices.find((x) => x.is_featured) || homeServices[0];
+  const otherServices = homeServices.filter((x) => x !== featured);
+  const partners = lines(settings.partners);
 
   useEffect(() => {
     axios.get(import.meta.env.VITE_API_BASE_URL + '/api/sliders/home')
@@ -129,21 +134,25 @@ const Home = () => {
           </Link>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          <Link to="/layanan/poli-umum" className="lg:col-span-2 group bg-primary text-white rounded-xl p-8 flex flex-col hover:bg-primary/90 transition-colors">
-            <MdFamilyRestroom className="text-5xl mb-6 text-white" aria-hidden="true" />
-            <h3 className="font-headline-lg text-headline-lg text-white mb-3">Pemeriksaan Anak &amp; Dewasa</h3>
-            <p className="font-body-lg text-body-lg text-white/90 mb-8">Konsultasi medis menyeluruh untuk segala usia dengan pendekatan yang personal.</p>
-            <span className="mt-auto inline-flex items-center gap-2 font-bold underline underline-offset-4 group-hover:no-underline">
-              Lihat alur Poli Umum <MdArrowForward aria-hidden="true" />
-            </span>
-          </Link>
+          {featured && (
+            <Link to={featured.is_active ? `/layanan/${featured.slug}` : '/layanan'} className="lg:col-span-2 group bg-primary text-white rounded-xl p-8 flex flex-col hover:bg-primary/90 transition-colors">
+              <ServiceIcon name={featured.icon} className="text-5xl mb-6 text-white" />
+              <h3 className="font-headline-lg text-headline-lg text-white mb-3">{featured.title}</h3>
+              {featured.summary && <p className="font-body-lg text-body-lg text-white/90 mb-8">{featured.summary}</p>}
+              <span className="mt-auto inline-flex items-center gap-2 font-bold underline underline-offset-4 group-hover:no-underline">
+                {featured.is_active ? `Lihat alur ${featured.title}` : 'Lihat semua layanan'} <MdArrowForward aria-hidden="true" />
+              </span>
+            </Link>
+          )}
           <ul className="lg:col-span-3 divide-y divide-outline-variant/60 border-y border-outline-variant/60">
-            {otherServices.map(({ icon: Icon, title, text }) => (
-              <li key={title} className="flex gap-5 py-6">
-                <Icon className="text-3xl text-primary shrink-0 mt-1" aria-hidden="true" />
+            {otherServices.map((svc) => (
+              <li key={svc.slug} className="flex gap-5 py-6">
+                <ServiceIcon name={svc.icon} className="text-3xl text-primary shrink-0 mt-1" />
                 <div>
-                  <h3 className="font-headline-md text-headline-md text-on-surface mb-1">{title}</h3>
-                  <p className="font-body-md text-body-md text-text-muted">{text}</p>
+                  <h3 className="font-headline-md text-headline-md text-on-surface mb-1">
+                    {svc.is_active ? <Link to={`/layanan/${svc.slug}`} className="inline-flex items-center min-h-[44px] hover:text-primary hover:underline underline-offset-4">{svc.title}</Link> : svc.title}
+                  </h3>
+                  {svc.summary && <p className="font-body-md text-body-md text-text-muted">{svc.summary}</p>}
                 </div>
               </li>
             ))}
@@ -155,28 +164,40 @@ const Home = () => {
       <section id="dokter" className="bg-surface-container-low py-section-gap scroll-mt-20">
         <div className="w-full max-w-container-max mx-auto px-gutter">
           <div className="max-w-2xl mb-12">
-            <h2 className="font-headline-lg text-headline-lg text-on-surface">Bertemu dengan Dokter Spesialis Kami</h2>
-            <p className="font-body-lg text-body-lg text-text-muted mt-3">Status praktik diperbarui otomatis sesuai jam WIB. Cek jadwal sebelum datang.</p>
+            <h2 className="font-headline-lg text-headline-lg text-on-surface">{settings.doctors_heading}</h2>
+            {settings.doctors_intro && <p className="font-body-lg text-body-lg text-text-muted mt-3">{settings.doctors_intro}</p>}
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            {doctors.map((doc) => (
-              <DoctorCard key={doc.name} doctor={doc} />
-            ))}
-          </div>
+          {doctorStatus === 'loading' && <p className="text-on-surface-variant" role="status">Memuat jadwal dokter…</p>}
+          {doctorStatus === 'error' && (
+            <div className="bg-white rounded-xl p-6 max-w-2xl" role="alert">
+              <p className="text-on-surface font-medium mb-4">Jadwal dokter gagal dimuat. Periksa koneksi internet Anda, lalu coba lagi.</p>
+              <button type="button" onClick={loadDoctors} className="min-h-[44px] px-5 rounded-lg bg-primary text-on-primary font-bold hover:bg-primary/90">Muat ulang jadwal</button>
+            </div>
+          )}
+          {doctorStatus === 'ready' && doctors.length === 0 && (
+            <p className="text-on-surface-variant">Jadwal dokter sedang diperbarui. Hubungi kami via WhatsApp untuk informasi praktik.</p>
+          )}
+          {doctors.length > 0 && (
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+              {doctors.map((doc) => (
+                <DoctorCard key={doc.id} doctor={doc} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
       <FacilitiesSection />
 
-      {/* Mitra: daftar statis, tanpa animasi berjalan */}
-      <section className="py-14 bg-white border-y border-outline-variant/40">
+      {/* Mitra: daftar statis dari CMS, tanpa animasi berjalan */}
+      {partners.length > 0 && <section className="py-14 bg-white border-y border-outline-variant/40">
         <div className="w-full max-w-container-max mx-auto px-gutter grid lg:grid-cols-4 gap-6 items-start">
           <h2 className="font-headline-md text-headline-md text-on-surface">Rekan Medis &amp; Institusi Kami</h2>
           <ul className="lg:col-span-3 flex flex-wrap gap-x-8 gap-y-3 text-on-surface-variant font-body-md">
             {partners.map((name) => <li key={name}>{name}</li>)}
           </ul>
         </div>
-      </section>
+      </section>}
 
       <ArticleHighlightSection />
     </Layout>

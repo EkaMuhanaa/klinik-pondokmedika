@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useSiteSettings } from '../Contexts/SiteSettingsContext';
+import { useServices, useSiteSettings } from '../Contexts/SiteSettingsContext';
 import { absoluteUrl, breadcrumbFor, breadcrumbJsonLd, clinicJsonLd, pageMeta } from '../seo/meta';
 
 const DEFAULT_IMAGE = absoluteUrl('/images/logo-wide.png');
@@ -51,11 +51,12 @@ function setJsonLd(id, data) {
  */
 const Seo = ({ title, description, image, type = 'website', noindex = false, jsonLd, path }) => {
   const settings = useSiteSettings();
+  const { services } = useServices();
   const location = useLocation();
   const currentPath = path || location.pathname;
 
   useEffect(() => {
-    const auto = pageMeta(currentPath, settings) || {};
+    const auto = pageMeta(currentPath, settings, services) || {};
     const finalTitle = title || auto.title || settings.clinic_name;
     const finalDesc = description || auto.description || settings.tagline;
     const url = absoluteUrl(currentPath);
@@ -73,11 +74,11 @@ const Seo = ({ title, description, image, type = 'website', noindex = false, jso
     setMeta('property', 'og:locale', 'id_ID');
     setMeta('name', 'twitter:card', 'summary_large_image');
 
-    setJsonLd('ld-clinic', clinicJsonLd(settings));
-    const crumbs = breadcrumbFor(currentPath);
+    setJsonLd('ld-clinic', clinicJsonLd(settings, services));
+    const crumbs = breadcrumbFor(currentPath, services);
     setJsonLd('ld-breadcrumb', crumbs ? breadcrumbJsonLd(crumbs) : null);
     setJsonLd('ld-page', jsonLd || null);
-  }, [currentPath, settings, title, description, image, type, noindex, jsonLd]);
+  }, [currentPath, settings, services, title, description, image, type, noindex, jsonLd]);
 
   return null;
 };

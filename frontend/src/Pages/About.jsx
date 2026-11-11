@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { MdGroups, MdVerified, MdLocationOn, MdSchedule, MdPhoneInTalk } from 'react-icons/md';
+import { MdVerified, MdLocationOn, MdSchedule, MdPhoneInTalk } from 'react-icons/md';
 import axios from 'axios';
 import Layout from '../Components/Layout';
 import HeroSliderBackground from '../Components/HeroSliderBackground';
@@ -15,6 +15,11 @@ const missions = [
 const About = () => {
   const settings = useSiteSettings();
   const [heroImages, setHeroImages] = useState([]);
+  // Sorotan diatur di CMS → Pengaturan Klinik, format per baris: "Judul | Keterangan"
+  const highlights = (settings.about_highlights || '').split('\n').map((line) => {
+    const [title, note] = line.split('|').map((x) => x.trim());
+    return { title, note };
+  }).filter((h) => h.title);
 
   useEffect(() => {
     axios.get(import.meta.env.VITE_API_BASE_URL + '/api/sliders/about')
@@ -51,22 +56,19 @@ const About = () => {
             <p>{settings.clinic_name} didirikan untuk menghadirkan layanan kesehatan yang dapat diakses oleh seluruh lapisan masyarakat di sekitar {settings.kecamatan}.</p>
             <p>Kami melayani pemeriksaan umum, kesehatan gigi, serta kesehatan ibu dan anak bagi warga sekitar, dengan mengutamakan kenyamanan dan keselamatan setiap pasien.</p>
           </div>
-          <ul className="mt-8 flex flex-wrap gap-4">
-            <li className="bg-surface-container p-4 rounded-lg flex items-center gap-4">
-              <MdVerified className="text-primary text-3xl" aria-hidden="true" />
-              <div>
-                <h3 className="font-bold">Terakreditasi</h3>
-                <p className="text-sm text-on-surface-variant">Standar Pelayanan Nasional</p>
-              </div>
-            </li>
-            <li className="bg-surface-container p-4 rounded-lg flex items-center gap-4">
-              <MdGroups className="text-primary text-3xl" aria-hidden="true" />
-              <div>
-                <h3 className="font-bold">Tim Ahli</h3>
-                <p className="text-sm text-on-surface-variant">Dokter Berpengalaman</p>
-              </div>
-            </li>
-          </ul>
+          {highlights.length > 0 && (
+            <ul className="mt-8 flex flex-wrap gap-4">
+              {highlights.map((h) => (
+                <li key={h.title} className="bg-surface-container p-4 rounded-lg flex items-center gap-4">
+                  <MdVerified className="text-primary text-3xl" aria-hidden="true" />
+                  <div>
+                    <h3 className="font-bold">{h.title}</h3>
+                    {h.note && <p className="text-sm text-on-surface-variant">{h.note}</p>}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </section>
 

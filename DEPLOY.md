@@ -121,73 +121,83 @@ php artisan admin:create admin@klinikpondokmedika.id
 
 Password akan ditanyakan secara tersembunyi.
 
-## 3. Deploy Frontend (React)
+## 3. Deploy Lewat SSH (tanpa File Manager, tanpa npm di server)
 
-Hostinger Web Hosting tidak perlu menjalankan Node.js; cukup unggah hasil build.
-Build di komputer Anda:
+Hosting tidak menyediakan npm, jadi frontend **dibangun di GitHub** dan **dipasang lewat SSH**:
 
-```bash
-cd frontend
-cp .env.example .env
-# ubah isi .env menjadi: VITE_API_BASE_URL=https://klinikpondokmedika.id/api
-npm ci
-npm run build
-```
-
-`npm run build` juga menjalankan `scripts/prerender-meta.mjs`, yang menulis judul, deskripsi,
-dan data terstruktur Google (JSON-LD) untuk setiap halaman statis ke `dist/prerender/`.
-Data klinik diambil dari CMS lewat API saat build. Jadi **build ulang frontend setelah mengubah
-Pengaturan Klinik** di CMS supaya HTML awal ikut terbarui. Tampilan website sendiri langsung berubah
-tanpa build ulang.
-
-Lalu buat zip dari **isi** folder `dist/` (termasuk file tersembunyi `.htaccess`):
+1. Setiap ada perubahan di branch `main`, workflow **Build frontend** (`.github/workflows/build-frontend.yml`)
+   membangun frontend dan menyimpan hasilnya di GitHub Release **`frontend-latest`**.
+   Workflow ini **tidak** masuk ke server dan tidak butuh kunci SSH.
+2. Anda menjalankan deploy kapan pun siap, dengan satu perintah di server:
 
 ```bash
-cd dist && zip -r ../frontend.zip . && cd ..
+bash ~/klinik-pondokmedika/scripts/deploy.sh
 ```
 
-Unggah `frontend.zip` ke `public_html` lewat hPanel → File Manager, **tanpa diekstrak di File Manager**,
-lalu ekstrak lewat SSH:
+`scripts/deploy.sh` akan:
+- mengambil kode terbaru dari `main` (repo di server dipaksa sama persis dengan GitHub);
+- memperbarui backend: dependensi, migrasi database, cache (`scripts/server-update-backend.sh`);
+- mengunduh hasil build frontend dan **mengecek versinya sama** dengan kode backend;
+- memasang frontend ke `public_html` tanpa menyentuh symlink `api`, dan membuatnya ulang jika hilang
+  (`scripts/server-publish-frontend.sh`).
+
+`.env`, `vendor/`, database, dan gambar upload tidak terpengaruh.
+
+### 3.1 Pertama kali
+
+Script `deploy.sh` baru ada setelah kode terbaru ditarik, jadi untuk pertama kali jalankan:
 
 ```bash
-cd ~/domains/klinikpondokmedika.id/public_html && unzip -o frontend.zip && rm frontend.zip && ls -la
+cd ~/klinik-pondokmedika && git checkout main && git pull && bash scripts/deploy.sh
 ```
 
-> ⚠️ **Symlink `api` bisa hilang.** Mengekstrak zip atau menghapus file lewat File Manager
-> pernah menghapus symlink `api` di `public_html`. Akibatnya CMS, artikel, slider, dan promo
-> berhenti (semua `/api/...` jadi 404). Setelah **setiap** update frontend, pastikan baris
-> `api -> /home/u818194417/klinik-pondokmedika/backend/public` masih ada di hasil `ls -la`.
-> Jika hilang, buat ulang:
->
-> ```bash
-> ln -s ~/klinik-pondokmedika/backend/public ~/domains/klinikpondokmedika.id/public_html/api
-> ```
+### 3.2 Pesan yang mungkin muncul
 
-> **Alamat API.** Selama DNS `api.klinikpondokmedika.id` belum aktif, pakai
-> `VITE_API_BASE_URL=https://klinikpondokmedika.id/api`. Backend diakses lewat symlink `api`
-> di `public_html` domain utama, tanpa CORS karena satu domain. Setelah subdomain aktif, URL ini
-> tetap boleh dipakai. Nilai ini ditanam ke hasil build, jadi kalau diubah, build ulang.
+| Pesan | Artinya |
+|---|---|
+| `Versi frontend (...) belum sama dengan kode backend` | Build di GitHub masih berjalan. Tunggu 2–3 menit (cek tab **Actions → Build frontend**), lalu jalankan ulang. Backend sudah diperbarui. |
+| `Gagal mengunduh hasil build frontend` | Workflow **Build frontend** belum pernah selesai atau gagal. Buka tab **Actions**, jalankan **Run workflow** jika perlu, tunggu centang hijau. |
+| `Deploy selesai: abc1234` | Berhasil. Buka website untuk mengecek. |
 
-**Cek:** buka `https://klinikpondokmedika.id`, buka halaman artikel lalu refresh (tidak boleh 404),
-buka `https://klinikpondokmedika.id/sitemap.xml`, dan login di `https://klinikpondokmedika.id/admin/login`.
+Opsi: `--skip-frontend` (hanya backend), `--force` (pasang frontend walau versinya berbeda, untuk darurat).
+
+### 3.3 Alamat API
+
+Frontend memakai `https://klinikpondokmedika.id/api` (lewat symlink `api` di `public_html`), sehingga tidak
+bergantung pada DNS subdomain `api`. Untuk mengubahnya, isi variabel `VITE_API_BASE_URL` di GitHub
+(Settings → Secrets and variables → Actions → **Variables**), lalu jalankan ulang **Build frontend**.
+
+### 3.4 Cara cadangan (build di komputer sendiri)
+
+Jika GitHub Actions tidak bisa dipakai, dari komputer yang punya Node.js:
+
+```bash
+cd frontend && npm ci && VITE_API_BASE_URL=https://klinikpondokmedika.id/api npm run build && tar -czf ../frontend-release.tar.gz -C dist . && cd ..
+```
+
+```bash
+scp -P 65002 frontend-release.tar.gz USER_SSH@IP_SERVER:frontend-release.tar.gz
+```
+
+Lalu di server:
+
+```bash
+bash ~/klinik-pondokmedika/scripts/deploy.sh --skip-frontend && bash ~/klinik-pondokmedika/scripts/server-publish-frontend.sh ~/frontend-release.tar.gz
+```
+
+**Cek setelah deploy:** buka `https://klinikpondokmedika.id`, halaman artikel lalu refresh (tidak boleh 404),
+`https://klinikpondokmedika.id/sitemap.xml`, dan login di `https://klinikpondokmedika.id/admin/login`.
 
 ## 4. Update Berikutnya
 
-Backend (lewat SSH):
+1. Merge perubahan ke `main` di GitHub.
+2. Tunggu **Actions → Build frontend** centang hijau (±2–3 menit).
+3. Di server: `bash ~/klinik-pondokmedika/scripts/deploy.sh`
 
-```bash
-cd ~/klinik-pondokmedika
-git pull
-cd backend
-composer install --no-dev --optimize-autoloader --no-scripts
-php artisan package:discover
-php artisan migrate --force
-php artisan config:cache
-php artisan route:cache
-```
-
-Frontend: `npm run build` di komputer Anda, lalu unggah dan ekstrak `frontend.zip` seperti
-bagian 3, **lalu cek symlink `api`**.
+Perubahan isi website (artikel, layanan, dokter, promo, alamat) dilakukan admin di CMS dan **langsung tampil**
+tanpa deploy. Satu pengecualian: judul/deskripsi untuk Google ditulis saat build. Setelah mengubah
+Pengaturan Klinik atau daftar layanan, jalankan **Actions → Build frontend → Run workflow**, tunggu selesai,
+lalu `bash ~/klinik-pondokmedika/scripts/deploy.sh` agar Google ikut melihat data terbaru.
 
 ## 5. Backup
 
@@ -204,6 +214,6 @@ atau unduh berkala.
 | Request API ke `undefined/api/...` | `VITE_API_BASE_URL` kosong saat build. Isi `.env` frontend lalu build ulang. |
 | Upload gambar gagal (413 / error validasi) | Naikkan `upload_max_filesize` dan `post_max_size` di PHP Configuration. |
 | Perubahan `.env` tidak berpengaruh | Jalankan `php artisan config:cache` lagi. |
-| CMS/artikel/promo tidak muncul, `/api/up` 404 | Symlink `api` di `public_html` hilang (biasanya setelah ekstrak lewat File Manager). Buat ulang dengan `ln -s` (lihat bagian 3). |
+| CMS/artikel/promo tidak muncul, `/api/up` 404 | Symlink `api` di `public_html` hilang (biasanya setelah mengubah file lewat File Manager). Jalankan `bash ~/klinik-pondokmedika/scripts/deploy.sh`; script akan membuatnya kembali. |
 | Error 500 | Lihat `backend/storage/logs/laravel.log`. |
 | `The Process class relies on proc_open` saat `composer install` | Hostinger mematikan `proc_open`. Pakai `composer install --no-scripts` lalu `php artisan package:discover`. |
