@@ -19,27 +19,16 @@
   vertical-align: middle;
 }
 
-.glass-card {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.glass-nav {
-  backdrop-filter: blur(8px);
-  background-color: rgba(248, 250, 252, 0.9);
-}
-
+/* Lapisan gelap di atas foto hero agar teks putih tetap terbaca (>= 4.5:1) */
 .hero-overlay {
-  background: linear-gradient(to right, rgba(0, 82, 53, 0.85), rgba(0, 82, 53, 0.4));
+  background: linear-gradient(to right, rgba(6, 58, 38, 0.9), rgba(6, 58, 38, 0.75));
 }
 
-.whatsapp-float:hover {
-  transform: scale(1.1) rotate(5deg);
-}
-
-.doctor-card:hover img {
-  transform: scale(1.05);
+/* Area sentuh minimal 44px untuk link teks di daftar (footer, menu) */
+.tap-target {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }
 
 .docked {
@@ -49,17 +38,12 @@
   width: 100%;
 }
 
-.animate-in {
-  opacity: 1 !important;
-  transform: translateY(0) !important;
-}
-@keyframes scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(calc(-50%)); }
-}
-.animate-scroll {
-  animation: scroll 40s linear infinite;
-}
-.animate-scroll:hover {
-  animation-play-state: paused;
+/* Hormati pengaturan "kurangi gerakan" di perangkat pengguna */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -18,7 +18,8 @@ export const doctorsData = [
     specialtyBg: "bg-primary/10",
     specialtyColor: "text-primary",
     description: "Ramah dan berpengalaman dalam menangani pertumbuhan serta kesehatan balita dan anak-anak.",
-    image: "/images/placeholder-dokter.svg", // TODO: ganti dengan foto asli dokter,
+    image: "/images/placeholder-dokter.svg", // TODO: ganti dengan foto asli dokter
+    photoPending: true,
     scheduleDetails: [
       { day: "Rabu", time: "13.00 - 21.00" },
       { day: "Kamis", time: "13.00 - 21.00" },

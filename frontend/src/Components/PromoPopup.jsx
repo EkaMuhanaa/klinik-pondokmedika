@@ -49,25 +49,27 @@ const PromoPopup = () => {
 
   const url = promo.button_url;
   const internal = url && url.startsWith('/');
-  const btnClass = 'block w-full text-center bg-primary text-on-primary font-bold py-3 px-6 rounded-full hover:bg-primary/90 transition-colors';
+  const btnClass = 'flex items-center justify-center w-full min-h-[48px] text-center bg-primary text-on-primary font-bold px-6 rounded-full hover:bg-primary/90 transition-colors';
 
   return (
     <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center sm:p-4" role="dialog" aria-modal="true" aria-labelledby="promo-title">
       <div className="absolute inset-0 bg-black/50" onClick={close} aria-hidden="true" />
-      <div className="relative w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col animate-fade-in-up">
+      <div className="relative w-full sm:max-w-md bg-white rounded-t-xl sm:rounded-xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col">
         <button
           ref={closeRef}
           onClick={close}
           aria-label="Tutup promo"
-          className="absolute top-3 right-3 z-10 w-10 h-10 rounded-full bg-white/90 shadow flex items-center justify-center text-on-surface hover:bg-white"
+          className="absolute top-3 right-3 z-10 w-11 h-11 rounded-lg bg-white/95 border border-outline-variant flex items-center justify-center text-on-surface hover:bg-white"
         >
-          <MdClose className="text-2xl" />
+          <MdClose className="text-2xl" aria-hidden="true" />
         </button>
         {promo.image_path && (
           <img
             src={import.meta.env.VITE_API_BASE_URL + promo.image_path}
             alt={promo.title}
-            className="w-full max-h-[45vh] object-contain bg-surface-container"
+            width="800"
+            height="1000"
+            className="w-full h-auto max-h-[45vh] object-contain bg-surface-container"
           />
         )}
         <div className="p-6 overflow-y-auto">

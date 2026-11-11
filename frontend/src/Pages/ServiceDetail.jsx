@@ -35,13 +35,13 @@ const ServiceDetail = () => {
       },
     }}>
       <section className="bg-primary py-16 px-gutter">
-        <div className="max-w-7xl mx-auto animate-fade-in-up">
-          <Link to="/layanan" className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors">
-            <MdArrowBack className="text-sm" />
+        <div className="max-w-7xl mx-auto">
+          <Link to="/layanan" className="inline-flex items-center gap-2 min-h-[44px] text-white hover:underline mb-4">
+            <MdArrowBack className="text-sm" aria-hidden="true" />
             Kembali ke Daftar Layanan
           </Link>
-          <h1 className="font-headline-xl text-headline-xl text-white mb-4">{title} di {localArea(settings)}</h1>
-          <p className="font-body-lg text-white/80 max-w-2xl">
+          <h1 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-white mb-4">{title} di {localArea(settings)}</h1>
+          <p className="font-body-lg text-white max-w-2xl">
             Informasi lengkap mengenai prosedur, fasilitas pelayanan, serta pendekatan medis klinik kami untuk kebutuhan {title} Anda.
           </p>
         </div>
@@ -51,41 +51,38 @@ const ServiceDetail = () => {
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-12">
           
           {/* Main Content (Left) */}
-          <div className="lg:col-span-3 animate-fade-in-up">
-            <h2 className="font-headline-md text-3xl font-bold text-primary mb-10 border-b border-outline-variant/30 pb-4">
+          <div className="lg:col-span-3">
+            <h2 className="font-headline-lg text-headline-lg text-primary mb-10 border-b border-outline-variant/30 pb-4">
               Informasi Pelayanan {title}
             </h2>
             
             <div className="space-y-12">
               <div>
-                <p className="text-on-surface-variant leading-relaxed text-justify text-lg font-medium italic">
+                <p className="text-on-surface-variant leading-relaxed text-lg font-medium italic">
                   {serviceData?.background || defaultText}
                 </p>
               </div>
               
               <div>
-                <h3 className="font-bold text-xl text-on-surface mb-4 flex items-center gap-2">
-                  <span className="w-1.5 h-6 bg-primary rounded-full inline-block"></span>
+                <h3 className="font-heading font-semibold text-xl text-on-surface mb-4">
                   Penjelasan Layanan di Klinik Kami
                 </h3>
-                <p className="text-on-surface-variant leading-relaxed text-justify text-lg">
+                <p className="text-on-surface-variant leading-relaxed text-lg">
                   {serviceData?.explanation || defaultText}
                 </p>
               </div>
 
               <div>
-                <h3 className="font-bold text-xl text-on-surface mb-4 flex items-center gap-2">
-                  <span className="w-1.5 h-6 bg-primary rounded-full inline-block"></span>
+                <h3 className="font-heading font-semibold text-xl text-on-surface mb-4">
                   Kondisi Medis Pasien yang Cocok
                 </h3>
-                <p className="text-on-surface-variant leading-relaxed text-justify text-lg bg-surface-container-low p-6 rounded-2xl border border-outline-variant/20">
+                <p className="text-on-surface-variant leading-relaxed text-lg bg-surface-container-low p-6 rounded-2xl border border-outline-variant/20">
                   {serviceData?.conditions || defaultText}
                 </p>
               </div>
 
               <div>
-                <h3 className="font-bold text-xl text-on-surface mb-4 flex items-center gap-2">
-                  <span className="w-1.5 h-6 bg-primary rounded-full inline-block"></span>
+                <h3 className="font-heading font-semibold text-xl text-on-surface mb-4">
                   Layanan & Tahapan Pengobatan
                 </h3>
                 <ul className="list-none space-y-4 text-on-surface-variant leading-relaxed text-lg">
@@ -94,7 +91,7 @@ const ServiceDetail = () => {
                     const match = stage.match(/^(\d+\.)\s*(.*)/);
                     if (match) {
                       return (
-                        <li key={idx} className="flex gap-4 p-4 bg-white rounded-xl shadow-sm border border-outline-variant/20">
+                        <li key={idx} className="flex gap-4 p-4 bg-white rounded-lg border border-outline-variant/20">
                           <span className="font-bold text-primary flex-shrink-0">{match[1]}</span>
                           <span>{match[2]}</span>
                         </li>
@@ -105,25 +102,25 @@ const ServiceDetail = () => {
                 </ul>
               </div>
 
-              <div className="bg-primary/5 p-8 rounded-3xl border border-primary/20 flex flex-col md:flex-row justify-between items-center gap-6">
+              <div className="bg-primary/5 p-8 rounded-xl border border-primary/20 flex flex-col md:flex-row justify-between md:items-center gap-6">
                 <div>
                   <h3 className="font-bold text-xl text-primary mb-3">Lokasi Pelayanan & Kontak Darurat</h3>
                   <p className="text-on-surface-variant leading-relaxed whitespace-pre-line text-lg font-medium">
                     {serviceData.location}{'\n'}Telp/WhatsApp: {settings.phone}
                   </p>
                 </div>
-                <a href={whatsappLink(settings, `Halo ${settings.clinic_name}, saya ingin bertanya tentang layanan ${title}.`)} target="_blank" rel="noreferrer" className="bg-primary text-white font-bold py-3 px-6 rounded-full whitespace-nowrap shadow-md hover:bg-primary-container hover:text-on-primary-container transition-colors">
-                  Hubungi Sekarang
+                <a href={whatsappLink(settings, `Halo ${settings.clinic_name}, saya ingin bertanya tentang layanan ${title}.`)} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center min-h-[48px] bg-whatsapp-green text-on-whatsapp font-bold px-6 rounded-full text-center hover:brightness-95 active:brightness-90 transition">
+                  Tanya {title} via WhatsApp
                 </a>
               </div>
             </div>
           </div>
 
           {/* Sidebar (Right) */}
-          <aside className="lg:col-span-1 animate-fade-in-up" style={{ animationDelay: '200ms' }}>
-            <div className="bg-white rounded-2xl border border-outline-variant/30 overflow-hidden sticky top-24 shadow-sm">
+          <aside className="lg:col-span-1">
+            <div className="bg-white rounded-xl border border-outline-variant/40 overflow-hidden sticky top-24">
               <div className="p-5 border-b border-outline-variant/30 bg-surface-container-lowest">
-                <h3 className="font-bold text-lg text-primary">Layanan Lainnya</h3>
+                <h2 className="font-bold text-lg text-primary">Layanan Lainnya</h2>
               </div>
               <div className="flex flex-col">
                 {services.map(srv => (

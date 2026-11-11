@@ -19,8 +19,13 @@ const ArticleDetail = () => {
   const [copied, setCopied] = useState(false);
   const shareMenuRef = useRef(null);
 
+  const [loadError, setLoadError] = useState(null); // null | 'notfound' | 'network'
+  const [reloadKey, setReloadKey] = useState(0);
+
   useEffect(() => {
     const fetchArticle = async () => {
+      setLoading(true);
+      setLoadError(null);
       try {
         const res = await axios.get(`/articles/${slug}`);
         setArticle(res.data);
@@ -33,13 +38,14 @@ const ArticleDetail = () => {
           setRelatedArticles(filtered);
         }
       } catch (e) {
-        console.error(e);
+        setArticle(null);
+        setLoadError(e.response?.status === 404 ? 'notfound' : 'network');
       } finally {
         setLoading(false);
       }
     };
     fetchArticle();
-  }, [slug]);
+  }, [slug, reloadKey]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -76,12 +82,30 @@ const ArticleDetail = () => {
     );
   }
 
+  if (loadError === 'network') {
+    return (
+      <Layout seo={{ title: `Artikel – ${settings.clinic_name}`, noindex: true }}>
+        <div className="min-h-[60vh] max-w-xl mx-auto px-gutter flex flex-col justify-center" role="alert">
+          <h1 className="font-headline-lg text-headline-lg text-on-surface mb-3">Artikel gagal dimuat</h1>
+          <p className="text-on-surface-variant mb-6">Terjadi gangguan saat mengambil data. Periksa koneksi internet Anda, lalu coba lagi.</p>
+          <div className="flex flex-wrap gap-4">
+            <button type="button" onClick={() => setReloadKey((k) => k + 1)} className="min-h-[44px] px-5 rounded-lg bg-primary text-on-primary font-bold hover:bg-primary/90">
+              Muat ulang artikel
+            </button>
+            <Link to="/artikel" className="inline-flex items-center min-h-[44px] font-bold text-primary hover:underline">Ke daftar artikel</Link>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   if (!article) {
     return (
       <Layout seo={{ title: `Artikel Tidak Ditemukan – ${settings.clinic_name}`, noindex: true }}>
-        <div className="min-h-screen flex flex-col items-center justify-center">
-          <h1 className="text-3xl font-bold mb-4">Artikel Tidak Ditemukan</h1>
-          <Link to="/artikel" className="text-primary hover:underline">Kembali ke Daftar Artikel</Link>
+        <div className="min-h-[60vh] max-w-xl mx-auto px-gutter flex flex-col justify-center">
+          <h1 className="font-headline-lg text-headline-lg text-on-surface mb-3">Artikel tidak ditemukan</h1>
+          <p className="text-on-surface-variant mb-6">Artikel ini mungkin sudah dihapus atau alamatnya berubah.</p>
+          <Link to="/artikel" className="inline-flex items-center min-h-[44px] font-bold text-primary hover:underline">Ke daftar artikel</Link>
         </div>
       </Layout>
     );
@@ -115,24 +139,24 @@ const ArticleDetail = () => {
       },
     }}>
       {/* Detail Header */}
-      <section className="pt-32 pb-12 px-gutter bg-surface-container-lowest transition-all duration-700 opacity-100 translate-y-0 animate-fade-in-up">
-        <div className="max-w-3xl mx-auto text-center">
-          <Link to="/artikel" className="inline-flex items-center gap-2 text-primary font-bold hover:gap-3 transition-all mb-8">
-            <MdArrowBack className="text-sm" />
+      <section className="pt-12 md:pt-16 pb-10 px-gutter bg-surface-container-lowest">
+        <div className="max-w-3xl mx-auto">
+          <Link to="/artikel" className="inline-flex items-center gap-2 min-h-[44px] text-primary font-bold hover:underline mb-6">
+            <MdArrowBack className="text-sm" aria-hidden="true" />
             Kembali ke Daftar Artikel
           </Link>
           
-          <div className="flex justify-center items-center gap-3 mb-6">
-            <Link to={`/artikel?category=${encodeURIComponent(article.category)}`} className="bg-primary/10 text-primary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider hover:bg-primary hover:text-white transition-colors">
+          <div className="flex flex-wrap items-center gap-3 mb-4">
+            <Link to={`/artikel?category=${encodeURIComponent(article.category)}`} className="inline-flex items-center min-h-[44px] bg-primary/10 text-primary px-3 rounded-md text-sm font-bold hover:bg-primary hover:text-white transition-colors">
               {article.category}
             </Link>
             <span className="text-on-surface-variant text-sm flex items-center gap-1">
-              <MdCalendarToday className="text-[16px]" />
-              {new Date(article.published_at || article.created_at).toLocaleDateString('id-ID')}
+              <MdCalendarToday className="text-[16px]" aria-hidden="true" />
+              {new Date(article.published_at || article.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
             </span>
           </div>
 
-          <h1 className="font-headline-xl text-headline-xl text-on-surface mb-6 leading-tight">
+          <h1 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-on-surface">
             {article.title}
           </h1>
         </div>
@@ -145,47 +169,50 @@ const ArticleDetail = () => {
           <div className="lg:col-span-2">
             {/* Featured Image */}
             {article.thumbnail_path && (
-              <div className="w-full aspect-video rounded-2xl mb-12 overflow-hidden animate-fade-in-up shadow-sm border border-outline-variant/30" style={{ animationDelay: '100ms' }}>
-                <img src={`${import.meta.env.VITE_API_BASE_URL}${article.thumbnail_path}`} alt={article.title} className="w-full h-full object-cover" fetchpriority="high" />
+              <div className="w-full aspect-video rounded-xl mb-10 overflow-hidden border border-outline-variant/30">
+                <img src={`${import.meta.env.VITE_API_BASE_URL}${article.thumbnail_path}`} alt={article.title} width="1200" height="675" className="w-full h-full object-cover" fetchpriority="high" />
               </div>
             )}
 
-            <article className="prose prose-lg prose-slate max-w-none text-on-surface-variant font-body-lg leading-relaxed animate-fade-in-up" style={{ animationDelay: '200ms' }}>
+            <article className="prose prose-lg prose-slate max-w-none text-on-surface-variant font-body-lg leading-relaxed">
               <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(article.content.replace(/\n/g, '<br/>')) }} />
             </article>
             
-            <div className="mt-16 pt-8 border-t border-outline-variant/30 flex justify-between items-center animate-fade-in-up relative" style={{ animationDelay: '300ms' }}>
+            <div className="mt-16 pt-8 border-t border-outline-variant/30 flex justify-between items-center relative">
               <p className="text-on-surface-variant font-label-md">Bagikan artikel ini:</p>
               <div className="flex gap-4 relative" ref={shareMenuRef}>
               <button 
+                type="button"
                 onClick={handleCopyLink}
-                title="Salin Tautan"
-                className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${copied ? 'bg-green-100 text-green-600' : 'bg-surface-container text-on-surface hover:text-primary hover:bg-primary/10'}`}
+                aria-label={copied ? 'Tautan tersalin' : 'Salin tautan artikel'}
+                className={`w-11 h-11 rounded-lg flex items-center justify-center transition-colors ${copied ? 'bg-secondary text-white' : 'bg-surface-container text-on-surface hover:text-primary hover:bg-primary/10'}`}
               >
-                {copied ? <MdCheck className="text-[20px]" /> : <MdLink className="text-[20px]" />}
+                {copied ? <MdCheck className="text-[20px]" aria-hidden="true" /> : <MdLink className="text-[20px]" aria-hidden="true" />}
               </button>
               <button 
+                type="button"
                 onClick={handleShare}
-                title="Bagikan"
-                className={`w-10 h-10 rounded-full flex items-center justify-center transition-colors ${showShareMenu ? 'bg-primary text-white' : 'bg-surface-container text-on-surface hover:text-primary hover:bg-primary/10'}`}
+                aria-label="Bagikan artikel"
+                aria-expanded={showShareMenu}
+                className={`w-11 h-11 rounded-lg flex items-center justify-center transition-colors ${showShareMenu ? 'bg-primary text-white' : 'bg-surface-container text-on-surface hover:text-primary hover:bg-primary/10'}`}
               >
-                <MdShare className="text-[20px]" />
+                <MdShare className="text-[20px]" aria-hidden="true" />
               </button>
 
               {/* Share Dropdown */}
               {showShareMenu && (
-                <div className="absolute bottom-14 right-0 w-48 bg-white rounded-xl shadow-lg border border-outline-variant/20 overflow-hidden z-10 animate-in fade-in slide-in-from-bottom-2">
+                <div className="absolute bottom-14 right-0 w-48 bg-white rounded-xl shadow-lg border border-outline-variant/20 overflow-hidden z-10">
                   <div className="flex flex-col">
-                    <button onClick={handleCopyLink} className="flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low text-left">
-                      <MdContentCopy className="text-[18px]" />
+                    <button type="button" onClick={handleCopyLink} className="flex items-center gap-3 px-4 min-h-[44px] text-sm text-on-surface hover:bg-surface-container-low text-left">
+                      <MdContentCopy className="text-[18px]" aria-hidden="true" />
                       Salin Link
                     </button>
-                    <a href={`https://api.whatsapp.com/send?text=${shareTitle}%20${shareUrl}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low">
-                      <svg className="w-[18px] h-[18px] fill-[#25D366]" viewBox="0 0 448 512"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 56.3 0 109.2 21.9 149 61.6 39.8 39.8 61.7 92.7 61.7 149.2 0 101.7-82.7 184.4-184.4 184.4h-.1zM294.6 220c-5.4-2.7-31.9-15.7-36.8-17.5-4.9-1.8-8.5-2.7-12.1 2.7-3.6 5.4-14.4 17.5-17.5 21.1-3.1 3.6-6.3 4-11.7 1.4-5.4-2.7-22.8-8.4-43.4-26.8-16-14.3-26.8-31.9-29.5-37.3-2.7-5.4-.3-8.3 2.4-11 2.4-2.4 5.4-6.3 8-9.4 2.7-3.1 3.6-5.4 5.4-9 1.8-3.6 .9-6.7-.4-9.4-1.4-2.7-12.1-29.3-16.6-40.1-4.4-10.5-8.8-9.1-12.1-9.3-3.1-.1-6.7-.1-10.3-.1-3.6 0-9.4 1.4-14.4 6.7-5.4 5.4-20.6 20.2-20.6 49.3s21.1 57.2 24.2 61.3c3.1 4 41.8 63.8 101.3 89.4 14.2 6.1 25.3 9.8 33.9 12.5 14.3 4.5 27.3 3.9 37.6 2.4 11.5-1.7 35.4-14.4 40.4-28.4 5-13.9 5-25.9 3.6-28.4-1.4-2.7-5.4-4.1-10.8-6.8z"/></svg>
+                    <a href={`https://api.whatsapp.com/send?text=${shareTitle}%20${shareUrl}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-4 min-h-[44px] text-sm text-on-surface hover:bg-surface-container-low">
+                      <svg aria-hidden="true" className="w-[18px] h-[18px] fill-[#25D366]" viewBox="0 0 448 512"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 56.3 0 109.2 21.9 149 61.6 39.8 39.8 61.7 92.7 61.7 149.2 0 101.7-82.7 184.4-184.4 184.4h-.1zM294.6 220c-5.4-2.7-31.9-15.7-36.8-17.5-4.9-1.8-8.5-2.7-12.1 2.7-3.6 5.4-14.4 17.5-17.5 21.1-3.1 3.6-6.3 4-11.7 1.4-5.4-2.7-22.8-8.4-43.4-26.8-16-14.3-26.8-31.9-29.5-37.3-2.7-5.4-.3-8.3 2.4-11 2.4-2.4 5.4-6.3 8-9.4 2.7-3.1 3.6-5.4 5.4-9 1.8-3.6 .9-6.7-.4-9.4-1.4-2.7-12.1-29.3-16.6-40.1-4.4-10.5-8.8-9.1-12.1-9.3-3.1-.1-6.7-.1-10.3-.1-3.6 0-9.4 1.4-14.4 6.7-5.4 5.4-20.6 20.2-20.6 49.3s21.1 57.2 24.2 61.3c3.1 4 41.8 63.8 101.3 89.4 14.2 6.1 25.3 9.8 33.9 12.5 14.3 4.5 27.3 3.9 37.6 2.4 11.5-1.7 35.4-14.4 40.4-28.4 5-13.9 5-25.9 3.6-28.4-1.4-2.7-5.4-4.1-10.8-6.8z"/></svg>
                       WhatsApp
                     </a>
-                    <a href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareTitle}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-4 py-3 text-sm text-on-surface hover:bg-surface-container-low">
-                      <svg className="w-[18px] h-[18px] fill-current" viewBox="0 0 512 512"><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L273 181.6 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg>
+                    <a href={`https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareTitle}`} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 px-4 min-h-[44px] text-sm text-on-surface hover:bg-surface-container-low">
+                      <svg aria-hidden="true" className="w-[18px] h-[18px] fill-current" viewBox="0 0 512 512"><path d="M389.2 48h70.6L305.6 224.2 487 464H345L233.7 318.6 106.5 464H35.8L200.7 275.5 26.8 48H172.4L273 181.6 389.2 48zM364.4 421.8h39.1L151.1 88h-42L364.4 421.8z"/></svg>
                       X (Twitter)
                     </a>
                   </div>
@@ -196,12 +223,9 @@ const ArticleDetail = () => {
           </div>
           
           {/* Sidebar (Right) */}
-          <aside className="lg:col-span-1 border-t lg:border-t-0 pt-12 lg:pt-0 animate-fade-in-up" style={{ animationDelay: '400ms' }}>
+          <aside className="lg:col-span-1 border-t lg:border-t-0 pt-12 lg:pt-0">
             <div className="sticky top-24">
-              <h3 className="font-bold text-xl text-on-surface mb-6 relative inline-block">
-                Artikel Terkait
-                <div className="absolute -bottom-2 left-0 w-1/2 h-1 bg-primary rounded-full"></div>
-              </h3>
+              <h2 className="font-heading font-semibold text-xl text-on-surface mb-6">Artikel Terkait</h2>
               
               <div className="flex flex-col gap-6">
                 {relatedArticles.length > 0 ? (
@@ -214,8 +238,11 @@ const ArticleDetail = () => {
                       <div className="w-full h-36 rounded-xl overflow-hidden relative bg-surface-container-low">
                         <img 
                           src={relArticle.thumbnail_path ? `${import.meta.env.VITE_API_BASE_URL}${relArticle.thumbnail_path}` : '/images/placeholder-artikel.svg'} 
-                          alt={relArticle.title}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          alt=""
+                          width="400"
+                          height="225"
+                          loading="lazy"
+                          className="w-full h-full object-cover"
                           onError={(e) => {
                             e.target.onerror = null;
                             e.target.src = '/images/placeholder-artikel.svg';
@@ -223,13 +250,13 @@ const ArticleDetail = () => {
                         />
                       </div>
                       <div>
-                        <p className="text-xs text-on-surface-variant flex items-center gap-1 mb-1.5">
-                          <MdCalendarToday className="text-[12px]" />
+                        <p className="text-sm text-on-surface-variant flex items-center gap-1 mb-1.5">
+                          <MdCalendarToday className="text-[12px]" aria-hidden="true" />
                           {new Date(relArticle.published_at || relArticle.created_at).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' })}
                         </p>
-                        <h4 className="font-bold text-base text-on-surface group-hover:text-primary transition-colors leading-snug line-clamp-2 mb-1.5">
+                        <h3 className="font-bold text-base text-on-surface group-hover:text-primary transition-colors leading-snug line-clamp-2 mb-1.5">
                           {relArticle.title}
-                        </h4>
+                        </h3>
                         <p className="text-sm text-on-surface-variant line-clamp-2 leading-relaxed">
                           {relArticle.excerpt || relArticle.content.substring(0, 100).replace(/<[^>]+>/g, '') + '...'}
                         </p>

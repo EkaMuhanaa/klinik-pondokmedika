@@ -9,7 +9,7 @@ Berdasarkan logo Klinik Pondok Medika, desain antarmuka (UI) akan mengusung tema
 
 * **Profesional & Kredibel:** Ditunjukkan melalui penggunaan warna hijau tua (Dark Green) yang tegas, mewakili stabilitas dan keahlian medis.
 * **Ramah & Menenangkan:** Diwakili oleh warna biru kehijauan (Teal/Cyan) yang cerah, memberikan kesan bersih, higienis, dan pelayanan yang mengutamakan kenyamanan pasien.
-* **Bentuk Visual (Shape):** Logo menggunakan elemen melingkar (lingkaran stetoskop) dan sudut melengkung (rounded). Elemen UI seperti tombol, kartu (card), dan gambar harus menggunakan sudut melengkung (misalnya kelas `rounded-lg` atau `rounded-full` pada Tailwind) untuk menjaga konsistensi kelembutan visual.
+* **Bentuk Visual (Shape):** Logo menggunakan elemen melingkar (lingkaran stetoskop) dan sudut melengkung (rounded). Sudut melengkung dipakai bertingkat (lihat §7): `rounded-full` hanya untuk tombol aksi utama, kartu dan gambar `rounded-xl`, chip/label/input `rounded-lg` atau `rounded-md`.
 
 
 
@@ -18,8 +18,9 @@ Berdasarkan logo Klinik Pondok Medika, desain antarmuka (UI) akan mengusung tema
 Warna ini akan dikonfigurasi ke dalam file `tailwind.config.js`.
 
 * **Primary Color (Teal / Cyan):** `#32B3B2` (Estimasi dari logo "Medika" dan garis stetoskop)
-* *Fungsi:* Warna aksi utama, tombol utama, tautan aktif, ikon layanan, dan aksen visual.
-* *Tailwind:* `bg-teal-500`, `text-teal-500`.
+* *Fungsi:* Warna logo. Di halaman hanya boleh untuk elemen dekoratif di atas latar putih/terang. **Tidak dipakai untuk teks, tombol berteks putih, atau ikon di atas teal gelap** (kontras 2,52–2,55:1).
+* *Tailwind:* `text-brand-teal`.
+* **Teal Gelap (warna aksi):** `#006A69` (`primary`). Tombol, tautan, dan teks berwarna. Kontras dengan putih 6,43:1.
 
 
 * **Secondary Color (Dark Green):** `#065A3C` (Estimasi dari logo "Pondok" dan teks "Klinik Pondok Medika")
@@ -28,7 +29,7 @@ Warna ini akan dikonfigurasi ke dalam file `tailwind.config.js`.
 
 
 * **Accent & Utility Colors:**
-* **WhatsApp Green:** `#25D366` (Khusus untuk tombol interaktif *Call to Action* WhatsApp).
+* **WhatsApp Green:** `#25D366` (Khusus untuk tombol *Call to Action* WhatsApp), dengan teks/ikon gelap `#06331B` (`on-whatsapp`, kontras 7,07:1). Teks putih di atas hijau ini hanya 1,98:1 dan tidak dipakai.
 
 
 * **Background Light:** `#F8FAFC` (Slate 50) untuk latar belakang halaman agar terlihat bersih dan luas.
@@ -52,10 +53,10 @@ Memilih font *sans-serif* yang bersih, geometris, dan modern untuk menyesuaikan 
 
 ### 4.1. Tombol (Buttons)
 
-* **Primary Button (Aksi Utama):** Latar belakang *Primary Teal*, teks putih, sudut melengkung penuh (`rounded-full`). Digunakan untuk tombol "Buat Janji Temu" atau "Lihat Layanan".
+* **Primary Button (Aksi Utama):** Latar belakang Teal Gelap `#006A69` (atau hijau WhatsApp untuk pendaftaran), teks putih, sudut melengkung penuh (`rounded-full`). Hanya tombol aksi utama yang berbentuk pill.
 
 
-* **WhatsApp CTA Button:** Latar belakang *WhatsApp Green*, teks putih, dilengkapi ikon logo WhatsApp. Akan diletakkan secara mengambang (floating) atau menonjol di Hero Section.
+* **WhatsApp CTA Button:** Latar belakang *WhatsApp Green*, teks dan ikon gelap `#06331B`, dilengkapi ikon logo WhatsApp. Ada di hero Beranda dan sebagai tombol mengambang.
 
 
 * **Secondary/Outline Button:** Tanpa latar belakang, border tebal dengan warna *Secondary Dark Green*, teks *Secondary Dark Green*. Digunakan untuk filter pencarian dokter.
@@ -67,7 +68,7 @@ Memilih font *sans-serif* yang bersih, geometris, dan modern untuk menyesuaikan 
 * Digunakan pada **Seksi Layanan Unggulan** dan **Dokter Kami**.
 
 
-* *Desain:* Latar belakang putih (`bg-white`), bayangan lembut (`shadow-md`), sudut melengkung (`rounded-xl` atau `rounded-2xl`), dengan *hover effect* (bayangan membesar atau sedikit terangkat) untuk interaktivitas React.js.
+* *Desain:* Latar belakang putih (`bg-white`), garis tepi tipis, sudut `rounded-xl`, tanpa bayangan. Hover mengubah warna garis tepi, tidak mengangkat kartu. Bayangan hanya untuk lapisan yang benar-benar melayang (lihat §7).
 
 
 
@@ -122,3 +123,25 @@ Menyesuaikan spesifikasi PRD, indikator status menggunakan *badge* warna:
 
 * **Ikon:** Menggunakan *Heroicons* atau *Feather Icons* (gaya garis/outline) dengan warna dominan *Primary Teal*.
 * **Gambar:** CMS mengatur kompresi otomatis dan rasio untuk menjaga konsistensi. Foto dokter wajib berlatar belakang seragam (misalnya abu-abu terang atau putih). Logo *partner* medis (BPJS/Asuransi) wajib berformat transparan (PNG/SVG) untuk menyatu rapi dengan latar belakang.
+
+## 7. Keputusan Desain (Audit Anti-Slop #001, November 2026)
+
+Dicatat sesuai aturan anti-slop R-31: setiap keputusan punya alasan satu baris. Pemilik memilih "ubah" untuk tiga konflik audit (warna teks tombol WhatsApp, pill di semua elemen, bayangan di semua kartu).
+
+**Design Read:** website profil klinik pratama untuk warga Cengkareng dan sekitarnya, bahasa visual "Modern, Terpercaya, Menenangkan" (§1), dial **ENERGY 1 / RHYTHM 2 / MOTION 1**.
+
+| Keputusan | Alasan |
+|---|---|
+| Hijau tua `#065A3C` untuk footer dan latar hero tanpa foto | Warna logo "Pondok"; aman untuk teks putih (8,28:1) sehingga tidak pernah ada teks pucat di atas gradien. |
+| Teal gelap `#006A69` untuk aksi; teal logo `#32B3B2` tidak dipakai untuk teks/ikon | Teal logo terlalu terang untuk teks; teal gelap tetap terasa satu keluarga. |
+| Tidak ada warna oranye/ketiga di halaman publik | Palet dibatasi 2 warna inti + hijau WhatsApp sebagai satu aksen. |
+| Tombol WhatsApp hijau dengan teks gelap | Hijau WhatsApp dikenali pasien; teks gelap membuatnya terbaca. |
+| Pill hanya untuk tombol aksi utama | Bentuk pill menandai "ini tindakan utama"; elemen lain memakai sudut lebih kecil supaya hierarki terlihat. |
+| Bayangan hanya untuk header sticky, kartu info hero, menu, pop-up, dan tombol WhatsApp mengambang | Bayangan berarti "melayang di atas halaman", bukan dekorasi setiap kartu. |
+| Satu layanan ditonjolkan (Poli Umum / Pemeriksaan Anak & Dewasa) | Pintu masuk utama pasien; layanan lain ditampilkan sebagai daftar ringkas. |
+| Judul section rata kiri dengan tautan di kanan, tanpa label kapital di atas judul | Mengurangi pola "judul tengah + subjudul + grid" yang berulang; label kapital hanya mengulang judul. |
+| Tidak ada ikon hiasan di atas judul hero | Ikon tidak membawa informasi; fokus hero adalah judul dan tombol daftar. |
+| Tanpa animasi scroll, transisi halaman, atau teks berjalan (MOTION 1) | Konten klinik harus langsung terbaca; gerakan hanya untuk hover, menu, dan slide hero yang bisa dijeda. Semua gerakan berhenti jika perangkat diset "kurangi gerakan". |
+| Area sentuh minimal 44 px | Banyak pasien membuka dari HP; link footer dan tombol kecil sebelumnya hanya 20–40 px. |
+| Montserrat untuk judul, Inter untuk teks | Montserrat geometris seperti huruf logo; Inter mudah dibaca di layar kecil (§3). |
+| Ikon Material (react-icons/md), garis tebal | Sudah dipakai di seluruh situs; dipilih per makna (jam, lokasi, telepon), tidak sekadar hiasan. |
