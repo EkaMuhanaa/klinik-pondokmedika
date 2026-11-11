@@ -5,6 +5,7 @@ Sistem Web & Backend API untuk Klinik Pondok Medika.
 ## Struktur Direktori
 
 - `frontend/` : Aplikasi web frontend menggunakan React + Vite & Tailwind CSS.
+  Mendukung TypeScript (`.tsx`) dan alias `@/` → `frontend/src`. Komponen UI gaya shadcn ada di `frontend/src/Components/ui` (lihat `frontend/components.json`).
 - `backend/`  : Backend REST API menggunakan Laravel & Sanctum authentication.
 - `DESIGN.md` : Dokumentasi desain dan arsitektur UI/UX.
 - `DEPLOY.md` : Panduan deploy ke Hostinger (lewat SSH, frontend dibangun di GitHub).

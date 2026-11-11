@@ -141,7 +141,8 @@ Dicatat sesuai aturan anti-slop R-31: setiap keputusan punya alasan satu baris. 
 | Satu layanan ditonjolkan (Poli Umum / Pemeriksaan Anak & Dewasa) | Pintu masuk utama pasien; layanan lain ditampilkan sebagai daftar ringkas. |
 | Judul section rata kiri dengan tautan di kanan, tanpa label kapital di atas judul | Mengurangi pola "judul tengah + subjudul + grid" yang berulang; label kapital hanya mengulang judul. |
 | Tidak ada ikon hiasan di atas judul hero | Ikon tidak membawa informasi; fokus hero adalah judul dan tombol daftar. |
-| Tanpa animasi scroll, transisi halaman, atau teks berjalan (MOTION 1) | Konten klinik harus langsung terbaca; gerakan hanya untuk hover, menu, dan slide hero yang bisa dijeda. Semua gerakan berhenti jika perangkat diset "kurangi gerakan". |
+| Tanpa animasi scroll atau transisi halaman (MOTION 1) | Konten klinik harus langsung terbaca; gerakan hanya untuk hover, menu, slide hero, dan daftar Rekan Medis. Semua gerakan berhenti jika perangkat diset "kurangi gerakan". |
+| Daftar Rekan Medis berjalan pelan (komponen `LogoMarquee`), diminta pemilik pada November 2026 | Menghemat ruang untuk daftar nama yang panjang. Syarat aksesibilitas tetap dipenuhi: berhenti saat disorot/disentuh/fokus, ada tombol jeda (gerakan > 5 detik), dan diam serta bisa digulir jika "kurangi gerakan" aktif. |
 | Area sentuh minimal 44 px | Banyak pasien membuka dari HP; link footer dan tombol kecil sebelumnya hanya 20–40 px. |
 | Montserrat untuk judul, Inter untuk teks | Montserrat geometris seperti huruf logo; Inter mudah dibaca di layar kecil (§3). |
 | Ikon Material (react-icons/md), garis tebal | Sudah dipakai di seluruh situs; dipilih per makna (jam, lokasi, telepon), tidak sekadar hiasan. |

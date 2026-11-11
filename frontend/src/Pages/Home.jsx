@@ -7,6 +7,7 @@ import Layout from '../Components/Layout';
 import HeroSliderBackground from '../Components/HeroSliderBackground';
 import FacilitiesSection from '../Components/Home/FacilitiesSection';
 import ArticleHighlightSection from '../Components/Home/ArticleHighlightSection';
+import PartnersSection from '../Components/Home/PartnersSection';
 import ServiceIcon from '../Components/ServiceIcon';
 import { calculateStatus } from '../data/doctorStatus';
 import { mediaUrl, useServices, useSiteSettings } from '../Contexts/SiteSettingsContext';
@@ -189,15 +190,7 @@ const Home = () => {
 
       <FacilitiesSection />
 
-      {/* Mitra: daftar statis dari CMS, tanpa animasi berjalan */}
-      {partners.length > 0 && <section className="py-14 bg-white border-y border-outline-variant/40">
-        <div className="w-full max-w-container-max mx-auto px-gutter grid lg:grid-cols-4 gap-6 items-start">
-          <h2 className="font-headline-md text-headline-md text-on-surface">Rekan Medis &amp; Institusi Kami</h2>
-          <ul className="lg:col-span-3 flex flex-wrap gap-x-8 gap-y-3 text-on-surface-variant font-body-md">
-            {partners.map((name) => <li key={name}>{name}</li>)}
-          </ul>
-        </div>
-      </section>}
+      <PartnersSection partners={partners} />
 
       <ArticleHighlightSection />
     </Layout>
