@@ -10,6 +10,9 @@ Options -Indexes
     RewriteCond %{HTTPS} off
     RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
+    # /api/... adalah backend Laravel (symlink ke backend/public), jangan diubah di sini
+    RewriteRule ^api(/|$) - [L]
+
     # File/folder yang benar-benar ada dikirim apa adanya
     RewriteCond %{REQUEST_FILENAME} -f [OR]
     RewriteCond %{REQUEST_FILENAME} -d
