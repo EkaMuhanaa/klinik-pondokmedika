@@ -139,6 +139,14 @@ lewat hPanel → File Manager atau FTP. Pastikan file `.htaccess` ikut terunggah
 (file ini tersembunyi; aktifkan "show hidden files" di File Manager/FTP client).
 `.htaccess` ini membuat route seperti `/artikel/judul-artikel` dan `/admin` tidak 404 saat di-refresh.
 
+> **Jika DNS `api.klinikpondokmedika.id` belum aktif**, pakai
+> `VITE_API_BASE_URL=https://klinikpondokmedika.id/api`. Backend tetap bisa diakses lewat
+> folder `api` (symlink) di `public_html` domain utama, tanpa CORS karena satu domain.
+> Setelah subdomain aktif, boleh tetap memakai URL ini atau build ulang dengan URL subdomain.
+>
+> Saat mengunggah frontend, **jangan hapus/timpa folder `api`** di `public_html`, dan hapus
+> `default.php` bawaan Hostinger.
+
 > `VITE_API_BASE_URL` ditanam ke hasil build. Jika URL backend berubah, build ulang lalu unggah lagi.
 
 **Cek:** buka `https://klinikpondokmedika.id`, buka halaman artikel lalu refresh (tidak boleh 404),
