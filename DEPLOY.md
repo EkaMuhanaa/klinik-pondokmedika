@@ -129,28 +129,47 @@ Build di komputer Anda:
 ```bash
 cd frontend
 cp .env.example .env
-# ubah isi .env menjadi: VITE_API_BASE_URL=https://api.klinikpondokmedika.id
+# ubah isi .env menjadi: VITE_API_BASE_URL=https://klinikpondokmedika.id/api
 npm ci
 npm run build
 ```
 
-Unggah **isi** folder `frontend/dist/` (bukan foldernya) ke `public_html` domain utama,
-lewat hPanel → File Manager atau FTP. Pastikan file `.htaccess` ikut terunggah
-(file ini tersembunyi; aktifkan "show hidden files" di File Manager/FTP client).
-`.htaccess` ini membuat route seperti `/artikel/judul-artikel` dan `/admin` tidak 404 saat di-refresh.
+`npm run build` juga menjalankan `scripts/prerender-meta.mjs`, yang menulis judul, deskripsi,
+dan data terstruktur Google (JSON-LD) untuk setiap halaman statis ke `dist/prerender/`.
+Data klinik diambil dari CMS lewat API saat build. Jadi **build ulang frontend setelah mengubah
+Pengaturan Klinik** di CMS supaya HTML awal ikut terbarui. Tampilan website sendiri langsung berubah
+tanpa build ulang.
 
-> **Jika DNS `api.klinikpondokmedika.id` belum aktif**, pakai
-> `VITE_API_BASE_URL=https://klinikpondokmedika.id/api`. Backend tetap bisa diakses lewat
-> folder `api` (symlink) di `public_html` domain utama, tanpa CORS karena satu domain.
-> Setelah subdomain aktif, boleh tetap memakai URL ini atau build ulang dengan URL subdomain.
+Lalu buat zip dari **isi** folder `dist/` (termasuk file tersembunyi `.htaccess`):
+
+```bash
+cd dist && zip -r ../frontend.zip . && cd ..
+```
+
+Unggah `frontend.zip` ke `public_html` lewat hPanel → File Manager, **tanpa diekstrak di File Manager**,
+lalu ekstrak lewat SSH:
+
+```bash
+cd ~/domains/klinikpondokmedika.id/public_html && unzip -o frontend.zip && rm frontend.zip && ls -la
+```
+
+> ⚠️ **Symlink `api` bisa hilang.** Mengekstrak zip atau menghapus file lewat File Manager
+> pernah menghapus symlink `api` di `public_html`. Akibatnya CMS, artikel, slider, dan promo
+> berhenti (semua `/api/...` jadi 404). Setelah **setiap** update frontend, pastikan baris
+> `api -> /home/u818194417/klinik-pondokmedika/backend/public` masih ada di hasil `ls -la`.
+> Jika hilang, buat ulang:
 >
-> Saat mengunggah frontend, **jangan hapus/timpa folder `api`** di `public_html`, dan hapus
-> `default.php` bawaan Hostinger.
+> ```bash
+> ln -s ~/klinik-pondokmedika/backend/public ~/domains/klinikpondokmedika.id/public_html/api
+> ```
 
-> `VITE_API_BASE_URL` ditanam ke hasil build. Jika URL backend berubah, build ulang lalu unggah lagi.
+> **Alamat API.** Selama DNS `api.klinikpondokmedika.id` belum aktif, pakai
+> `VITE_API_BASE_URL=https://klinikpondokmedika.id/api`. Backend diakses lewat symlink `api`
+> di `public_html` domain utama, tanpa CORS karena satu domain. Setelah subdomain aktif, URL ini
+> tetap boleh dipakai. Nilai ini ditanam ke hasil build, jadi kalau diubah, build ulang.
 
 **Cek:** buka `https://klinikpondokmedika.id`, buka halaman artikel lalu refresh (tidak boleh 404),
-dan login di `https://klinikpondokmedika.id/admin/login`.
+buka `https://klinikpondokmedika.id/sitemap.xml`, dan login di `https://klinikpondokmedika.id/admin/login`.
 
 ## 4. Update Berikutnya
 
@@ -167,7 +186,8 @@ php artisan config:cache
 php artisan route:cache
 ```
 
-Frontend: `npm run build` di komputer Anda, lalu unggah ulang isi `frontend/dist/`.
+Frontend: `npm run build` di komputer Anda, lalu unggah dan ekstrak `frontend.zip` seperti
+bagian 3, **lalu cek symlink `api`**.
 
 ## 5. Backup
 
@@ -184,5 +204,6 @@ atau unduh berkala.
 | Request API ke `undefined/api/...` | `VITE_API_BASE_URL` kosong saat build. Isi `.env` frontend lalu build ulang. |
 | Upload gambar gagal (413 / error validasi) | Naikkan `upload_max_filesize` dan `post_max_size` di PHP Configuration. |
 | Perubahan `.env` tidak berpengaruh | Jalankan `php artisan config:cache` lagi. |
+| CMS/artikel/promo tidak muncul, `/api/up` 404 | Symlink `api` di `public_html` hilang (biasanya setelah ekstrak lewat File Manager). Buat ulang dengan `ln -s` (lihat bagian 3). |
 | Error 500 | Lihat `backend/storage/logs/laravel.log`. |
 | `The Process class relies on proc_open` saat `composer install` | Hostinger mematikan `proc_open`. Pakai `composer install --no-scripts` lalu `php artisan package:discover`. |

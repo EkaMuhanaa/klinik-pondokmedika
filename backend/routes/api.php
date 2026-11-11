@@ -7,6 +7,8 @@ use App\Http\Controllers\Api\ArticleController;
 use App\Http\Controllers\Api\SettingController;
 use App\Http\Controllers\Api\SliderImageController;
 use App\Http\Controllers\Api\FacilityController;
+use App\Http\Controllers\Api\PromoController;
+use App\Http\Controllers\Api\SiteSettingController;
 
 // Auth Route
 // Max 5 percobaan login per menit per IP untuk mencegah brute force
@@ -19,6 +21,8 @@ Route::get("/settings/{key}", [SettingController::class, "show"]);
 Route::get("/sliders/{page}", [SliderImageController::class, "index"]);
 Route::get("/facilities", [FacilityController::class, "index"]);
 Route::get("/facilities/{id}", [FacilityController::class, "show"]);
+Route::get("/site-settings", [SiteSettingController::class, "index"]);
+Route::get("/promos/active", [PromoController::class, "active"]);
 
 // Protected API (Admin)
 Route::middleware("auth:sanctum")->group(function () {
@@ -43,5 +47,15 @@ Route::middleware("auth:sanctum")->group(function () {
     Route::post("/admin/facilities", [FacilityController::class, "store"]);
     Route::post("/admin/facilities/{id}", [FacilityController::class, "update"]); // using POST for update to handle multipart/form-data
     Route::delete("/admin/facilities/{id}", [FacilityController::class, "destroy"]);
+
+    // Admin Pengaturan Klinik (alamat, kontak, jam, media sosial, SEO)
+    Route::put("/admin/site-settings", [SiteSettingController::class, "update"]);
+
+    // Admin Pop-Up Promo
+    Route::get("/admin/promos", [PromoController::class, "index"]);
+    Route::get("/admin/promos/{id}", [PromoController::class, "show"]);
+    Route::post("/admin/promos", [PromoController::class, "store"]);
+    Route::post("/admin/promos/{id}", [PromoController::class, "update"]); // POST agar bisa multipart/form-data
+    Route::delete("/admin/promos/{id}", [PromoController::class, "destroy"]);
 });
 

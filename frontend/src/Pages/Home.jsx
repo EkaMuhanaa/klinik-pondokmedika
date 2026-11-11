@@ -8,15 +8,15 @@ import HeroSliderBackground from '../Components/HeroSliderBackground';
 import FacilitiesSection from '../Components/Home/FacilitiesSection';
 import ArticleHighlightSection from '../Components/Home/ArticleHighlightSection';
 import { doctorsData, calculateStatus } from '../data/doctors';
+import { useSiteSettings } from '../Contexts/SiteSettingsContext';
+import { localArea, openingDaysText, hoursText, whatsappLink } from '../seo/meta';
 
-const defaultHeroImages = [
-  "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?q=80&w=2000&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1538108149393-fbbd81895907?q=80&w=2000&auto=format&fit=crop",
-  "https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2000&auto=format&fit=crop"
-];
+// Gambar hero diatur admin di CMS → Kelola Latar / Slider. Jika kosong, tampil latar warna brand.
+const defaultHeroImages = [];
 
 const Home = () => {
   const observerRef = useRef(null);
+  const settings = useSiteSettings();
   const [doctors, setDoctors] = useState([]);
 
   useEffect(() => {
@@ -75,10 +75,10 @@ const Home = () => {
           <div className="space-y-6 text-white animate-fade-in-up">
             <MdLocalHospital className="text-white/70 text-6xl drop-shadow-md" />
             <h1 className="font-headline-xl-mobile md:font-headline-xl text-headline-xl-mobile md:text-headline-xl leading-tight text-white drop-shadow-md">
-              Pelayanan Medis Profesional &amp; Terpercaya untuk Keluarga Anda
+              Klinik Keluarga Profesional &amp; Terpercaya di {localArea(settings)}
             </h1>
             <p className="font-body-lg text-body-lg text-white/90 max-w-xl">
-              Klinik Pondok Medika hadir dengan tenaga medis kompeten dan fasilitas modern untuk memastikan kesehatan Anda dan keluarga selalu terjaga dengan standar terbaik.
+              {settings.clinic_name} hadir di {settings.kelurahan ? `${settings.kelurahan}, ` : ''}Kecamatan {settings.kecamatan} dengan dokter umum, dokter gigi, layanan KIA, tenaga medis kompeten dan fasilitas modern untuk memastikan kesehatan Anda dan keluarga selalu terjaga dengan standar terbaik.
             </p>
           </div>
         </div>
@@ -91,32 +91,32 @@ const Home = () => {
               </div>
               <div>
                 <p className="font-label-sm text-label-sm text-primary uppercase tracking-wider mb-1">Jam Operasional</p>
-                <p className="font-headline-md text-headline-md text-on-surface">13.00 - 21.00</p>
-                <p className="font-body-md text-body-md text-text-muted">Setiap Hari Senin - Sabtu</p>
+                <p className="font-headline-md text-headline-md text-on-surface">{hoursText(settings)}</p>
+                <p className="font-body-md text-body-md text-text-muted">{openingDaysText(settings)}</p>
               </div>
             </div>
             <div className="py-10 px-8 flex items-start gap-4">
-              <a href="https://maps.app.goo.gl/WGtwVHvWx3nsRLeR8" target="_blank" rel="noreferrer" className="flex items-start gap-4 w-full h-full">
+              <a href={settings.maps_url} target="_blank" rel="noreferrer" className="flex items-start gap-4 w-full h-full">
                 <div className="bg-secondary-container/20 p-3 rounded-full text-secondary">
                   <MdLocationOn />
                 </div>
                 <div>
                   <p className="font-label-sm text-label-sm text-secondary uppercase tracking-wider mb-1">Lokasi</p>
-                  <p className="font-headline-md text-headline-md text-on-surface">Klinik Pondok Medika</p>
-                  <p className="font-body-md text-body-md text-text-muted">Jakarta Selatan, Indonesia</p>
+                  <p className="font-headline-md text-headline-md text-on-surface">{settings.clinic_name}</p>
+                  <p className="font-body-md text-body-md text-text-muted">{[settings.kelurahan, settings.kecamatan, settings.city].filter(Boolean).join(', ')}</p>
                 </div>
               </a>
             </div>
-            <div className="py-10 px-8 flex items-start gap-4">
+            <a href={whatsappLink(settings)} target="_blank" rel="noreferrer" className="py-10 px-8 flex items-start gap-4">
               <div className="bg-tertiary-container/20 p-3 rounded-full text-tertiary">
                 <MdCall />
               </div>
               <div>
                 <p className="font-label-sm text-label-sm text-tertiary uppercase tracking-wider mb-1">Hubungi Kami</p>
-                <p className="font-headline-md text-headline-md text-on-surface">0812-3416-3128</p>
+                <p className="font-headline-md text-headline-md text-on-surface">{settings.phone}</p>
                 <p className="font-body-md text-body-md text-text-muted">WhatsApp &amp; Telepon</p>
               </div>
-            </div>
+            </a>
           </div>
         </div>
       </section>

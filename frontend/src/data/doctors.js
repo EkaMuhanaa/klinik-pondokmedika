@@ -18,7 +18,7 @@ export const doctorsData = [
     specialtyBg: "bg-primary/10",
     specialtyColor: "text-primary",
     description: "Ramah dan berpengalaman dalam menangani pertumbuhan serta kesehatan balita dan anak-anak.",
-    image: "https://lh3.googleusercontent.com/aida-public/AB6AXuCAh3TwvRg22wh3h_Y4ABYJbAEU4w8w1--chhfaQzBPUE99gs7Ot9ME75NqFPZdfQUUa2wo5Ma5juY3eLIl0KIWu5T2e8brUUCJWYO_UaBsPSv7oDhHTNwZ3SYJ_TpWnRebyLLWXm58tyE2XspqT6QlJJ2TrKurKJ7vnzqC1vt7-bnL1JrtMVJX-zOseehB3Pa7mt2nIDQ1nyZqv6L0pYRnL8Le7eumV2c930TT1fT7-3VDM5izIdnNMJwlcnpEoVQJDA",
+    image: "/images/placeholder-dokter.svg", // TODO: ganti dengan foto asli dokter,
     scheduleDetails: [
       { day: "Rabu", time: "13.00 - 21.00" },
       { day: "Kamis", time: "13.00 - 21.00" },

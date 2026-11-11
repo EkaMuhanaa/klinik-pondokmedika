@@ -4,6 +4,7 @@ const HeroSliderBackground = ({ images, overlayClassName = "" }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
   useEffect(() => {
+    if (images.length < 2) return undefined;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % images.length);
     }, 3000);
@@ -11,7 +12,7 @@ const HeroSliderBackground = ({ images, overlayClassName = "" }) => {
   }, [images.length]);
 
   return (
-    <div className="absolute inset-0 z-0 overflow-hidden bg-surface-dim">
+    <div className="absolute inset-0 z-0 overflow-hidden bg-gradient-to-br from-primary via-primary-container to-secondary">
       {images.map((img, idx) => (
         <div
           key={idx}

@@ -4,9 +4,12 @@ import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 import DOMPurify from 'dompurify';
 import Layout from '../Components/Layout';
+import { useSiteSettings } from '../Contexts/SiteSettingsContext';
+import { absoluteUrl, truncate } from '../seo/meta';
 
 const ArticleDetail = () => {
   const { slug } = useParams();
+  const settings = useSiteSettings();
   
   const [article, setArticle] = useState(null);
   const [relatedArticles, setRelatedArticles] = useState([]);
@@ -75,7 +78,7 @@ const ArticleDetail = () => {
 
   if (!article) {
     return (
-      <Layout>
+      <Layout seo={{ title: `Artikel Tidak Ditemukan – ${settings.clinic_name}`, noindex: true }}>
         <div className="min-h-screen flex flex-col items-center justify-center">
           <h1 className="text-3xl font-bold mb-4">Artikel Tidak Ditemukan</h1>
           <Link to="/artikel" className="text-primary hover:underline">Kembali ke Daftar Artikel</Link>
@@ -87,8 +90,30 @@ const ArticleDetail = () => {
   const shareUrl = encodeURIComponent(window.location.href);
   const shareTitle = encodeURIComponent(article.title);
 
+  const description = truncate(article.content);
+  const image = article.thumbnail_path ? `${import.meta.env.VITE_API_BASE_URL}${article.thumbnail_path}` : undefined;
+
   return (
-    <Layout>
+    <Layout seo={{
+      title: `${article.title} – ${settings.clinic_name}`,
+      description,
+      image,
+      type: 'article',
+      jsonLd: {
+        '@context': 'https://schema.org',
+        '@type': 'BlogPosting',
+        headline: article.title,
+        description,
+        image: image ? [image] : undefined,
+        datePublished: article.published_at || article.created_at,
+        dateModified: article.updated_at,
+        mainEntityOfPage: absoluteUrl(`/artikel/${article.slug}`),
+        articleSection: article.category,
+        inLanguage: 'id-ID',
+        author: { '@type': 'Organization', name: settings.clinic_name, url: absoluteUrl('/') },
+        publisher: { '@id': absoluteUrl('/') + '#klinik' },
+      },
+    }}>
       {/* Detail Header */}
       <section className="pt-32 pb-12 px-gutter bg-surface-container-lowest transition-all duration-700 opacity-100 translate-y-0 animate-fade-in-up">
         <div className="max-w-3xl mx-auto text-center">
@@ -121,7 +146,7 @@ const ArticleDetail = () => {
             {/* Featured Image */}
             {article.thumbnail_path && (
               <div className="w-full aspect-video rounded-2xl mb-12 overflow-hidden animate-fade-in-up shadow-sm border border-outline-variant/30" style={{ animationDelay: '100ms' }}>
-                <img src={`${import.meta.env.VITE_API_BASE_URL}${article.thumbnail_path}`} alt={article.title} className="w-full h-full object-cover" />
+                <img src={`${import.meta.env.VITE_API_BASE_URL}${article.thumbnail_path}`} alt={article.title} className="w-full h-full object-cover" fetchpriority="high" />
               </div>
             )}
 
@@ -188,12 +213,12 @@ const ArticleDetail = () => {
                     >
                       <div className="w-full h-36 rounded-xl overflow-hidden relative bg-surface-container-low">
                         <img 
-                          src={relArticle.thumbnail_path ? `${import.meta.env.VITE_API_BASE_URL}${relArticle.thumbnail_path}` : 'https://placehold.co/400x300?text=Klinik+Pondok+Medika'} 
+                          src={relArticle.thumbnail_path ? `${import.meta.env.VITE_API_BASE_URL}${relArticle.thumbnail_path}` : '/images/placeholder-artikel.svg'} 
                           alt={relArticle.title}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           onError={(e) => {
                             e.target.onerror = null;
-                            e.target.src = 'https://placehold.co/400x300?text=Klinik+Pondok+Medika';
+                            e.target.src = '/images/placeholder-artikel.svg';
                           }}
                         />
                       </div>

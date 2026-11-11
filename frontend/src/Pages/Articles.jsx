@@ -13,11 +13,8 @@ const Articles = () => {
   
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [heroImages, setHeroImages] = useState([
-    'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?q=80&w=2000&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1434494878577-86c23bcb06b9?q=80&w=2000&auto=format&fit=crop',
-    'https://images.unsplash.com/photo-1532938911079-1b06ac7ceec7?q=80&w=2000&auto=format&fit=crop'
-  ]);
+  // Gambar hero diatur admin di CMS → Kelola Latar / Slider
+  const [heroImages, setHeroImages] = useState([]);
 
   useEffect(() => {
     const cat = searchParams.get('category');
@@ -89,7 +86,7 @@ const Articles = () => {
                 <div key={article.id} className='bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all hover:-translate-y-2 border border-outline-variant/30 flex flex-col group'>
                   <div className='h-56 relative overflow-hidden rounded-t-[23px]'>
                     <img 
-                      src={article.thumbnail_path ? import.meta.env.VITE_API_BASE_URL + article.thumbnail_path : 'https://images.unsplash.com/photo-1505751172876-fa1923c5c528?q=80&w=800&auto=format&fit=crop'} 
+                      src={article.thumbnail_path ? import.meta.env.VITE_API_BASE_URL + article.thumbnail_path : '/images/placeholder-artikel.svg'} 
                       alt={article.title} 
                       className='w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 rounded-t-[23px]' 
                     />
