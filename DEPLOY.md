@@ -21,6 +21,29 @@ Susunan yang dipakai:
 
 ## 2. Deploy Backend (Laravel)
 
+### Cara cepat: script otomatis
+
+Masuk lewat SSH, lalu jalankan:
+
+```bash
+cd ~
+git clone https://github.com/EkaMuhanaa/klinik-pondokmedika.git
+cd klinik-pondokmedika
+bash scripts/hostinger-setup.sh
+```
+
+Script akan menanyakan nama database, user database, password database, serta email
+dan password admin. Password diketik tersembunyi. Untuk pertanyaan domain cukup tekan Enter.
+Script lalu menjalankan semua langkah di bawah (install, `.env`, migrate, `storage:link`,
+akun admin, cache). Setelah selesai, tinggal lanjut ke bagian
+[Arahkan subdomain `api` ke folder `public`](#arahkan-subdomain-api-ke-folder-public).
+
+> Jika repo GitHub bersifat private, `git clone` akan meminta login. Gunakan username GitHub
+> dan Personal Access Token (bukan password), atau unggah kode lewat File Manager.
+
+### Cara manual
+
+
 Masuk lewat SSH, lalu simpan kode **di luar** folder publik:
 
 ```bash
