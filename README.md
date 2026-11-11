@@ -7,6 +7,7 @@ Sistem Web & Backend API untuk Klinik Pondok Medika.
 - `frontend/` : Aplikasi web frontend menggunakan React + Vite & Tailwind CSS.
 - `backend/`  : Backend REST API menggunakan Laravel & Sanctum authentication.
 - `DESIGN.md` : Dokumentasi desain dan arsitektur UI/UX.
+- `DEPLOY.md` : Panduan deploy ke Hostinger.
 
 ---
 
@@ -32,7 +33,9 @@ php artisan serve
 
 ## Konfigurasi Environment Production
 
-**Frontend** (mis. di Vercel → Environment Variables):
+Langkah deploy lengkap ke Hostinger ada di [DEPLOY.md](DEPLOY.md).
+
+**Frontend** (`frontend/.env`, diisi sebelum `npm run build`):
 - `VITE_API_BASE_URL` — URL backend, tanpa `/api` dan tanpa garis miring di akhir. Wajib diisi saat build.
 
 **Backend** (`backend/.env`):
