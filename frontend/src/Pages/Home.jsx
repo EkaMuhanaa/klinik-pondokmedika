@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { MdLocalHospital, MdSchedule, MdLocationOn, MdCall, MdFamilyRestroom, MdMedicalServices, MdAir, MdHomeWork } from 'react-icons/md';
+import React, { useEffect, useState } from 'react';
+import { MdSchedule, MdLocationOn, MdCall, MdFamilyRestroom, MdMedicalServices, MdAir, MdHomeWork, MdArrowForward } from 'react-icons/md';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import DoctorCard from '../Components/DoctorCard';
@@ -11,202 +11,173 @@ import { doctorsData, calculateStatus } from '../data/doctors';
 import { useSiteSettings } from '../Contexts/SiteSettingsContext';
 import { localArea, openingDaysText, hoursText, whatsappLink } from '../seo/meta';
 
-// Gambar hero diatur admin di CMS → Kelola Latar / Slider. Jika kosong, tampil latar warna brand.
-const defaultHeroImages = [];
+// Nama institusi mitra. Belum diverifikasi (temuan audit #5), ditampilkan apa adanya.
+const partners = [
+  'Puskesmas Cengkareng',
+  'Klinik laboratorium bioprima',
+  'Rajak hospital',
+  'Permata Indah medical center cengkareng',
+  'Laboratorium klinik bio medika',
+  'Ciputra Hospital Citra Garden City',
+  'PT Impian Profesi Internasional',
+  'Pt Arah environmental indonesia',
+  'Pt Mitra bestari teknologi',
+];
+
+// Layanan pendukung di Beranda (temuan audit #6: perlu konfirmasi ketersediaan).
+const otherServices = [
+  { icon: MdMedicalServices, title: 'Bedah Minor', text: 'Tindakan bedah kecil yang dilakukan dengan aman, steril, dan pemulihan cepat.' },
+  { icon: MdAir, title: 'Nebulizer', text: 'Layanan uap untuk membantu pernapasan pada pasien dengan gangguan respirasi.' },
+  { icon: MdHomeWork, title: 'Home Visit', text: 'Kunjungan medis ke rumah Anda untuk kenyamanan ekstra dalam perawatan kesehatan.' },
+];
 
 const Home = () => {
-  const observerRef = useRef(null);
   const settings = useSiteSettings();
   const [doctors, setDoctors] = useState([]);
+  const [heroImages, setHeroImages] = useState([]);
 
   useEffect(() => {
-    // Scroll Animation Observer
-    observerRef.current = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('opacity-100', 'translate-y-0');
-          entry.target.classList.remove('opacity-0', 'translate-y-8', 'animate-in');
-        }
-      });
-    }, { threshold: 0.1 });
-
-    const elements = document.querySelectorAll('.animate-on-scroll');
-    elements.forEach(el => observerRef.current.observe(el));
-
-    // Dynamic Doctors Status
     const updateStatuses = () => {
-      const updatedDoctors = doctorsData.map(doc => ({
-        ...doc,
-        status: calculateStatus(doc.scheduleDetails)
-      }));
-      setDoctors(updatedDoctors);
+      setDoctors(doctorsData.map((doc) => ({ ...doc, status: calculateStatus(doc.scheduleDetails) })));
     };
-
     updateStatuses();
     const intervalId = setInterval(updateStatuses, 60000);
-
-    return () => {
-      if (observerRef.current) observerRef.current.disconnect();
-      clearInterval(intervalId);
-    };
+    return () => clearInterval(intervalId);
   }, []);
 
-  const [heroImages, setHeroImages] = useState(defaultHeroImages);
   useEffect(() => {
-    const fetchSliders = async () => {
-      try {
-        const res = await axios.get(import.meta.env.VITE_API_BASE_URL + '/api/sliders/home');
-        if (res.data && res.data.length > 0) {
-          setHeroImages(res.data.map(s => import.meta.env.VITE_API_BASE_URL + s.image_path));
-        }
-      } catch (e) {
-        console.error('Failed to fetch home sliders', e);
-      }
-    };
-    fetchSliders();
+    axios.get(import.meta.env.VITE_API_BASE_URL + '/api/sliders/home')
+      .then((res) => {
+        if (res.data?.length) setHeroImages(res.data.map((s) => import.meta.env.VITE_API_BASE_URL + s.image_path));
+      })
+      .catch(() => {});
   }, []);
+
+  const waBooking = whatsappLink(settings, `Halo ${settings.clinic_name}, saya ingin mendaftar untuk berobat.`);
 
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="relative h-[85vh] min-h-[600px] flex items-center transition-all duration-1000 opacity-0 translate-y-8 animate-in animate-on-scroll">
+      {/* Hero: satu fokus, yaitu mendaftar via WhatsApp */}
+      <section className="relative md:min-h-[600px] md:flex md:items-center pt-12 md:pt-16 pb-10 md:pb-40">
         <HeroSliderBackground images={heroImages} overlayClassName="hero-overlay" />
-        <div className="relative z-10 w-full max-w-container-max mx-auto px-gutter grid lg:grid-cols-2 gap-12">
-          <div className="space-y-6 text-white animate-fade-in-up">
-            <MdLocalHospital className="text-white/70 text-6xl drop-shadow-md" />
-            <h1 className="font-headline-xl-mobile md:font-headline-xl text-headline-xl-mobile md:text-headline-xl leading-tight text-white drop-shadow-md">
-              Klinik Keluarga Profesional &amp; Terpercaya di {localArea(settings)}
+        <div className="relative z-10 w-full max-w-container-max mx-auto px-gutter">
+          <div className="max-w-2xl space-y-6 text-white">
+            <h1 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-white">
+              Klinik keluarga di {localArea(settings)}
             </h1>
-            <p className="font-body-lg text-body-lg text-white/90 max-w-xl">
-              {settings.clinic_name} hadir di {settings.kelurahan ? `${settings.kelurahan}, ` : ''}Kecamatan {settings.kecamatan} dengan dokter umum, dokter gigi, layanan KIA, tenaga medis kompeten dan fasilitas modern untuk memastikan kesehatan Anda dan keluarga selalu terjaga dengan standar terbaik.
+            <p className="font-body-lg text-body-lg text-white">
+              Dokter umum, dokter gigi, dan layanan kesehatan ibu &amp; anak di {settings.kelurahan ? `${settings.kelurahan}, ` : ''}Kecamatan {settings.kecamatan}.
+              Daftar lewat WhatsApp, lalu datang sesuai jadwal praktik.
             </p>
+            <div className="flex flex-wrap items-center gap-4 pt-2">
+              <a
+                id="hero-cta"
+                href={waBooking}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 min-h-[48px] bg-whatsapp-green text-on-whatsapp font-bold px-6 rounded-full hover:brightness-95 active:brightness-90 transition"
+              >
+                Daftar berobat via WhatsApp
+              </a>
+              <a href="#dokter" className="inline-flex items-center min-h-[48px] px-2 font-bold text-white underline underline-offset-4 hover:no-underline">
+                Lihat jadwal dokter
+              </a>
+            </div>
           </div>
         </div>
 
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-full max-w-container-max px-gutter z-20">
-          <div className="bg-white rounded-xl shadow-xl grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-outline-variant overflow-hidden w-full">
-            <div className="py-10 px-8 flex items-start gap-4">
-              <div className="bg-primary-container/20 p-3 rounded-full text-primary">
-                <MdSchedule />
-              </div>
+        {/* Info praktis: satu-satunya kartu melayang, menyambung hero ke konten */}
+        <div className="relative mt-10 md:mt-0 md:absolute md:bottom-0 md:left-1/2 md:-translate-x-1/2 md:translate-y-1/2 w-full max-w-container-max mx-auto px-gutter z-20">
+          <div className="bg-white rounded-xl shadow-xl grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-outline-variant overflow-hidden">
+            <div className="py-6 px-6 md:py-8 flex items-start gap-4">
+              <MdSchedule className="text-primary text-2xl mt-1 shrink-0" aria-hidden="true" />
               <div>
-                <p className="font-label-sm text-label-sm text-primary uppercase tracking-wider mb-1">Jam Operasional</p>
+                <p className="font-label-md text-label-md text-primary mb-1">Jam buka</p>
                 <p className="font-headline-md text-headline-md text-on-surface">{hoursText(settings)}</p>
                 <p className="font-body-md text-body-md text-text-muted">{openingDaysText(settings)}</p>
               </div>
             </div>
-            <div className="py-10 px-8 flex items-start gap-4">
-              <a href={settings.maps_url} target="_blank" rel="noreferrer" className="flex items-start gap-4 w-full h-full">
-                <div className="bg-secondary-container/20 p-3 rounded-full text-secondary">
-                  <MdLocationOn />
-                </div>
-                <div>
-                  <p className="font-label-sm text-label-sm text-secondary uppercase tracking-wider mb-1">Lokasi</p>
-                  <p className="font-headline-md text-headline-md text-on-surface">{settings.clinic_name}</p>
-                  <p className="font-body-md text-body-md text-text-muted">{[settings.kelurahan, settings.kecamatan, settings.city].filter(Boolean).join(', ')}</p>
-                </div>
-              </a>
-            </div>
-            <a href={whatsappLink(settings)} target="_blank" rel="noreferrer" className="py-10 px-8 flex items-start gap-4">
-              <div className="bg-tertiary-container/20 p-3 rounded-full text-tertiary">
-                <MdCall />
-              </div>
+            <a href={settings.maps_url} target="_blank" rel="noreferrer" className="py-6 px-6 md:py-8 flex items-start gap-4 hover:bg-surface-container-low transition-colors">
+              <MdLocationOn className="text-primary text-2xl mt-1 shrink-0" aria-hidden="true" />
               <div>
-                <p className="font-label-sm text-label-sm text-tertiary uppercase tracking-wider mb-1">Hubungi Kami</p>
+                <p className="font-label-md text-label-md text-primary mb-1">Lokasi</p>
+                <p className="font-headline-md text-headline-md text-on-surface">{settings.clinic_name}</p>
+                <p className="font-body-md text-body-md text-text-muted">{[settings.kelurahan, settings.kecamatan, settings.city].filter(Boolean).join(', ')}</p>
+              </div>
+            </a>
+            <a href={waBooking} target="_blank" rel="noreferrer" className="py-6 px-6 md:py-8 flex items-start gap-4 hover:bg-surface-container-low transition-colors">
+              <MdCall className="text-primary text-2xl mt-1 shrink-0" aria-hidden="true" />
+              <div>
+                <p className="font-label-md text-label-md text-primary mb-1">WhatsApp &amp; telepon</p>
                 <p className="font-headline-md text-headline-md text-on-surface">{settings.phone}</p>
-                <p className="font-body-md text-body-md text-text-muted">WhatsApp &amp; Telepon</p>
+                <p className="font-body-md text-body-md text-text-muted">Pendaftaran &amp; pertanyaan</p>
               </div>
             </a>
           </div>
         </div>
       </section>
 
-      {/* Layanan Unggulan Section */}
-      <section className="mt-80 md:mt-48 mb-section-gap w-full max-w-container-max mx-auto px-gutter transition-all duration-1000 opacity-0 translate-y-8 animate-in animate-on-scroll">
-        <div className="text-center mb-16 space-y-4">
-          <span className="font-label-md text-label-md text-primary bg-primary/10 px-4 py-1 rounded-full uppercase tracking-widest">Solusi Kesehatan</span>
-          <h2 className="font-headline-lg text-headline-lg text-on-surface">Layanan Unggulan Kami</h2>
-          <p className="font-body-lg text-body-lg text-text-muted max-w-2xl mx-auto">Kami menyediakan berbagai layanan medis berkualitas tinggi yang didukung oleh tenaga profesional dan teknologi medis terkini.</p>
+      {/* Layanan: satu layanan utama ditonjolkan, sisanya daftar ringkas */}
+      <section className="mt-14 md:mt-40 mb-section-gap w-full max-w-container-max mx-auto px-gutter">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+          <div className="max-w-xl">
+            <h2 className="font-headline-lg text-headline-lg text-on-surface">Layanan Unggulan Kami</h2>
+            <p className="font-body-lg text-body-lg text-text-muted mt-3">Pilih layanan untuk melihat alur pemeriksaan dan cara mendaftar.</p>
+          </div>
+          <Link to="/layanan" className="inline-flex items-center gap-2 min-h-[44px] font-bold text-primary hover:underline">
+            Semua layanan klinik <MdArrowForward aria-hidden="true" />
+          </Link>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="group bg-white p-8 rounded-xl shadow-sm border border-outline-variant/30 hover:shadow-xl transition-all hover:-translate-y-2 flex flex-col items-center text-center">
-            <div className="bg-primary-container text-on-primary-container w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:rotate-6">
-              <MdFamilyRestroom className="text-[32px]" />
-            </div>
-            <h3 className="font-headline-md text-headline-md text-on-surface mb-3">Pemeriksaan Anak &amp; Dewasa</h3>
-            <p className="font-body-md text-body-md text-text-muted">Konsultasi medis menyeluruh untuk segala usia dengan pendekatan yang personal.</p>
-          </div>
-          <div className="group bg-white p-8 rounded-xl shadow-sm border border-outline-variant/30 hover:shadow-xl transition-all hover:-translate-y-2 flex flex-col items-center text-center">
-            <div className="bg-secondary-container text-on-secondary-container w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:rotate-6">
-              <MdMedicalServices className="text-[32px]" />
-            </div>
-            <h3 className="font-headline-md text-headline-md text-on-surface mb-3">Bedah Minor</h3>
-            <p className="font-body-md text-body-md text-text-muted">Tindakan bedah kecil yang dilakukan dengan aman, steril, dan pemulihan cepat.</p>
-          </div>
-          <div className="group bg-white p-8 rounded-xl shadow-sm border border-outline-variant/30 hover:shadow-xl transition-all hover:-translate-y-2 flex flex-col items-center text-center">
-            <div className="bg-tertiary-container text-on-tertiary-container w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:rotate-6">
-              <MdAir className="text-[32px]" />
-            </div>
-            <h3 className="font-headline-md text-headline-md text-on-surface mb-3">Nebulizer</h3>
-            <p className="font-body-md text-body-md text-text-muted">Layanan uap untuk membantu pernapasan pada pasien dengan gangguan respirasi.</p>
-          </div>
-          <div className="group bg-white p-8 rounded-xl shadow-sm border border-outline-variant/30 hover:shadow-xl transition-all hover:-translate-y-2 flex flex-col items-center text-center">
-            <div className="bg-surface-container-highest text-on-surface-variant w-16 h-16 rounded-2xl flex items-center justify-center mb-6 transition-transform group-hover:rotate-6">
-              <MdHomeWork className="text-[32px]" />
-            </div>
-            <h3 className="font-headline-md text-headline-md text-on-surface mb-3">Home Visit</h3>
-            <p className="font-body-md text-body-md text-text-muted">Kunjungan medis ke rumah Anda untuk kenyamanan ekstra dalam perawatan kesehatan.</p>
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+          <Link to="/layanan/poli-umum" className="lg:col-span-2 group bg-primary text-white rounded-xl p-8 flex flex-col hover:bg-primary/90 transition-colors">
+            <MdFamilyRestroom className="text-5xl mb-6 text-white" aria-hidden="true" />
+            <h3 className="font-headline-lg text-headline-lg text-white mb-3">Pemeriksaan Anak &amp; Dewasa</h3>
+            <p className="font-body-lg text-body-lg text-white/90 mb-8">Konsultasi medis menyeluruh untuk segala usia dengan pendekatan yang personal.</p>
+            <span className="mt-auto inline-flex items-center gap-2 font-bold underline underline-offset-4 group-hover:no-underline">
+              Lihat alur Poli Umum <MdArrowForward aria-hidden="true" />
+            </span>
+          </Link>
+          <ul className="lg:col-span-3 divide-y divide-outline-variant/60 border-y border-outline-variant/60">
+            {otherServices.map(({ icon: Icon, title, text }) => (
+              <li key={title} className="flex gap-5 py-6">
+                <Icon className="text-3xl text-primary shrink-0 mt-1" aria-hidden="true" />
+                <div>
+                  <h3 className="font-headline-md text-headline-md text-on-surface mb-1">{title}</h3>
+                  <p className="font-body-md text-body-md text-text-muted">{text}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
-      {/* Seksi Dokter Kami */}
-      <section className="bg-surface-container-low py-section-gap transition-all duration-1000 opacity-0 translate-y-8 animate-in animate-on-scroll">
+      {/* Dokter */}
+      <section id="dokter" className="bg-surface-container-low py-section-gap scroll-mt-20">
         <div className="w-full max-w-container-max mx-auto px-gutter">
-          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-            <div className="max-w-2xl space-y-4">
-              <span className="font-label-md text-label-md text-secondary bg-secondary/10 px-4 py-1 rounded-full uppercase tracking-widest">Tenaga Ahli</span>
-              <h2 className="font-headline-lg text-headline-lg text-on-surface">Bertemu dengan Dokter Spesialis Kami</h2>
-              <p className="font-body-lg text-body-lg text-text-muted">Dipandu oleh dokter-dokter berpengalaman yang berdedikasi tinggi terhadap kesehatan pasien.</p>
-            </div>
+          <div className="max-w-2xl mb-12">
+            <h2 className="font-headline-lg text-headline-lg text-on-surface">Bertemu dengan Dokter Spesialis Kami</h2>
+            <p className="font-body-lg text-body-lg text-text-muted mt-3">Status praktik diperbarui otomatis sesuai jam WIB. Cek jadwal sebelum datang.</p>
           </div>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-start">
-            {doctors.map((doc, idx) => (
-              <DoctorCard key={idx} doctor={doc} />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+            {doctors.map((doc) => (
+              <DoctorCard key={doc.name} doctor={doc} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* Seksi Partner Kami */}
-      <section className="py-24 bg-white overflow-hidden transition-all duration-1000 opacity-0 translate-y-8 animate-in animate-on-scroll">
-        <div className="w-full max-w-container-max mx-auto px-gutter text-center mb-12">
-          <h2 className="font-headline-md text-headline-md text-text-muted opacity-70">Rekan Medis &amp; Institusi Kami</h2>
-        </div>
-        <div className="flex whitespace-nowrap gap-16 items-center px-gutter py-8 animate-scroll grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all">
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Puskesmas Cengkareng</div>
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Klinik laboratorium bioprima</div>
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Rajak hospital</div>
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Permata Indah medical center cengkareng</div>
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Laboratorium klinik bio medika</div>
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Ciputra Hospital Citra Garden City</div>
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">PT Impian Profesi Internasional</div>
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Pt Arah environmental indonesia</div>
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Pt Mitra bestari teknologi</div>
-          {/* Duplicate for seamless scroll */}
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Puskesmas Cengkareng</div>
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Klinik laboratorium bioprima</div>
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Rajak hospital</div>
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Permata Indah medical center cengkareng</div>
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Laboratorium klinik bio medika</div>
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Ciputra Hospital Citra Garden City</div>
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">PT Impian Profesi Internasional</div>
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Pt Arah environmental indonesia</div>
-          <div className="flex-none text-2xl font-bold text-on-surface-variant font-headline-md">Pt Mitra bestari teknologi</div>
+      <FacilitiesSection />
+
+      {/* Mitra: daftar statis, tanpa animasi berjalan */}
+      <section className="py-14 bg-white border-y border-outline-variant/40">
+        <div className="w-full max-w-container-max mx-auto px-gutter grid lg:grid-cols-4 gap-6 items-start">
+          <h2 className="font-headline-md text-headline-md text-on-surface">Rekan Medis &amp; Institusi Kami</h2>
+          <ul className="lg:col-span-3 flex flex-wrap gap-x-8 gap-y-3 text-on-surface-variant font-body-md">
+            {partners.map((name) => <li key={name}>{name}</li>)}
+          </ul>
         </div>
       </section>
-      
-      <FacilitiesSection />
+
       <ArticleHighlightSection />
     </Layout>
   );

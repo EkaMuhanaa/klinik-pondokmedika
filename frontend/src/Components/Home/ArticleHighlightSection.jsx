@@ -1,119 +1,87 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { MdArrowForward, MdCalendarToday } from 'react-icons/md';
 import axios from 'axios';
+import { useSiteSettings } from '../../Contexts/SiteSettingsContext';
+
+const formatDate = (d) => new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
 
 const ArticleHighlightSection = () => {
+  const settings = useSiteSettings();
   const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState('loading'); // loading | error | ready
 
-  useEffect(() => {
-    const fetchArticles = async () => {
-      try {
-        const response = await axios.get('/articles');
-        // Get the latest 3 published articles
-        const publishedArticles = response.data.filter(a => a.is_published);
-        setArticles(publishedArticles.slice(0, 3));
-      } catch (error) {
-        console.error('Error fetching articles:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchArticles();
+  const load = useCallback(() => {
+    setStatus('loading');
+    axios.get('/articles')
+      .then((res) => { setArticles(res.data.filter((a) => a.is_published).slice(0, 3)); setStatus('ready'); })
+      .catch(() => setStatus('error'));
   }, []);
 
-  useEffect(() => {
-    if (!loading && articles.length > 0) {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('opacity-100', 'translate-y-0');
-            entry.target.classList.remove('opacity-0', 'translate-y-8');
-          }
-        });
-      }, { threshold: 0.1 });
-
-      const elements = document.querySelectorAll('.articles-animate-on-scroll');
-      elements.forEach(el => observer.observe(el));
-      
-      return () => observer.disconnect();
-    }
-  }, [loading, articles]);
-
-  if (loading || articles.length === 0) return null;
+  useEffect(() => { load(); }, [load]);
 
   return (
-    <section className="py-20 bg-surface-container-lowest">
-      <div className="container mx-auto px-4 md:px-8 max-w-7xl">
-        <div className="flex flex-col items-center text-center mb-12 articles-animate-on-scroll opacity-0 translate-y-8 transition-all duration-700">
-          <div className="max-w-2xl mb-6">
-            <h2 className="text-3xl md:text-5xl font-headline-md font-bold text-on-surface mb-6">Artikel & Edukasi Terbaru</h2>
-            <div className="w-24 h-1.5 bg-primary rounded-full mb-6 mx-auto"></div>
-            <p className="text-on-surface-variant text-lg">
-              Tetap terinformasi dengan tips kesehatan dan berita medis terbaru dari tenaga ahli kami.
-            </p>
+    <section className="py-section-gap bg-surface-container-low">
+      <div className="w-full max-w-container-max mx-auto px-gutter">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+          <div className="max-w-2xl">
+            <h2 className="font-headline-lg text-headline-lg text-on-surface">Artikel &amp; Edukasi Terbaru</h2>
+            <p className="font-body-lg text-body-lg text-text-muted mt-3">Tips dan informasi kesehatan dari {settings.clinic_name}.</p>
           </div>
-          <Link 
-            to="/artikel"
-            className="group flex items-center gap-2 bg-primary/10 text-primary hover:bg-primary hover:text-on-primary px-6 py-3 rounded-full font-bold transition-all duration-300 shadow-sm whitespace-nowrap"
-          >
-            Lihat Semua Artikel 
-            <MdArrowForward className="group-hover:translate-x-1 transition-transform" />
+          <Link to="/artikel" className="inline-flex items-center gap-2 min-h-[44px] font-bold text-primary hover:underline">
+            Semua artikel kesehatan <MdArrowForward aria-hidden="true" />
           </Link>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {articles.map((article, index) => (
-            <article 
-              key={article.id} 
-              className={`bg-surface rounded-3xl overflow-hidden outline outline-1 outline-outline-variant/30 hover:outline-primary/50 shadow-sm hover:shadow-xl transition-all duration-500 group articles-animate-on-scroll opacity-0 translate-y-8 flex flex-col`}
-              style={{ transitionDelay: `${index * 100}ms` }}
-            >
-              <div className="aspect-[16/10] bg-surface-container overflow-hidden relative">
-                {article.thumbnail_path ? (
-                  <img 
-                    src={import.meta.env.VITE_API_BASE_URL + article.thumbnail_path} 
-                    alt={article.title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+        {status === 'loading' && <p className="text-on-surface-variant py-10" role="status">Memuat artikel…</p>}
+
+        {status === 'error' && (
+          <div className="bg-white rounded-xl p-8 max-w-2xl" role="alert">
+            <p className="text-on-surface font-medium mb-4">Artikel gagal dimuat. Periksa koneksi internet Anda, lalu coba lagi.</p>
+            <button type="button" onClick={load} className="min-h-[44px] px-5 rounded-lg bg-primary text-on-primary font-bold hover:bg-primary/90">
+              Muat ulang artikel
+            </button>
+          </div>
+        )}
+
+        {status === 'ready' && articles.length === 0 && (
+          <p className="text-on-surface-variant">Belum ada artikel yang diterbitkan.</p>
+        )}
+
+        {status === 'ready' && articles.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {articles.map((article) => (
+              <article key={article.id} className="relative bg-white rounded-xl overflow-hidden border border-outline-variant/40 hover:border-primary transition-colors flex flex-col">
+                <div className="aspect-[16/10] bg-surface-container">
+                  <img
+                    src={article.thumbnail_path ? import.meta.env.VITE_API_BASE_URL + article.thumbnail_path : '/images/placeholder-artikel.svg'}
+                    alt=""
+                    width="640"
+                    height="400"
+                    loading="lazy"
+                    className="w-full h-full object-cover"
                   />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-on-surface-variant/30 bg-primary/5">
-                    <MdCalendarToday className="text-6xl" />
-                  </div>
-                )}
-                <div className="absolute top-4 left-4 bg-surface/90 backdrop-blur text-primary px-4 py-1.5 rounded-full text-sm font-bold shadow-sm">
-                  {article.category}
                 </div>
-              </div>
-              <div className="p-6 flex flex-col flex-grow">
-                <div className="flex items-center gap-2 text-on-surface-variant text-sm mb-4">
-                  <MdCalendarToday className="text-primary" />
-                  <span>
-                    {new Date(article.published_at || article.created_at).toLocaleDateString('id-ID', {
-                      day: 'numeric',
-                      month: 'long',
-                      year: 'numeric'
-                    })}
-                  </span>
+                <div className="p-6 flex flex-col flex-grow">
+                  <p className="flex items-center gap-2 text-sm text-text-muted mb-3">
+                    <span className="font-bold text-primary">{article.category}</span>
+                    <span aria-hidden="true">·</span>
+                    <MdCalendarToday aria-hidden="true" />
+                    <time dateTime={article.published_at || article.created_at}>{formatDate(article.published_at || article.created_at)}</time>
+                  </p>
+                  <h3 className="font-heading font-semibold text-xl text-on-surface mb-3 line-clamp-2">
+                    <Link to={`/artikel/${article.slug}`} className="before:absolute before:inset-0 hover:text-primary">
+                      {article.title}
+                    </Link>
+                  </h3>
+                  <p className="text-on-surface-variant line-clamp-3">
+                    {article.content.replace(/<[^>]+>/g, '').substring(0, 150)}…
+                  </p>
                 </div>
-                <h3 className="font-bold text-xl text-on-surface mb-3 group-hover:text-primary transition-colors line-clamp-2">
-                  <Link to={`/artikel/${article.slug}`} className="before:absolute before:inset-0">
-                    {article.title}
-                  </Link>
-                </h3>
-                <p className="text-on-surface-variant line-clamp-3 mb-6 flex-grow">
-                  {article.content.replace(/<[^>]+>/g, '').substring(0, 150)}...
-                </p>
-                <div className="flex items-center text-primary font-bold text-sm mt-auto group/btn">
-                  Baca Selengkapnya
-                  <MdArrowForward className="ml-2 group-hover/btn:translate-x-2 transition-transform" />
-                </div>
-              </div>
-            </article>
-          ))}
-        </div>
+              </article>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

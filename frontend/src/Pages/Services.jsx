@@ -37,44 +37,46 @@ const Services = () => {
     fetchSliders();
   }, []);
 
+  const [featured, ...others] = services;
+
   return (
     <Layout>
-      {/* Hero Section */}
-      <section className="relative h-[85vh] min-h-[600px] flex items-center justify-center overflow-hidden">
-        <HeroSliderBackground images={heroImages} overlayClassName="bg-primary/20 backdrop-brightness-75" />
-        <div className="relative z-10 text-center px-gutter max-w-4xl transition-all duration-700 opacity-100 translate-y-0 animate-fade-in-up">
-          <MdMedicalServices className="text-white/70 text-6xl drop-shadow-md mx-auto mb-4" />
-          <h1 className="font-headline-xl text-headline-xl text-white mb-4 md:font-headline-xl md:text-headline-xl sm:font-headline-xl-mobile sm:text-headline-xl-mobile">Layanan Klinik di {localArea(settings)}</h1>
-          <p className="font-body-lg text-body-lg text-white/90">Katalog komprehensif seluruh poli, tindakan medis, dan fasilitas penunjang untuk kesehatan Anda.</p>
+      <section className="relative min-h-[360px] md:min-h-[440px] flex items-end">
+        <HeroSliderBackground images={heroImages} overlayClassName="hero-overlay" />
+        <div className="relative z-10 w-full max-w-container-max mx-auto px-gutter py-12">
+          <h1 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-white mb-3">Layanan Klinik di {localArea(settings)}</h1>
+          <p className="font-body-lg text-body-lg text-white max-w-2xl">Poli, pemeriksaan penunjang, dan apotek di {settings.clinic_name}. Pilih layanan untuk melihat alur pemeriksaannya.</p>
         </div>
       </section>
 
-      {/* Services Catalog */}
-      <section className="py-section-gap px-gutter bg-surface-container-low min-h-screen">
-        <div className="max-w-container-max mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="font-headline-lg text-headline-lg text-primary">Layanan Unggulan Kami</h2>
-            <p className="text-on-surface-variant max-w-2xl mx-auto mt-2">Klinik Pondok Medika menghadirkan berbagai layanan kesehatan terpadu dalam satu atap untuk kenyamanan maksimal pasien.</p>
-          </div>
+      <section className="py-section-gap px-gutter bg-surface-container-low">
+        <div className="max-w-container-max mx-auto space-y-6">
+          {/* Poli Umum sebagai pintu masuk utama pasien, ditonjolkan */}
+          <Link to={`/layanan/${featured.slug}`} className="group grid md:grid-cols-[auto_1fr_auto] items-center gap-6 bg-primary text-white rounded-xl p-8 hover:bg-primary/90 transition-colors">
+            <span className="text-white" aria-hidden="true">{serviceIcons[featured.slug]}</span>
+            <div>
+              <h2 className="font-headline-lg text-headline-lg text-white mb-2">{featured.title}</h2>
+              <p className="font-body-lg text-body-lg text-white/90 max-w-2xl">{featured.description}</p>
+            </div>
+            <span className="inline-flex items-center gap-2 font-bold underline underline-offset-4 group-hover:no-underline">
+              Lihat alur {featured.title} <MdArrowForward aria-hidden="true" />
+            </span>
+          </Link>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {services.map((service, idx) => (
-              <div key={service.slug} className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 group border border-outline-variant/30 hover:border-primary/30 flex flex-col h-full animate-fade-in-up" style={{ animationDelay: `${idx * 100}ms` }}>
-                <div className="w-16 h-16 bg-primary-container text-on-primary-container rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-                  {serviceIcons[service.slug] || <MdMedicalServices className="text-4xl" />}
-                </div>
-                <h3 className="font-headline-md text-headline-md text-on-surface mb-3 group-hover:text-primary transition-colors">{service.title}</h3>
-                <p className="text-on-surface-variant text-body-md flex-grow leading-relaxed">
-                  {service.description}
-                </p>
-                <div className="mt-6 pt-6 border-t border-outline-variant/50">
-                  <Link to={`/layanan/${service.slug}`} className="text-primary font-label-md font-bold flex items-center gap-2 hover:gap-3 transition-all inline-flex">
-                    Selengkapnya <MdArrowForward className="text-sm" />
-                  </Link>
-                </div>
-              </div>
+          <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {others.map((service) => (
+              <li key={service.slug}>
+                <Link to={`/layanan/${service.slug}`} className="group h-full flex flex-col bg-white rounded-xl p-6 border border-outline-variant/40 hover:border-primary transition-colors">
+                  <span className="text-primary mb-4" aria-hidden="true">{serviceIcons[service.slug] || <MdMedicalServices className="text-4xl" />}</span>
+                  <h2 className="font-headline-md text-headline-md text-on-surface mb-2 group-hover:text-primary">{service.title}</h2>
+                  <p className="text-on-surface-variant text-body-md flex-grow">{service.description}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 font-bold text-primary">
+                    Lihat alur layanan <MdArrowForward aria-hidden="true" />
+                  </span>
+                </Link>
+              </li>
             ))}
-          </div>
+          </ul>
         </div>
       </section>
     </Layout>

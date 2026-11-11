@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { MdClose, MdCall, MdMail, MdMenu } from 'react-icons/md';
 import { Link, useLocation } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import WhatsAppCTA from './WhatsAppCTA';
 import PromoPopup from './PromoPopup';
 import Seo from './Seo';
@@ -31,27 +31,31 @@ const Layout = ({ children, seo }) => {
       <Seo {...(seo || {})} />
       <header className="docked full-width top-0 sticky z-50 bg-white shadow-sm">
         <nav className="flex justify-between items-center px-gutter py-4 w-full max-w-container-max mx-auto">
-          <Link to="/" className="flex items-center gap-3">
-            <img 
-              alt="Logo Klinik Pondok Medika" 
-              className="h-10 md:h-12 w-auto object-contain" 
-              src="/images/logo-wide.png" 
+          <Link to="/" className="flex items-center gap-3 min-h-[44px]">
+            <img
+              alt={`${settings.clinic_name}, ke beranda`}
+              width="110"
+              height="48"
+              className="h-10 md:h-12 w-auto object-contain"
+              src="/images/logo-wide.png"
             />
           </Link>
           
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center gap-8 font-body-md text-body-md">
-            <Link to="/" className={`${isActive('/') ? 'text-primary border-b-2 border-primary pb-1 font-bold' : 'text-on-surface-variant'} hover:text-primary transition-colors`}>Beranda</Link>
-            <Link to="/tentang-kami" className={`${isActive('/tentang-kami') ? 'text-primary border-b-2 border-primary pb-1 font-bold' : 'text-on-surface-variant'} hover:text-primary transition-colors`}>Tentang Kami</Link>
-            <Link to="/layanan" className={`${isActive('/layanan') ? 'text-primary border-b-2 border-primary pb-1 font-bold' : 'text-on-surface-variant'} hover:text-primary transition-colors`}>Layanan</Link>
-            <Link to="/artikel" className={`${isActive('/artikel') ? 'text-primary border-b-2 border-primary pb-1 font-bold' : 'text-on-surface-variant'} hover:text-primary transition-colors`}>Artikel</Link>
+            <Link to="/" className={`${isActive('/') ? 'text-primary border-b-2 border-primary pb-1 font-bold' : 'text-on-surface-variant'} hover:text-primary transition-colors inline-flex items-center min-h-[44px]`}>Beranda</Link>
+            <Link to="/tentang-kami" className={`${isActive('/tentang-kami') ? 'text-primary border-b-2 border-primary pb-1 font-bold' : 'text-on-surface-variant'} hover:text-primary transition-colors inline-flex items-center min-h-[44px]`}>Tentang Kami</Link>
+            <Link to="/layanan" className={`${isActive('/layanan') ? 'text-primary border-b-2 border-primary pb-1 font-bold' : 'text-on-surface-variant'} hover:text-primary transition-colors inline-flex items-center min-h-[44px]`}>Layanan</Link>
+            <Link to="/artikel" className={`${isActive('/artikel') ? 'text-primary border-b-2 border-primary pb-1 font-bold' : 'text-on-surface-variant'} hover:text-primary transition-colors inline-flex items-center min-h-[44px]`}>Artikel</Link>
           </div>
 
           {/* Mobile Menu Toggle */}
           <button 
-            className="lg:hidden p-2 text-on-surface rounded-md hover:bg-surface-container transition-colors"
+            type="button"
+            className="lg:hidden w-11 h-11 flex items-center justify-center text-on-surface rounded-lg hover:bg-surface-container transition-colors"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle menu"
+            aria-label={isMobileMenuOpen ? 'Tutup menu' : 'Buka menu'}
+            aria-expanded={isMobileMenuOpen}
           >
             {isMobileMenuOpen ? (
               <MdClose className="text-3xl" />
@@ -62,6 +66,7 @@ const Layout = ({ children, seo }) => {
         </nav>
 
         {/* Mobile Dropdown Menu -> Side Navbar */}
+        <MotionConfig reducedMotion="user">
         <AnimatePresence>
           {isMobileMenuOpen && (
             <>
@@ -85,25 +90,26 @@ const Layout = ({ children, seo }) => {
                 <div className="flex items-center justify-between p-6 border-b border-outline-variant">
                   <h2 className="font-headline-sm font-bold text-primary">Menu</h2>
                   <button 
-                    className="p-2 text-on-surface rounded-md hover:bg-surface-container transition-colors"
+                    type="button"
+                    className="w-11 h-11 flex items-center justify-center text-on-surface rounded-lg hover:bg-surface-container transition-colors"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    aria-label="Close menu"
+                    aria-label="Tutup menu"
                   >
                     <MdClose className="text-3xl" />
                   </button>
                 </div>
                 
-                <div className="flex flex-col px-6 py-8 gap-8 text-lg overflow-y-auto">
-                  <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className={`${isActive('/') ? 'text-primary font-bold border-r-4 border-primary pr-4' : 'text-on-surface-variant'} hover:text-primary transition-colors block w-full`}>Beranda</Link>
-                  <Link to="/tentang-kami" onClick={() => setIsMobileMenuOpen(false)} className={`${isActive('/tentang-kami') ? 'text-primary font-bold border-r-4 border-primary pr-4' : 'text-on-surface-variant'} hover:text-primary transition-colors block w-full`}>Tentang Kami</Link>
-                  <Link to="/layanan" onClick={() => setIsMobileMenuOpen(false)} className={`${isActive('/layanan') ? 'text-primary font-bold border-r-4 border-primary pr-4' : 'text-on-surface-variant'} hover:text-primary transition-colors block w-full`}>Layanan</Link>
-                  <Link to="/artikel" onClick={() => setIsMobileMenuOpen(false)} className={`${isActive('/artikel') ? 'text-primary font-bold border-r-4 border-primary pr-4' : 'text-on-surface-variant'} hover:text-primary transition-colors block w-full`}>Artikel</Link>
-                </div>
+                <nav aria-label="Menu utama" className="flex flex-col px-6 py-6 gap-2 text-lg overflow-y-auto">
+                  <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className={`${isActive('/') ? 'text-primary font-bold border-r-4 border-primary pr-4' : 'text-on-surface-variant'} hover:text-primary transition-colors flex items-center min-h-[48px] w-full`}>Beranda</Link>
+                  <Link to="/tentang-kami" onClick={() => setIsMobileMenuOpen(false)} className={`${isActive('/tentang-kami') ? 'text-primary font-bold border-r-4 border-primary pr-4' : 'text-on-surface-variant'} hover:text-primary transition-colors flex items-center min-h-[48px] w-full`}>Tentang Kami</Link>
+                  <Link to="/layanan" onClick={() => setIsMobileMenuOpen(false)} className={`${isActive('/layanan') ? 'text-primary font-bold border-r-4 border-primary pr-4' : 'text-on-surface-variant'} hover:text-primary transition-colors flex items-center min-h-[48px] w-full`}>Layanan</Link>
+                  <Link to="/artikel" onClick={() => setIsMobileMenuOpen(false)} className={`${isActive('/artikel') ? 'text-primary font-bold border-r-4 border-primary pr-4' : 'text-on-surface-variant'} hover:text-primary transition-colors flex items-center min-h-[48px] w-full`}>Artikel</Link>
+                </nav>
 
                 <div className="mt-auto p-6 border-t border-outline-variant text-center">
-                  <p className="text-sm text-text-muted mb-2">Pusat Informasi</p>
-                  <a href={whatsappLink(settings)} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 font-bold text-whatsapp-green bg-whatsapp-green/10 py-3 rounded-full hover:bg-whatsapp-green/20 transition-colors">
-                    <MdCall />
+                  <p className="text-sm text-text-muted mb-2">Pendaftaran &amp; informasi</p>
+                  <a href={whatsappLink(settings)} target="_blank" rel="noreferrer" className="flex items-center justify-center gap-2 min-h-[48px] font-bold text-on-whatsapp bg-whatsapp-green rounded-full hover:brightness-95 transition">
+                    <MdCall aria-hidden="true" />
                     {settings.phone}
                   </a>
                 </div>
@@ -111,6 +117,7 @@ const Layout = ({ children, seo }) => {
             </>
           )}
         </AnimatePresence>
+        </MotionConfig>
       </header>
       
       <main>
@@ -120,86 +127,66 @@ const Layout = ({ children, seo }) => {
       <WhatsAppCTA />
       <PromoPopup />
 
-      <footer className="bg-white text-on-surface border-t border-outline-variant/30">
-        <div className="w-full max-w-container-max mx-auto px-gutter flex flex-col lg:flex-row lg:justify-between gap-10 mb-12 py-section-gap">
-          <div className="lg:w-1/4 shrink-0">
-            <div className="mb-4">
-              <Link to="/" className="inline-block hover:opacity-80 transition-opacity">
-                <img src="/images/logo-wide.png" alt="Logo Klinik Pondok Medika" className="h-12 object-contain" onError={(e) => e.target.style.display='none'} />
-              </Link>
-            </div>
-            <div className="font-headline-md text-headline-md font-bold text-on-surface mb-4">
-                {settings.clinic_name}
-            </div>
-            <p className="text-on-surface/80 text-body-md mb-6">
-                {settings.tagline}
-            </p>
-            <address className="not-italic text-on-surface/80 text-body-md space-y-2">
-              <a href={settings.maps_url} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors leading-relaxed block">
+      <footer className="bg-secondary text-white">
+        <div className="w-full max-w-container-max mx-auto px-gutter py-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] gap-10">
+          {/* Identitas & kontak: blok utama footer */}
+          <div>
+            <p className="font-heading text-2xl font-bold mb-2">{settings.clinic_name}</p>
+            <p className="text-white/90 mb-6">{settings.tagline}</p>
+            <address className="not-italic space-y-3 text-white">
+              <a href={settings.maps_url} target="_blank" rel="noreferrer" className="block leading-relaxed underline-offset-4 hover:underline">
                 {fullAddress(settings)}
               </a>
-              <a href={whatsappLink(settings)} target="_blank" rel="noreferrer" className="hover:text-primary transition-colors block">
-                WhatsApp/Telp: {settings.phone}
-              </a>
-              <p>{openingDaysText(settings)} {hoursText(settings)}{settings.hours_note ? ` · ${settings.hours_note}` : ''}</p>
+              <p>{openingDaysText(settings)} {hoursText(settings)}{settings.hours_note ? `. ${settings.hours_note}` : ''}</p>
             </address>
+            <a
+              href={whatsappLink(settings)}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-6 inline-flex items-center gap-2 min-h-[48px] px-6 rounded-full bg-whatsapp-green text-on-whatsapp font-bold hover:brightness-95 transition"
+            >
+              <MdCall aria-hidden="true" /> WhatsApp {settings.phone}
+            </a>
           </div>
+
           <div>
-            <h4 className="font-bold mb-6 uppercase tracking-wider text-sm text-black">Navigasi</h4>
-            <ul className="space-y-4 text-on-surface/80">
-              <li><Link to="/" className="hover:text-primary transition-colors">Beranda</Link></li>
-              <li><Link to="/tentang-kami" className="hover:text-primary transition-colors">Tentang Kami</Link></li>
-              <li><Link to="/layanan" className="hover:text-primary transition-colors">Layanan Unggulan</Link></li>
-              <li><Link to="/artikel" className="hover:text-primary transition-colors">Artikel & Edukasi</Link></li>
-            </ul>
-          </div>
-          <div>
-            <h4 className="font-bold mb-6 uppercase tracking-wider text-sm text-black">Layanan</h4>
-            <ul className="space-y-4 text-on-surface/80">
+            <h2 className="font-heading font-semibold text-lg mb-3">Layanan</h2>
+            <ul>
               {services.map((svc) => (
-                <li key={svc.slug}><Link to={`/layanan/${svc.slug}`} className="hover:text-primary transition-colors">{svc.title}</Link></li>
+                <li key={svc.slug}><Link to={`/layanan/${svc.slug}`} className="tap-target text-white/90 hover:text-white hover:underline underline-offset-4">{svc.title}</Link></li>
               ))}
             </ul>
           </div>
+
           <div>
-            <h4 className="font-bold mb-6 uppercase tracking-wider text-sm text-black">Hubungi Kami</h4>
-            <ul className="space-y-4 text-on-surface/80">
-              <li>
-                <a className="flex items-center gap-3 hover:text-primary transition-colors" href={whatsappLink(settings)} target="_blank" rel="noreferrer">
-                  <MdCall className="text-sm" />
-                  <span>WhatsApp</span>
-                </a>
-              </li>
+            <h2 className="font-heading font-semibold text-lg mb-3">Halaman</h2>
+            <ul>
+              <li><Link to="/" className="tap-target text-white/90 hover:text-white hover:underline underline-offset-4">Beranda</Link></li>
+              <li><Link to="/tentang-kami" className="tap-target text-white/90 hover:text-white hover:underline underline-offset-4">Tentang Kami</Link></li>
+              <li><Link to="/layanan" className="tap-target text-white/90 hover:text-white hover:underline underline-offset-4">Layanan</Link></li>
+              <li><Link to="/artikel" className="tap-target text-white/90 hover:text-white hover:underline underline-offset-4">Artikel &amp; Edukasi</Link></li>
               {settings.email && (
-                <li>
-                  <a className="flex items-center gap-3 hover:text-primary transition-colors" href={`mailto:${settings.email}`}>
-                    <MdMail className="text-sm" />
-                    <span>Email</span>
-                  </a>
-                </li>
+                <li><a href={`mailto:${settings.email}`} className="tap-target gap-2 text-white/90 hover:text-white hover:underline underline-offset-4"><MdMail aria-hidden="true" /> {settings.email}</a></li>
               )}
               {socials.map((x) => (
-                <li key={x.label}>
-                  <a className="hover:text-primary transition-colors" href={x.url} target="_blank" rel="noopener noreferrer">{x.label}</a>
-                </li>
+                <li key={x.label}><a href={x.url} target="_blank" rel="noopener noreferrer" className="tap-target text-white/90 hover:text-white hover:underline underline-offset-4">{x.label}</a></li>
               ))}
             </ul>
           </div>
         </div>
+
         {settings.service_area && (
-          <div className="w-full max-w-container-max mx-auto px-gutter pb-8 text-sm text-on-surface/70">
+          <div className="w-full max-w-container-max mx-auto px-gutter pb-8 text-sm text-white/90">
             <p>
-              <strong className="text-on-surface">Wilayah layanan:</strong> {settings.clinic_name} melayani pasien dari {settings.service_area}.
+              <strong className="text-white">Wilayah layanan:</strong> {settings.clinic_name} melayani pasien dari {settings.service_area}.
               Klinik umum, dokter gigi, dan KIA terdekat di {localArea(settings)}.
             </p>
           </div>
         )}
-        <div className="border-t border-on-surface/10 py-6 px-gutter">
-          <div className="max-w-container-max mx-auto text-center md:text-left">
-            <p className="text-sm opacity-60 font-body-md">
-                © {new Date().getFullYear()} {settings.clinic_name}. Hak cipta dilindungi.
-            </p>
-          </div>
+        <div className="border-t border-white/20 py-6 px-gutter">
+          <p className="max-w-container-max mx-auto text-sm text-white/90">
+            © {new Date().getFullYear()} {settings.clinic_name}. Hak cipta dilindungi.
+          </p>
         </div>
       </footer>
     </>

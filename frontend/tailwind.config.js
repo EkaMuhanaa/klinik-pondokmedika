@@ -14,7 +14,7 @@ export default {
         "surface-variant": "#dee4e3",
         "on-secondary-fixed": "#002113",
         "surface-container-highest": "#dee4e3",
-        "secondary": "#206b4b",
+        "secondary": "#065A3C", // Dark Green dari logo (DESIGN.md)
         "on-surface": "#171d1c",
         "secondary-fixed": "#a9f2ca",
         "surface-container-low": "#eff5f4",
@@ -32,6 +32,8 @@ export default {
         "on-tertiary-container": "#632500",
         "secondary-container": "#a6efc7",
         "whatsapp-green": "#25D366",
+        "on-whatsapp": "#06331b", // teks/ikon gelap di atas hijau WhatsApp (kontras >= 7:1)
+        "brand-teal": "#32B3B2", // teal logo: hanya aksen dekoratif, bukan untuk teks
         "outline": "#6d7a79",
         "tertiary": "#95491f",
         "on-secondary": "#ffffff",
