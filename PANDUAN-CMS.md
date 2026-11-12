@@ -40,6 +40,13 @@ Foto, nama dan gelar, spesialisasi, deskripsi, dan jadwal praktik.
 - **Jadwal:** centang hari praktik, lalu isi jam mulai dan selesai. Status "Aktif Praktik" di website dihitung otomatis dari jadwal ini (WIB).
 - **Dokter cuti panjang:** hapus centang **Tampilkan di website**, tidak perlu dihapus.
 
+### Kelola Rekan Medis
+Institusi mitra yang berjalan di Beranda.
+- **Nama institusi:** wajib diisi, juga untuk mitra yang punya logo.
+- **Logo:** PNG transparan atau JPG/WebP, maksimal 1 MB. Logo memanjang (landscape) tampil paling rapi. Pastikan klinik berhak memakai logo mitra tersebut.
+- **Link (opsional):** website mitra.
+- **Mitra yang tidak lagi bekerja sama:** hapus centang **Tampilkan di website**, atau hapus datanya.
+
 ### Pop-Up Promo
 Promo yang muncul sekali per kunjungan, beberapa detik setelah halaman dibuka.
 - **Jadwal tayang:** atur Mulai dan Selesai Tayang, maka promo tampil dan berhenti sendiri.
@@ -50,10 +57,9 @@ Promo yang muncul sekali per kunjungan, beberapa detik setelah halaman dibuka.
 Data klinik yang dipakai di seluruh website dan oleh Google.
 - **Alamat, telepon, jam buka:** harus **sama persis** dengan profil Google Maps (Google Business Profile) klinik.
 - **Wilayah layanan:** kelurahan dan kecamatan sekitar klinik, dipisah koma.
-- **Media sosial:** isi link yang ada saja. Yang dikosongkan tidak ditampilkan.
+- **Media sosial:** isi link yang ada saja. Yang dikosongkan tidak ditampilkan. Di footer, setiap akun tampil dengan ikon dan nama akunnya (misalnya ikon Instagram + `@pondokmedika`), yang diambil otomatis dari link.
 - **Konten Beranda & Tentang Kami:**
   - judul bagian dokter;
-  - daftar Rekan Medis (satu nama per baris);
   - sorotan di halaman Tentang Kami, dengan format `Judul | Keterangan` per baris. Contoh: `Terakreditasi Paripurna | KARS 2025`.
 
 ---

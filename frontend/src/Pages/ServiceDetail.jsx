@@ -5,6 +5,7 @@ import Layout from '../Components/Layout';
 import NotFound from './NotFound';
 import { useServices, useSiteSettings } from '../Contexts/SiteSettingsContext';
 import { localArea, whatsappLink, absoluteUrl, pageServices } from '../seo/meta';
+import Reveal from '../Components/Reveal';
 
 const Section = ({ title, children }) => (
   <div>
@@ -37,7 +38,7 @@ const ServiceDetail = () => {
   const hasDetails = service.background || service.explanation || service.conditions || steps.length > 0;
 
   return (
-    <Layout seo={{
+    <Layout overlayHeader seo={{
       jsonLd: {
         '@context': 'https://schema.org',
         '@type': 'MedicalWebPage',
@@ -47,7 +48,7 @@ const ServiceDetail = () => {
         provider: { '@id': absoluteUrl('/') + '#klinik' },
       },
     }}>
-      <section className="bg-primary py-16 px-gutter">
+      <section className="bg-primary pt-28 md:pt-32 pb-16 px-gutter">
         <div className="max-w-7xl mx-auto">
           <Link to="/layanan" className="inline-flex items-center gap-2 min-h-[44px] text-white hover:underline mb-4">
             <MdArrowBack className="text-sm" aria-hidden="true" />
@@ -60,7 +61,7 @@ const ServiceDetail = () => {
         </div>
       </section>
 
-      <section className="py-12 px-gutter bg-surface min-h-[60vh]">
+      <Reveal as="section" className="py-12 px-gutter bg-surface min-h-[60vh]">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-12">
           <div className="lg:col-span-3">
             <h2 className="font-headline-lg text-headline-lg text-primary mb-10 border-b border-outline-variant/30 pb-4">
@@ -140,7 +141,7 @@ const ServiceDetail = () => {
             </div>
           </aside>
         </div>
-      </section>
+      </Reveal>
     </Layout>
   );
 };

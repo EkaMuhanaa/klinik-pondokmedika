@@ -27,7 +27,6 @@ class SiteSettingController extends Controller
         $keys = array_keys(config('clinic.settings'));
 
         $rules = array_fill_keys($keys, 'sometimes|nullable|string|max:1000');
-        $rules['partners'] = 'sometimes|nullable|string|max:3000';
         $rules['email'] = 'sometimes|nullable|email|max:255';
         $rules['whatsapp'] = ['sometimes', 'nullable', 'regex:/^62\d{8,13}$/'];
         $rules['latitude'] = 'sometimes|nullable|numeric|between:-90,90';

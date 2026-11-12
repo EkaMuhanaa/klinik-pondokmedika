@@ -16,6 +16,9 @@
 
 return [
 
+    // Daftar mitra lama (sebelum ada menu Kelola Rekan Medis), dipakai migrasi partners
+    'legacy_partners' => "Puskesmas Cengkareng\nKlinik laboratorium bioprima\nRajak hospital\nPermata Indah medical center cengkareng\nLaboratorium klinik bio medika\nCiputra Hospital Citra Garden City\nPT Impian Profesi Internasional\nPt Arah environmental indonesia\nPt Mitra bestari teknologi",
+
     // URL website publik (frontend), dipakai untuk sitemap.xml
     'frontend_url' => rtrim(env('FRONTEND_URL', 'https://klinikpondokmedika.id'), '/'),
 
@@ -25,7 +28,7 @@ return [
         'tagline' => 'Klinik keluarga terpercaya di Cengkareng, Jakarta Barat',
 
         // Alamat (NAP)
-        'address_street' => 'Jl. Cendrawasih Raya',
+        'address_street' => 'Jl. Cendrawasih Raya No.87 RT.007/RW.006, Komplek Perumahan Imigrasi',
         'kelurahan' => 'Cengkareng Barat',
         'kecamatan' => 'Cengkareng',
         'city' => 'Jakarta Barat',
@@ -38,7 +41,7 @@ return [
         // Kontak
         'phone' => '0812-3416-3128',
         'whatsapp' => '6281234163128',
-        'email' => 'info@pondokmedika.com',
+        'email' => 'info@klinikpondokmedika.id',
 
         // Jam operasional
         'opening_days' => 'Mo,Tu,We,Th,Fr,Sa',
@@ -50,16 +53,14 @@ return [
         'service_area' => 'Cengkareng, Cengkareng Barat, Cengkareng Timur, Kapuk, Duri Kosambi, Rawa Buaya, Kedaung Kali Angke, Kalideres, Kembangan, Jakarta Barat',
 
         // Media sosial (kosongkan jika tidak ada)
-        'instagram_url' => '',
-        'facebook_url' => '',
+        'instagram_url' => 'https://www.instagram.com/pondokmedika/',
+        'facebook_url' => 'https://www.facebook.com/p/Klinik-Pondok-Medika-100084835231382/',
         'tiktok_url' => '',
         'youtube_url' => '',
 
         // Konten Beranda & Tentang Kami
         'doctors_heading' => 'Bertemu dengan Dokter Spesialis Kami',
         'doctors_intro' => 'Status praktik diperbarui otomatis sesuai jam WIB. Cek jadwal sebelum datang.',
-        // Satu nama per baris
-        'partners' => "Puskesmas Cengkareng\nKlinik laboratorium bioprima\nRajak hospital\nPermata Indah medical center cengkareng\nLaboratorium klinik bio medika\nCiputra Hospital Citra Garden City\nPT Impian Profesi Internasional\nPt Arah environmental indonesia\nPt Mitra bestari teknologi",
         // Satu sorotan per baris, format: Judul | Keterangan
         'about_highlights' => "Terakreditasi | Standar Pelayanan Nasional\nTim Ahli | Dokter Berpengalaman",
 

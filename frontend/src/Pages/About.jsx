@@ -5,6 +5,7 @@ import Layout from '../Components/Layout';
 import HeroSliderBackground from '../Components/HeroSliderBackground';
 import { useSiteSettings } from '../Contexts/SiteSettingsContext';
 import { fullAddress, openingDaysText, hoursText, whatsappLink } from '../seo/meta';
+import Reveal from '../Components/Reveal';
 
 const missions = [
   { title: 'SDM Berkualitas', text: 'Meningkatkan kualitas Sumber Daya Manusia secara berkesinambungan melalui pelatihan dan pengembangan profesional.' },
@@ -30,8 +31,8 @@ const About = () => {
   }, []);
 
   return (
-    <Layout>
-      <section className="relative min-h-[360px] md:min-h-[440px] flex items-end">
+    <Layout overlayHeader>
+      <section className="relative min-h-[420px] md:min-h-[480px] flex items-end pt-24">
         <HeroSliderBackground images={heroImages} overlayClassName="hero-overlay" />
         <div className="relative z-10 w-full max-w-container-max mx-auto px-gutter py-12">
           <h1 className="font-headline-xl-mobile text-headline-xl-mobile md:font-headline-xl md:text-headline-xl text-white mb-3">Tentang Kami</h1>
@@ -42,7 +43,7 @@ const About = () => {
       </section>
 
       {/* Sejarah singkat */}
-      <section className="py-section-gap px-gutter max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+      <Reveal as="section" className="py-section-gap px-gutter max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         <div className="aspect-square rounded-xl overflow-hidden bg-white border border-outline-variant/40">
           {heroImages.length > 0 ? (
             <img alt={`Gedung ${settings.clinic_name}`} width="640" height="640" loading="lazy" className="w-full h-full object-cover" src={heroImages[0]} />
@@ -70,10 +71,10 @@ const About = () => {
             </ul>
           )}
         </div>
-      </section>
+      </Reveal>
 
       {/* Visi & misi: visi sebagai pernyataan besar, misi sebagai daftar bernomor */}
-      <section className="bg-surface-container-low py-section-gap">
+      <Reveal as="section" className="bg-surface-container-low py-section-gap">
         <div className="px-gutter max-w-container-max mx-auto grid grid-cols-1 lg:grid-cols-5 gap-12">
           <div className="lg:col-span-2">
             <h2 className="font-headline-lg text-headline-lg text-primary mb-6">Visi &amp; Misi</h2>
@@ -93,10 +94,10 @@ const About = () => {
             ))}
           </ol>
         </div>
-      </section>
+      </Reveal>
 
       {/* Lokasi */}
-      <section className="py-section-gap px-gutter max-w-container-max mx-auto flex flex-col md:flex-row gap-12">
+      <Reveal as="section" className="py-section-gap px-gutter max-w-container-max mx-auto flex flex-col md:flex-row gap-12">
         <div className="md:w-1/3">
           <h2 className="font-headline-lg text-headline-lg text-primary mb-6">Lokasi Kami</h2>
           <div className="space-y-6">
@@ -148,7 +149,7 @@ const About = () => {
             ></iframe>
           </div>
         </div>
-      </section>
+      </Reveal>
     </Layout>
   );
 };

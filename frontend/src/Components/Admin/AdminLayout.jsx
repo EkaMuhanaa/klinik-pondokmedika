@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { MdLogout, MdArticle, MdImage, MdDomain, MdCampaign, MdSettings, MdOpenInNew, MdMedicalServices, MdPeople, MdMenu } from 'react-icons/md';
+import { MdLogout, MdArticle, MdImage, MdDomain, MdCampaign, MdSettings, MdOpenInNew, MdMedicalServices, MdPeople, MdMenu, MdHandshake } from 'react-icons/md';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../../Contexts/AuthContext';
 
@@ -29,6 +29,7 @@ const AdminLayout = ({ children }) => {
     { name: 'Kelola Layanan', path: '/admin/services', icon: <MdMedicalServices className='text-xl' /> },
     { name: 'Kelola Dokter', path: '/admin/doctors', icon: <MdPeople className='text-xl' /> },
     { name: 'Kelola Fasilitas', path: '/admin/facilities', icon: <MdDomain className='text-xl' /> },
+    { name: 'Kelola Rekan Medis', path: '/admin/partners', icon: <MdHandshake className='text-xl' /> },
     { name: 'Pop-Up Promo', path: '/admin/promos', icon: <MdCampaign className='text-xl' /> },
     { name: 'Pengaturan Klinik', path: '/admin/settings', icon: <MdSettings className='text-xl' /> },
   ];

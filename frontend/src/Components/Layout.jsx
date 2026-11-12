@@ -1,25 +1,52 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { MdClose, MdCall, MdMail, MdMenu } from 'react-icons/md';
+import { FaInstagram, FaFacebook, FaTiktok, FaYoutube } from 'react-icons/fa6';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, MotionConfig } from 'framer-motion';
 import WhatsAppCTA from './WhatsAppCTA';
 import PromoPopup from './PromoPopup';
 import Seo from './Seo';
 import { useServices, useSiteSettings } from '../Contexts/SiteSettingsContext';
-import { fullAddress, localArea, openingDaysText, hoursText, whatsappLink, pageServices } from '../seo/meta';
+import { fullAddress, localArea, openingDaysText, hoursText, whatsappLink, pageServices, socialHandle } from '../seo/meta';
+import { lockScroll } from '../lib/smoothScroll';
 
-/** seo: props untuk <Seo> (title, description, image, type, noindex, jsonLd). */
-const Layout = ({ children, seo }) => {
+/**
+ * seo: props untuk <Seo> (title, description, image, type, noindex, jsonLd).
+ * overlayHeader: navbar transparan di atas hero gelap, menjadi putih setelah digulir.
+ */
+const Layout = ({ children, seo, overlayHeader = false }) => {
   const location = useLocation();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const settings = useSiteSettings();
   const { services } = useServices();
   const socials = [
-    { url: settings.instagram_url, label: 'Instagram' },
-    { url: settings.facebook_url, label: 'Facebook' },
-    { url: settings.tiktok_url, label: 'TikTok' },
-    { url: settings.youtube_url, label: 'YouTube' },
+    { url: settings.instagram_url, label: 'Instagram', Icon: FaInstagram },
+    { url: settings.facebook_url, label: 'Facebook', Icon: FaFacebook },
+    { url: settings.tiktok_url, label: 'TikTok', Icon: FaTiktok },
+    { url: settings.youtube_url, label: 'YouTube', Icon: FaYoutube },
   ].filter((x) => x.url);
+
+  const [scrolled, setScrolled] = useState(false);
+  useEffect(() => {
+    if (!overlayHeader) return undefined;
+    const onScroll = () => setScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [overlayHeader]);
+
+  // Kunci scroll halaman saat menu HP terbuka
+  useEffect(() => {
+    lockScroll(isMobileMenuOpen);
+    return () => lockScroll(false);
+  }, [isMobileMenuOpen]);
+
+  // Transparan hanya di atas hero gelap dan sebelum digulir
+  const clear = overlayHeader && !scrolled && !isMobileMenuOpen;
+  const linkBase = 'transition-colors inline-flex items-center min-h-[44px]';
+  const navLink = (path) => (isActive(path)
+    ? `${clear ? 'text-white border-white' : 'text-primary border-primary'} border-b-2 pb-1 font-bold ${linkBase}`
+    : `${clear ? 'text-white hover:text-white/80' : 'text-on-surface-variant hover:text-primary'} ${linkBase}`);
 
   const isActive = (path) => {
     if (path === '/') return location.pathname === '/';
@@ -29,7 +56,9 @@ const Layout = ({ children, seo }) => {
   return (
     <>
       <Seo {...(seo || {})} />
-      <header className="docked full-width top-0 sticky z-50 bg-white shadow-sm">
+      <header
+        className={`${overlayHeader ? 'fixed inset-x-0' : 'sticky'} top-0 z-50 w-full transition-[background-color,box-shadow] duration-300 ${clear ? 'bg-transparent' : 'bg-white shadow-sm'}`}
+      >
         <nav className="flex justify-between items-center px-gutter py-4 w-full max-w-container-max mx-auto">
           <Link to="/" className="flex items-center gap-3 min-h-[44px]">
             <img
@@ -37,22 +66,22 @@ const Layout = ({ children, seo }) => {
               width="110"
               height="48"
               className="h-10 md:h-12 w-auto object-contain"
-              src="/images/logo-wide.png"
+              src={clear ? '/images/logo-wide-light.png' : '/images/logo-wide.png'}
             />
           </Link>
           
           {/* Desktop Menu */}
           <div className="hidden lg:flex items-center gap-8 font-body-md text-body-md">
-            <Link to="/" className={`${isActive('/') ? 'text-primary border-b-2 border-primary pb-1 font-bold' : 'text-on-surface-variant'} hover:text-primary transition-colors inline-flex items-center min-h-[44px]`}>Beranda</Link>
-            <Link to="/tentang-kami" className={`${isActive('/tentang-kami') ? 'text-primary border-b-2 border-primary pb-1 font-bold' : 'text-on-surface-variant'} hover:text-primary transition-colors inline-flex items-center min-h-[44px]`}>Tentang Kami</Link>
-            <Link to="/layanan" className={`${isActive('/layanan') ? 'text-primary border-b-2 border-primary pb-1 font-bold' : 'text-on-surface-variant'} hover:text-primary transition-colors inline-flex items-center min-h-[44px]`}>Layanan</Link>
-            <Link to="/artikel" className={`${isActive('/artikel') ? 'text-primary border-b-2 border-primary pb-1 font-bold' : 'text-on-surface-variant'} hover:text-primary transition-colors inline-flex items-center min-h-[44px]`}>Artikel</Link>
+            <Link to="/" className={navLink('/')}>Beranda</Link>
+            <Link to="/tentang-kami" className={navLink('/tentang-kami')}>Tentang Kami</Link>
+            <Link to="/layanan" className={navLink('/layanan')}>Layanan</Link>
+            <Link to="/artikel" className={navLink('/artikel')}>Artikel</Link>
           </div>
 
           {/* Mobile Menu Toggle */}
           <button 
             type="button"
-            className="lg:hidden w-11 h-11 flex items-center justify-center text-on-surface rounded-lg hover:bg-surface-container transition-colors"
+            className={`lg:hidden w-11 h-11 flex items-center justify-center rounded-lg transition-colors ${clear ? 'text-white [@media(hover:hover)]:hover:bg-white/10' : 'text-on-surface [@media(hover:hover)]:hover:bg-surface-container'}`}
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? 'Tutup menu' : 'Buka menu'}
             aria-expanded={isMobileMenuOpen}
@@ -128,16 +157,23 @@ const Layout = ({ children, seo }) => {
       <PromoPopup />
 
       <footer className="bg-secondary text-white">
-        <div className="w-full max-w-container-max mx-auto px-gutter py-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr] gap-10">
+        <div className="w-full max-w-container-max mx-auto px-gutter py-14 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr] gap-10">
           {/* Identitas & kontak: blok utama footer */}
           <div>
-            <p className="font-heading text-2xl font-bold mb-2">{settings.clinic_name}</p>
+            <Link to="/" className="inline-flex mb-4" aria-label={`${settings.clinic_name}, ke beranda`}>
+              <img src="/images/logo-wide-light.png" alt={settings.clinic_name} width="183" height="80" className="h-16 w-auto" loading="lazy" />
+            </Link>
             <p className="text-white/90 mb-6">{settings.tagline}</p>
             <address className="not-italic space-y-3 text-white">
               <a href={settings.maps_url} target="_blank" rel="noreferrer" className="block leading-relaxed underline-offset-4 hover:underline">
                 {fullAddress(settings)}
               </a>
               <p>{openingDaysText(settings)} {hoursText(settings)}{settings.hours_note ? `. ${settings.hours_note}` : ''}</p>
+              {settings.email && (
+                <a href={`mailto:${settings.email}`} className="inline-flex items-center gap-2 min-h-[44px] hover:underline underline-offset-4">
+                  <MdMail aria-hidden="true" /> {settings.email}
+                </a>
+              )}
             </address>
             <a
               href={whatsappLink(settings)}
@@ -165,14 +201,24 @@ const Layout = ({ children, seo }) => {
               <li><Link to="/tentang-kami" className="tap-target text-white/90 hover:text-white hover:underline underline-offset-4">Tentang Kami</Link></li>
               <li><Link to="/layanan" className="tap-target text-white/90 hover:text-white hover:underline underline-offset-4">Layanan</Link></li>
               <li><Link to="/artikel" className="tap-target text-white/90 hover:text-white hover:underline underline-offset-4">Artikel &amp; Edukasi</Link></li>
-              {settings.email && (
-                <li><a href={`mailto:${settings.email}`} className="tap-target gap-2 text-white/90 hover:text-white hover:underline underline-offset-4"><MdMail aria-hidden="true" /> {settings.email}</a></li>
-              )}
-              {socials.map((x) => (
-                <li key={x.label}><a href={x.url} target="_blank" rel="noopener noreferrer" className="tap-target text-white/90 hover:text-white hover:underline underline-offset-4">{x.label}</a></li>
-              ))}
             </ul>
           </div>
+
+          {socials.length > 0 && (
+            <div>
+              <h2 className="font-heading font-semibold text-lg mb-3">Ikuti Kami</h2>
+              <ul>
+                {socials.map(({ url, label, Icon }) => (
+                  <li key={label}>
+                    <a href={url} target="_blank" rel="noopener noreferrer" aria-label={`${label} ${socialHandle(url)}`} className="tap-target gap-3 text-white/90 hover:text-white hover:underline underline-offset-4">
+                      <Icon className="text-xl shrink-0" aria-hidden="true" />
+                      <span>{socialHandle(url)}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
 
         {settings.service_area && (
